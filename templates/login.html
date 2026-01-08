@@ -20,14 +20,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
     .login-container { 
       background: #ffffff; 
-      padding: 40px; 
+      padding: 40px 30px; 
       border-radius: 12px; 
       box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-      width: 380px; 
+      width: 100%;
+      max-width: 400px; 
       transition: all 0.3s ease;
     }
 
@@ -64,6 +66,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
       box-sizing: border-box;
+      margin-top: auto;
     }
 
     footer .footer-section {
@@ -117,27 +120,16 @@
       {% endwith %}
       
       <form method="POST" action="{{ url_for('login') }}">
-        <!-- Email -->
+        <!-- Username -->
         <div class="mb-3">
-          <label for="email" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
         </div>
 
         <!-- Password -->
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
           <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
-        </div>
-
-        <!-- Role selection -->
-        <div class="mb-3">
-          <label for="role" class="form-label">Select Role</label>
-          <select class="form-select" id="role" name="role" required>
-            <option value="" selected disabled>Choose your role</option>
-            <option value="customer">Customer</option>
-            <option value="delivery_person">Delivery Person</option>
-            <option value="admin">Admin</option>
-          </select>
         </div>
 
         <!-- Submit -->
