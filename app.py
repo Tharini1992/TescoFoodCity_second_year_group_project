@@ -269,8 +269,6 @@ def cart():
     
 
 # -----------------------------
-# User Registration & Verification
-# Registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -371,43 +369,7 @@ def login():
             flash("Invalid username or password.", "danger")
 
     return render_template("login.html")
-
-# Logout
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash("Logged out successfully.", "success")
-    return redirect(url_for('login'))
-
-# Customer dashboard
-@app.route('/customer')
-def customer_dashboard():
-    if 'role' in session and session['role'] == 'customer':
-        return render_template("search.html", username=session['username'])
-    return "Unauthorized", 403
-
-# Admin dashboard
-@app.route('/admin')
-def admin_dashboard():
-    if 'role' in session and session['role'] == 'admin':
-        return render_template("admin.html", username=session['username'])
-    return "Unauthorized", 403
-
-# Delivery dashboard
-@app.route('/delivery')
-def delivery_dashboard():
-    if 'role' in session and session['role'] == 'delivery':
-        return render_template("delivery_dashboard.html", username=session['username'])
-    return "Unauthorized", 403
-
-
-
-
-
-
-
-
-
+    
 
 # -----------------------------
 # Dashboards
