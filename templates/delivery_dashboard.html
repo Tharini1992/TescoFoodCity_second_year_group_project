@@ -8,11 +8,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body { display: flex; flex-direction: column; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-    main { flex: 1; }
+    body { 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: #f8f9fa; 
+    }
+    main { flex: 1; padding: 20px; }
     .navbar { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .nav-link { color: #333 !important; font-weight: 600; }
-    .nav-link:hover { color: #43a047 !important; }
+    .form-inline { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .form-inline input, .form-inline select { padding: 8px 12px; border-radius: 5px; border: 1px solid #ced4da; }
+    .form-inline button { min-width: 100px; }
     .table th, .table td { vertical-align: middle; }
     .status-select { border-radius: 5px; padding: 4px 8px; }
     footer { background: #2e7d32; color: white; padding: 30px 20px; }
@@ -27,17 +34,26 @@
       <a class="navbar-brand" href="#">
         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="50">
       </a>
-
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
+          <!-- Account Dropdown -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa-solid fa-user me-1"></i>{{ username }}
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-user fa-lg me-2"></i>
+              <span>{{ username }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-              <li><a class="dropdown-item" href="#">Account Settings</a></li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="fa-solid fa-gear me-2"></i> Account Settings
+                </a>
+              </li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a></li>
+              <li>
+                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                  <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                </a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -47,23 +63,23 @@
 
   <!-- MAIN -->
   <main class="container mt-4">
-    <p class="mb-4">Welcome, <strong>{{ username }}</strong></p>
+    <p class="mb-4">Welcome, {{ username }}</p>
 
     <div class="card shadow-sm mb-4">
       <div class="card-header bg-success text-white">
         <i class="fa-solid fa-truck"></i> Manage Orders
       </div>
       <div class="card-body">
-        <div class="form-inline mb-3">
-          <input type="text" id="orderId" placeholder="Order ID" class="form-control me-2">
-          <input type="text" id="userEmail" placeholder="User Email" class="form-control me-2">
-          <input type="text" id="total" placeholder="Total" class="form-control me-2">
-          <select id="status" class="form-select me-2" style="width:auto;">
+        <div class="form-inline">
+          <input type="text" id="orderId" placeholder="Order ID">
+          <input type="text" id="userEmail" placeholder="User Email">
+          <input type="text" id="total" placeholder="Total">
+          <select id="status">
             <option value="Pending">Pending</option>
             <option value="In Transit">In Transit</option>
             <option value="Delivered">Delivered</option>
           </select>
-          <button class="btn btn-success btn-sm me-2" onclick="addOrder()">Add Order</button>
+          <button class="btn btn-success btn-sm" onclick="addOrder()">Add Order</button>
           <button class="btn btn-danger btn-sm" onclick="removeSelected()">Remove Selected</button>
         </div>
 
