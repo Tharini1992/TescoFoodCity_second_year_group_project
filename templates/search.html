@@ -505,7 +505,7 @@
         <i class="fa-solid fa-user"></i> {{ session['user']['name'] }}
     </a>
     {% else %}
-    <a href="{{ url_for('manual_login') }}" title="Login" class="user-icon">
+    <a href="{{ url_for('login') }}" title="Login" class="user-icon">
            <i class="fa-solid fa-user user-icon"></i> Account
     </a>
     {% endif %}

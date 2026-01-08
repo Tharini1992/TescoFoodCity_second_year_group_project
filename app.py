@@ -270,41 +270,25 @@ def cart():
 
 # -----------------------------
 # User Registration & Verification
-# -----------------------------
-@app.route("/register", methods=["GET", "POST"])
+# Registration
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == "POST":
-        first_name = request.form["first_name"]
-        last_name = request.form["last_name"]
-        email = request.form["email"]
-        password = request.form["password"]
-        role = request.form["role"]
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'])
+        role = request.form['role']
 
-        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-        if cursor.fetchone():
-            flash("Email already registered. Please log in.", "danger")
-            return redirect(url_for("register"))
-
-        hashed_pw = generate_password_hash(password)
-        cursor.execute(
-            "INSERT INTO users (first_name, last_name, email, password, role, is_verified) VALUES (%s, %s, %s, %s, %s, FALSE)",
-            (first_name, last_name, email, hashed_pw, role)
-        )
-        db.commit()
-        user_id = cursor.lastrowid
-
-        code = generate_code()
-        cursor.execute("INSERT INTO verification_codes (user_id, code) VALUES (%s, %s)", (user_id, code))
-        db.commit()
-
-        send_email(
-            email,
-            "Verify Your Tesco Food City Account",
-            f"<h3>Welcome!</h3><p>Your verification code: <b>{code}</b></p>"
-        )
-
-        flash(f"Registration successful! Verification code sent to {email}.", "success")
-        return redirect(url_for("verify", email=email))
+        try:
+            cursor.execute(
+                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
+                (username, email, password, role)
+            )
+            db.commit()
+            flash("Registration successful! Please login.", "success")
+            return redirect(url_for('login'))
+        except mysql.connector.IntegrityError:
+            flash("Username or Email already exists.", "danger")
 
     return render_template("register.html")
 
@@ -360,24 +344,70 @@ def grocery():
 # -----------------------------
 # Manual Login
 # -----------------------------
-@app.route("/manual_login", methods=["GET", "POST"])
-def manual_login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        role = request.form["role"]
+# Login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+        cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cursor.fetchone()
 
-        if user and check_password_hash(user["password"], password) and user["role"] == role:
-            session["user"] = {"name": user["first_name"], "email": email, "role": role}
-            flash("Login successful!", "success")
-            return redirect_role_dashboard(role)
-        else:
-            flash("Invalid credentials or role mismatch.", "danger")
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            session['role'] = user['role']
+            flash(f"Welcome {user['username']}!", "success")
 
-    return render_template("manual_login.html")
+            # Redirect based on role
+            if user['role'] == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            elif user['role'] == 'delivery':
+                return redirect(url_for('delivery_dashboard'))
+            else:
+                return redirect(url_for('customer_dashboard'))
+        else:
+            flash("Invalid username or password.", "danger")
+
+    return render_template("login.html")
+
+# Logout
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("Logged out successfully.", "success")
+    return redirect(url_for('login'))
+
+# Customer dashboard
+@app.route('/customer')
+def customer_dashboard():
+    if 'role' in session and session['role'] == 'customer':
+        return render_template("search.html", username=session['username'])
+    return "Unauthorized", 403
+
+# Admin dashboard
+@app.route('/admin')
+def admin_dashboard():
+    if 'role' in session and session['role'] == 'admin':
+        return render_template("admin.html", username=session['username'])
+    return "Unauthorized", 403
+
+# Delivery dashboard
+@app.route('/delivery')
+def delivery_dashboard():
+    if 'role' in session and session['role'] == 'delivery':
+        return render_template("delivery_dashboard.html", username=session['username'])
+    return "Unauthorized", 403
+
+
+
+
+
+
+
+
+
 
 # -----------------------------
 # Dashboards
