@@ -82,7 +82,7 @@ def logout():
 @app.route('/customer')
 def customer_dashboard():
     if 'role' in session and session['role'] == 'customer':
-        return render_template("customer.html", username=session['username'])
+        return render_template("search.html", username=session['username'])
     return "Unauthorized", 403
 
 # Admin dashboard
@@ -98,6 +98,9 @@ def delivery_dashboard():
     if 'role' in session and session['role'] == 'delivery':
         return render_template("delivery_dashboard.html", username=session['username'])
     return "Unauthorized", 403
+
+
+
 
 # Run Flask
 if __name__ == "__main__":
