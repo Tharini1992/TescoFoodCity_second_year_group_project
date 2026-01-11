@@ -371,38 +371,44 @@ def login():
     return render_template("login.html")
     
 
+
 # -----------------------------
 # Dashboards
 # -----------------------------
 @app.route("/customer_dashboard")
 def customer_dashboard():
-    if session.get("user", {}).get("role") != "customer":
+    user = session.get("user")
+
+    if not user or user.get("role") != "customer":
         flash("Unauthorized access.", "danger")
-        return redirect(url_for("home"))
-    return render_template("customer_dashboard.html", user=session["user"])
+        return redirect(url_for("search_page"))
+
+    return render_template("search.html", user=user)
+
 
 @app.route("/admin_dashboard")
 def admin_dashboard():
-    if session.get("user", {}).get("role") != "admin":
+    user = session.get("user")
+
+    if not user or user.get("role") != "admin":
         flash("Unauthorized access.", "danger")
-        return redirect(url_for("home"))
-    return render_template("admin_dashboard.html", user=session["user"])
+        return redirect(url_for("search_page"))
+
+    return render_template("admin_dashboard.html", user=user)
+
 
 @app.route("/delivery_dashboard")
 def delivery_dashboard():
-    if session.get("user", {}).get("role") != "delivery_person":
-        flash("Unauthorized access.", "danger")
-        return redirect(url_for("home"))
-    return render_template("delivery_dashboard.html", user=session["user"])
+    user = session.get("user")
 
-# -----------------------------
+    if not user or user.get("role") != "delivery_person":
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for("search_page"))
+
+    return render_template("delivery_dashboard.html", user=user)
+
 # Logout
 # -----------------------------
-@app.route("/logout")
-def logout():
-    session.clear()
-    flash("You have been logged out.", "info")
-    return redirect(url_for("home"))
 
 # -----------------------------
 # Catch-all
