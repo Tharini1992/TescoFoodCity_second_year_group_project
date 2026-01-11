@@ -1,135 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tesco Food City</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     /* Navbar + icons */
-    .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8f9fa; }
-    .icons .icon a { text-decoration:none; color:#333; margin-left:10px; }
-    .icons .icon a:hover { color:#155724; }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #f8f9fa;
+    }
+
+    .icons .icon a {
+      text-decoration: none;
+      color: #333;
+      margin-left: 10px;
+    }
+
+    .icons .icon a:hover {
+      color: #155724;
+    }
 
     /* Welcome message animation */
-    #welcome-msg { 
-        padding:15px 20px; 
-        margin:20px auto; 
-        background:#d4edda; 
-        border:1px solid #c3e6cb; 
-        border-radius:5px; 
-        opacity:0; 
-        transform: translateY(-20px); 
-        animation: slideFadeIn 1s forwards; 
-        text-align:center;
-        width: fit-content;
+    #welcome-msg {
+      padding: 15px 20px;
+      margin: 20px auto;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 5px;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: slideFadeIn 1s forwards;
+      text-align: center;
+      width: fit-content;
     }
+
     @keyframes slideFadeIn {
-        to { opacity:1; transform: translateY(0); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     #welcome-msg.guest {
-        background:#f8d7da;
-        border:1px solid #f5c6cb;
-        color:#721c24;
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
     }
 
-/* Slider animation */
-.slider {
-  position: relative;
-  overflow: hidden;
-  height: ox;
-}
-.slide {
-  display: none;
-  text-align: center;
-  font-size: 1.8rem;
-  padding: 60px;
-  background: #f1f1f1;
-  animation: fadeSlide 1s ease-in-out;
-}
-.slide.active {
-  display: block;
-}
-@keyframes fadeSlide {
-  from {opacity: 0; transform: translateX(50px);}
-  to {opacity: 1; transform: translateX(0);}
-}
+    /* Slider animation */
+    .slider {
+      position: relative;
+      overflow: hidden;
+      height: ox;
+    }
 
-/* Ads carousel */
-.ads-slide {
-  display: none;
-  animation: fadeAd 1s ease-in-out;
-}
-.ads-slide.active {
-  display: block;
-}
-@keyframes fadeAd {
-  from {opacity: 0.3; transform: scale(0.95);}
-  to {opacity: 1; transform: scale(1);}
-}
+    .slide {
+      display: none;
+      text-align: center;
+      font-size: 1.8rem;
+      padding: 60px;
+      background: #f1f1f1;
+      animation: fadeSlide 1s ease-in-out;
+    }
 
-/* Category hover animation */
-.cat-item {
-  transition: transform 0.4s, box-shadow 0.4s;
-  cursor: pointer;
-}
-.cat-item:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
-}
+    .slide.active {
+      display: block;
+    }
 
-/* Product card hover */
-.product-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.product-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
-}
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
 
-/* ===== FOOTER ===== */
-        footer {
-            background: #2e7d32;
-            color: white;
-            padding: 30px 20px;
-            margin-top: 40px;
-        }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
 
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
+    /* Ads carousel */
+    .ads-slide {
+      display: none;
+      animation: fadeAd 1s ease-in-out;
+    }
 
+    .ads-slide.active {
+      display: block;
+    }
 
-.footer-content h3 {
-    margin-bottom: 10px;
-}
+    @keyframes fadeAd {
+      from {
+        opacity: 0.3;
+        transform: scale(0.95);
+      }
 
-@media (max-width: 768px) {
-    .navbar {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Category hover animation */
+    .cat-item {
+      transition: transform 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+    }
+
+    .cat-item:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Product card hover */
+    .product-card {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ====== FOOTER ====== */
+    footer {
+      background: #2e7d32;
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
       flex-wrap: wrap;
+      gap: 30px;
     }
 
-    .search-bar {
-      margin: 10px 0;
-      max-width: 100%;
+    .footer-content h3 {
+      margin-bottom: 10px;
     }
-
-    .process-steps {
-      grid-template-columns: 1fr;
-    }
-    
-
-    .city-buttons {
-      justify-content: center;
-    }
-}
-
   </style>
 </head>
+
 <body>
 
   <!-- HEADER / NAVBAR -->
@@ -159,13 +178,13 @@
         <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
         <span class="icon">
           {% if username %}
-            <a href="{{ url_for('account') }}">
-              <i class="fa-solid fa-user"></i> {{ username }}
-            </a>
+          <a href="{{ url_for('account') }}">
+            <i class="fa-solid fa-user"></i> {{ username }}
+          </a>
           {% else %}
-            <a href="{{ url_for('login') }}">
-              <i class="fa-solid fa-user"></i> Account
-            </a>
+          <a href="{{ url_for('login') }}">
+            <i class="fa-solid fa-user"></i> Account
+          </a>
           {% endif %}
         </span>
       </div>
@@ -174,18 +193,25 @@
 
   <!-- Welcome Message -->
   {% if username %}
-    <div id="welcome-msg">🎉 Welcome back TescoFoodCity, <strong>{{ username }}</strong>! Happy shopping 🛒</div>
+  <div id="welcome-msg">🎉 Welcome back TescoFoodCity, <strong>{{ username }}</strong>! Happy shopping 🛒</div>
   {% else %}
-    <div id="welcome-msg" class="guest">
-      👋 Welcome guest! Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a>.
-    </div>
+  <div id="welcome-msg" class="guest">
+    👋 Welcome guest! Please <a href="{{ url_for('login') }}">login</a> or <a
+      href="{{ url_for('register') }}">register</a>.
+  </div>
   {% endif %}
 
   <!-- SLIDER SECTION -->
   <section class="slider">
-    <div class="slide active"><h2>Fresh Groceries Delivered Fast</h2></div>
-    <div class="slide"><h2>Up to 50% OFF Daily Deals</h2></div>
-    <div class="slide"><h2>Secure Payments & Easy Checkout</h2></div>
+    <div class="slide active">
+      <h2>Fresh Groceries Delivered Fast</h2>
+    </div>
+    <div class="slide">
+      <h2>Up to 50% OFF Daily Deals</h2>
+    </div>
+    <div class="slide">
+      <h2>Secure Payments & Easy Checkout</h2>
+    </div>
     <button class="prev">&#10094;</button>
     <button class="next">&#10095;</button>
   </section>
@@ -221,164 +247,178 @@
     </div>
   </section>
 
-<!-- ✅ BANNER -->
-<section class="banner">
-  <img src="{{ url_for('static', filename='images/banner/banner1.jpg') }}" alt="Promotional Banner">
-</section>
+  <!-- ✅ BANNER -->
+  <section class="banner">
+    <img src="{{ url_for('static', filename='images/banner/banner1.jpg') }}" alt="Promotional Banner">
+  </section>
 
-<!-- ✅ PRODUCT LISTING -->
-<section class="products">
-  <h2>Products</h2>
-  <div class="product-grid">
-    <div class="product-card">
-      <img src="{{ url_for('static', filename='images/product/product1.jpg') }}" alt="product1">
-      <h3>Eva Cotton Feel Heavy Flow Wings - 8.00 pcs</h3>
-      <p class="price">Rs.300.00</p>
-      <button class="add-cart">+</button>
+  <!-- ✅ PRODUCT LISTING -->
+  <section class="products">
+    <h2>Products</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/product/product1.jpg') }}" alt="product1">
+        <h3>Eva Cotton Feel Heavy Flow Wings - 8.00 pcs</h3>
+        <p class="price">Rs.300.00</p>
+        <button class="add-cart">+</button>
+      </div>
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/product/product2.jpeg') }}" alt="product2">
+        <h3>Coca Cola-PET - 1.50 l</h3>
+        <p class="price">Rs.400.00</p>
+        <button class="add-cart">+</button>
+      </div>
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/product/product3.jpeg') }}" alt="Product3">
+        <h3>Carrot - 500.00 g</h3>
+        <p class="price">Rs.160.00</p>
+        <button class="add-cart">+</button>
+      </div>
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/product/product4.jpg') }}" alt="Product4">
+        <h3>Imorich Cookie Cream Ice Cream - 1.00 l</h3>
+        <p class="price">Rs.1290.00</p>
+        <button class="add-cart">+</button>
+      </div>
+      <div class="product-card">
+        <img src="{{ url_for('static', filename='images/product/product5.jpg') }}" alt="Product5">
+        <h3>Maliban Krisco - 170.00 g</h3>
+        <p class="price">Rs.380.00</p>
+        <button class="add-cart">+</button>
+      </div>
     </div>
-    <div class="product-card">
-      <img src="{{ url_for('static', filename='images/product/product2.jpeg') }}" alt="product2">
-      <h3>Coca Cola-PET - 1.50 l</h3>
-      <p class="price">Rs.400.00</p>
-      <button class="add-cart">+</button>
+  </section>
+
+  <!-- ✅ ADS CAROUSEL -->
+  <section class="ads-carousel">
+    <div class="ads-slide active"><img src="{{ url_for('static', filename='images/B_ad/ad1.png') }}" alt="Ad 1"></div>
+    <div class="ads-slide"><img src="{{ url_for('static', filename='images/B_ad/ad2.png') }}" alt="Ad 2"></div>
+    <div class="ads-slide"><img src="{{ url_for('static', filename='images/B_ad/ad3.png') }}" alt="Ad 3"></div>
+    <button class="ads-prev">&#10094;</button>
+    <button class="ads-next">&#10095;</button>
+    <div class="ads-dots">
+      <span class="dot active" data-index="0"></span>
+      <span class="dot" data-index="1"></span>
+      <span class="dot" data-index="2"></span>
     </div>
-    <div class="product-card">
-      <img src="{{ url_for('static', filename='images/product/product3.jpeg') }}" alt="Product3">
-      <h3>Carrot - 500.00 g</h3>
-      <p class="price">Rs.160.00</p>
-      <button class="add-cart">+</button>
+  </section>
+
+  <!-- ✅ BRANDS -->
+  <section class="brands">
+    <h2>Our Brands</h2>
+    <div class="brand-list">
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand1.png') }}" alt="Nestlé">
+        <p>Nestlé</p>
+      </div>
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand2.png') }}" alt="Unilever">
+        <p>Unilever</p>
+      </div>
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand3.png') }}"
+          alt="Elephant House">
+        <p>Elephant House</p>
+      </div>
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand4.png') }}" alt="Coca-Cola">
+        <p>Coca-Cola</p>
+      </div>
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand5.png') }}" alt="Pepsi">
+        <p>Pepsi</p>
+      </div>
+      <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand6.png') }}" alt="Maliban">
+        <p>Maliban</p>
+      </div>
     </div>
-    <div class="product-card">
-      <img src="{{ url_for('static', filename='images/product/product4.jpg') }}" alt="Product4">
-      <h3>Imorich Cookie Cream Ice Cream - 1.00 l</h3>
-      <p class="price">Rs.1290.00</p>
-      <button class="add-cart">+</button>
+  </section>
+
+  <!-- ✅ FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h3>Tesco Food City</h3>
+        <p>Crafting exceptional shopping experiences for our valued customers.</p>
+      </div>
+      <div>
+        <h3>Contact Us</h3>
+        <p>📍 380/F Leyland Junction, Panagoda Homagama</p>
+        <p>📞 0773659784</p>
+        <p>📧 TescoFoodCity@gmail.com</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <p>About</p>
+        <p>Privacy Policy</p>
+        <p>Return Policy</p>
+        <p>Shipping Info</p>
+      </div>
     </div>
-    <div class="product-card">
-      <img src="{{ url_for('static', filename='images/product/product5.jpg') }}" alt="Product5">
-      <h3>Maliban Krisco - 170.00 g</h3>
-      <p class="price">Rs.380.00</p>
-      <button class="add-cart">+</button>
-    </div>
-  </div>
-</section>
-
-<!-- ✅ ADS CAROUSEL -->
-<section class="ads-carousel">
-  <div class="ads-slide active"><img src="{{ url_for('static', filename='images/B_ad/ad1.png') }}" alt="Ad 1"></div>
-  <div class="ads-slide"><img src="{{ url_for('static', filename='images/B_ad/ad2.png') }}" alt="Ad 2"></div>
-  <div class="ads-slide"><img src="{{ url_for('static', filename='images/B_ad/ad3.png') }}" alt="Ad 3"></div>
-  <button class="ads-prev">&#10094;</button>
-  <button class="ads-next">&#10095;</button>
-  <div class="ads-dots">
-    <span class="dot active" data-index="0"></span>
-    <span class="dot" data-index="1"></span>
-    <span class="dot" data-index="2"></span>
-  </div>
-</section>
-
-<!-- ✅ BRANDS -->
-<section class="brands">
-  <h2>Our Brands</h2>
-  <div class="brand-list">
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand1.png') }}" alt="Nestlé"><p>Nestlé</p></div>
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand2.png') }}" alt="Unilever"><p>Unilever</p></div>
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand3.png') }}" alt="Elephant House"><p>Elephant House</p></div>
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand4.png') }}" alt="Coca-Cola"><p>Coca-Cola</p></div>
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand5.png') }}" alt="Pepsi"><p>Pepsi</p></div>
-    <div class="brand-item"><img src="{{ url_for('static', filename='images/brand/brand6.png') }}" alt="Maliban"><p>Maliban</p></div>
-  </div>
-</section>
-
-<!-- ✅ FOOTER -->
-<footer>
-  <div class="footer-content">
-    <div>
-      <h3>Tesco Food City</h3>
-      <p>Crafting exceptional shopping experiences for our valued customers.</p>
-    </div>
-    <div>
-      <h3>Contact Us</h3>
-      <p>📍 380/F Leyland Junction, Panagoda Homagama</p>
-      <p>📞 0773659784</p>
-      <p>📧 TescoFoodCity@gmail.com</p>
-    </div>
-    <div>
-      <h3>Quick Links</h3>
-      <p>About</p>
-      <p>Privacy Policy</p>
-      <p>Return Policy</p>
-      <p>Shipping Info</p>
-    </div>
-  </div>
-</footer>
-<script>
+  </footer>
+  <script>
 
 
-  // --- Main slider ---
-let slideIndex = 0;
-const slides = document.querySelectorAll(".slider .slide");
-const prevBtn = document.querySelector(".slider .prev");
-const nextBtn = document.querySelector(".slider .next");
+    // --- Main slider ---
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".slider .slide");
+    const prevBtn = document.querySelector(".slider .prev");
+    const nextBtn = document.querySelector(".slider .next");
 
-function showSlide(n) {
-  slides.forEach((s, i) => {
-    s.classList.remove("active");
-    if (i === n) s.classList.add("active");
-  });
-}
-function nextSlide() {
-  slideIndex = (slideIndex + 1) % slides.length;
-  showSlide(slideIndex);
-}
-function prevSlideFn() {
-  slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-  showSlide(slideIndex);
-}
-
-nextBtn.addEventListener("click", nextSlide);
-prevBtn.addEventListener("click", prevSlideFn);
-setInterval(nextSlide, 4000); // auto change every 4s
-
-// --- Ads carousel ---
-let adIndex = 0;
-const ads = document.querySelectorAll(".ads-carousel .ads-slide");
-const adsDots = document.querySelectorAll(".ads-dots .dot");
-const adsPrev = document.querySelector(".ads-prev");
-const adsNext = document.querySelector(".ads-next");
-
-function showAd(n) {
-  ads.forEach((a, i) => {
-    a.classList.remove("active");
-    adsDots[i].classList.remove("active");
-    if (i === n) {
-      a.classList.add("active");
-      adsDots[i].classList.add("active");
+    function showSlide(n) {
+      slides.forEach((s, i) => {
+        s.classList.remove("active");
+        if (i === n) s.classList.add("active");
+      });
     }
-  });
-}
-function nextAd() {
-  adIndex = (adIndex + 1) % ads.length;
-  showAd(adIndex);
-}
-function prevAdFn() {
-  adIndex = (adIndex - 1 + ads.length) % ads.length;
-  showAd(adIndex);
-}
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+    function prevSlideFn() {
+      slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+      showSlide(slideIndex);
+    }
 
-adsNext.addEventListener("click", nextAd);
-adsPrev.addEventListener("click", prevAdFn);
-adsDots.forEach(dot => {
-  dot.addEventListener("click", () => {
-    adIndex = parseInt(dot.dataset.index);
-    showAd(adIndex);
-  });
-});
-setInterval(nextAd, 5000); // auto change every 5s
+    nextBtn.addEventListener("click", nextSlide);
+    prevBtn.addEventListener("click", prevSlideFn);
+    setInterval(nextSlide, 4000); // auto change every 4s
 
-</script>
+    // --- Ads carousel ---
+    let adIndex = 0;
+    const ads = document.querySelectorAll(".ads-carousel .ads-slide");
+    const adsDots = document.querySelectorAll(".ads-dots .dot");
+    const adsPrev = document.querySelector(".ads-prev");
+    const adsNext = document.querySelector(".ads-next");
+
+    function showAd(n) {
+      ads.forEach((a, i) => {
+        a.classList.remove("active");
+        adsDots[i].classList.remove("active");
+        if (i === n) {
+          a.classList.add("active");
+          adsDots[i].classList.add("active");
+        }
+      });
+    }
+    function nextAd() {
+      adIndex = (adIndex + 1) % ads.length;
+      showAd(adIndex);
+    }
+    function prevAdFn() {
+      adIndex = (adIndex - 1 + ads.length) % ads.length;
+      showAd(adIndex);
+    }
+
+    adsNext.addEventListener("click", nextAd);
+    adsPrev.addEventListener("click", prevAdFn);
+    adsDots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        adIndex = parseInt(dot.dataset.index);
+        showAd(adIndex);
+      });
+    });
+    setInterval(nextAd, 5000); // auto change every 5s
+
+  </script>
 
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>
