@@ -53,24 +53,35 @@
       color: #721c24;
     }
 
-    /* Slider animation */
-    .slider {
-      position: relative;
-      overflow: hidden;
-      height: ox;
-    }
-
     .slide {
       display: none;
-      text-align: center;
-      font-size: 1.8rem;
-      padding: 60px;
-      
-      animation: fadeSlide 1s ease-in-out;
     }
 
     .slide.active {
       display: block;
+    }
+
+    /* Next & Prev buttons */
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 24px;
+      border-radius: 50%;
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .next {
+      right: 10px;
     }
 
     @keyframes fadeSlide {
@@ -200,8 +211,10 @@
   </div>
   {% endif %}
 
-  <!-- SLIDER SECTION -->
+  <!--TOP BANNER -->
+
   <section class="slider">
+    <!-- Slide content (could be images or banners) -->
     <div class="slide active">
       <h2>Fresh Groceries Delivered Fast</h2>
     </div>
@@ -211,6 +224,8 @@
     <div class="slide">
       <h2>Secure Payments & Easy Checkout</h2>
     </div>
+
+    <!-- Next/Prev buttons -->
     <button class="prev">&#10094;</button>
     <button class="next">&#10095;</button>
   </section>
