@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Products</h1>
+    <div>
+        {% for product in products %}
+        <div style="margin-bottom:20px;">
+            <a href="{{ url_for('product_detail', product_id=product['id']) }}">
+                <img src="{{ url_for('static', filename=product['image_url']) }}" width="150"><br>
+                <strong>{{ product['name'] }}</strong><br>
+                Rs. {{ product['price'] }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
