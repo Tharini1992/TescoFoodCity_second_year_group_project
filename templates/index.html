@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>Our Store</title>
+    <style>
+        .product-grid { display: flex; gap: 20px; }
+        .card { border: 1px solid #ccc; padding: 10px; text-align: center; width: 200px; }
+        .card img { width: 100%; height: auto; }
+    </style>
 </head>
 <body>
-    <h2>Welcome to TescoFoodcity App 🚀</h2>
-    <p><a href="/register">Register</a></p>
-    <p><a href="/manual_login">Login</a></p>
-    <p><a href="/login">Login with Google</a></p>
-    <p><a href="/forgot">Forgot Password?</a></p>
+    <h1>Product Catalog</h1>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ url_for('static', filename='images/' + product.image_file) }}">
+            <h3>{{ product.name }}</h3>
+            <p>${{ product.price }}</p>
+            <a href="/product/{{ product.id }}">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

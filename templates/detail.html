@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <a href="/">Back to Store</a>
+    <hr>
+    <div style="display: flex; gap: 40px;">
+        <img src="{{ url_for('static', filename='images/' + product.image_file) }}" width="400">
+        <div>
+            <h1>{{ product.name }}</h1>
+            <h2>Price: ${{ product.price }}</h2>
+            <p>{{ product.description }}</p>
+            <button>Add to Cart</button>
+        </div>
+    </div>
+</body>
+</html>
