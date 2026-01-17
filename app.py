@@ -423,13 +423,76 @@ def my_account():
     return render_template("account.html", username=session['username'])
 
 # Placeholder routes for the buttons in your account page (to avoid errors)
-@app.route('/personal_data')
+@app.route('/personal_data', methods=['GET', 'POST'])
 def personal_data():
-    return "Personal Data Page (Under Construction)"
+    if 'user_id' not in session:
+        flash("Please login first.", "danger")
+        return redirect(url_for('login'))
 
-@app.route('/change_password')
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == 'POST':
+        new_username = request.form['username']
+        new_email = request.form['email']
+        
+        try:
+            # Update user in database
+            cursor.execute("UPDATE users SET username=%s, email=%s WHERE id=%s", 
+                           (new_username, new_email, session['user_id']))
+            conn.commit()
+            
+            # Update session data so the name changes in the navbar immediately
+            session['username'] = new_username
+            flash("Profile updated successfully!", "success")
+        except Exception as e:
+            flash("Error updating profile. Email might already exist.", "danger")
+            print(f"Error: {e}")
+
+    # Fetch current user details to pre-fill the form
+    cursor.execute("SELECT * FROM users WHERE id=%s", (session['user_id'],))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    return render_template("personal_data.html", user=user)
+
+@app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
-    return "Change Password Page (Under Construction)"
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        current_pass = request.form['current_password']
+        new_pass = request.form['new_password']
+        confirm_pass = request.form['confirm_password']
+
+        if new_pass != confirm_pass:
+            flash("New passwords do not match!", "danger")
+            return redirect(url_for('change_password'))
+
+        conn = get_db_connection() # type: ignore
+        cursor = conn.cursor(dictionary=True)
+        # Get the current password hash from DB to verify
+        cursor.execute("SELECT password FROM users WHERE id=%s", (session['user_id'],))
+        user = cursor.fetchone()
+
+        if user and check_password_hash(user['password'], current_pass):
+            # Create new hash and update DB
+            new_hash = generate_password_hash(new_pass)
+            cursor.execute("UPDATE users SET password=%s WHERE id=%s", (new_hash, session['user_id']))
+            conn.commit()
+            
+            flash("Password changed successfully!", "success")
+            cursor.close()
+            conn.close()
+            return redirect(url_for('my_account'))
+        else:
+            flash("Incorrect current password.", "danger")
+            cursor.close()
+            conn.close()
+
+    return render_template("change_password.html")
 
 
 
