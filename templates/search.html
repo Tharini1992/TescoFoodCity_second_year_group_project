@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -490,24 +491,42 @@
                 <button id="searchBtn">🔍</button>
                 <div id="searchDropdown" class="search-dropdown"></div>
             </div>
-      <div class="icons">
-    <!-- Notification Icon -->
+     <div class="icons d-flex align-items-center gap-3">
     <i class="fa-solid fa-bell" id="notification-icon" data-count="0"></i>
 
-    <!-- Cart Icon with link -->
     <a href="{{ url_for('cart') }}">
         <i class="fa-solid fa-cart-shopping" id="cart-icon" data-count="0"></i>
     </a>
 
-    <!-- User Icon: Dynamic Login/Account -->
-    {% if session.get('user') %}
-    <a href="{{ url_for('account') }}" title="Account" class="user-icon">
-        <i class="fa-solid fa-user"></i> {{ session['user']['name'] }}
-    </a>
+    {% if 'username' in session %}
+        <div class="dropdown">
+            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center text-dark p-0" 
+               id="navUserDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                
+                <i class="fa-solid fa-circle-user fa-lg me-2 text-success"></i>
+                <span class="fw-bold">{{ session['username'] }}</span>
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navUserDrop">
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('my_account') }}">
+                        <i class="fa-solid fa-user me-2"></i> My Account
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
     {% else %}
-    <a href="{{ url_for('login') }}" title="Login" class="user-icon">
-           <i class="fa-solid fa-user user-icon"></i> Account
-    </a>
+        <a href="{{ url_for('login') }}" class="nav-link d-flex align-items-center text-dark p-0">
+            <i class="fa-solid fa-circle-user fa-lg me-2"></i></a>
+            Account
+        </a>
     {% endif %}
 </div>
 
@@ -541,12 +560,7 @@
         }
     </style>
 
-    <!-- Welcome Message -->
-    {% if username %}
-    <div id="welcome-msg">🎉 Welcome back TescoFoodCity, <strong>{{ username }}</strong>! Happy shopping 🛒</div>
-    {% else %}
-    <div id="welcome-msg" class="guest">👋 Welcome guest! Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a>.</div>
-    {% endif %}
+
 
     <!-- Slider -->
     <section class="slider">
@@ -1285,6 +1299,7 @@
             <p>Shipping Info</p>
         </div>
     </footer>
+    
 
     <script>
         // --- Main Slider ---
@@ -1415,6 +1430,7 @@
     </script>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
 </body>
 
 </html>
