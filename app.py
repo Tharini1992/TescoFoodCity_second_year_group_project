@@ -353,15 +353,19 @@ def login():
         user = cursor.fetchone()
 
         if user and check_password_hash(user['password'], password):
+            # Save session details
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['role'] = user['role']
+            
             flash(f"Welcome {user['username']}!", "success")
 
-            # Redirect based on role
-            if user['role'] == 'admin':
+            # Clean the role string (remove spaces, make lowercase)
+            role = user['role'].strip().lower()
+
+            if role == 'admin':
                 return redirect(url_for('admin_dashboard'))
-            elif user['role'] == 'delivery':
+            elif role == 'delivery':
                 return redirect(url_for('delivery_dashboard'))
             else:
                 return redirect(url_for('customer_dashboard'))
@@ -369,43 +373,92 @@ def login():
             flash("Invalid username or password.", "danger")
 
     return render_template("login.html")
-    
-
 
 # -----------------------------
 # Dashboards
 # -----------------------------
+
 @app.route("/customer_dashboard")
 def customer_dashboard():
-    user = session.get("user")
-
-    if not user or user.get("role") != "customer":
+    if session.get("role") != "customer":
         flash("Unauthorized access.", "danger")
-        return redirect(url_for("search_page"))
+        return redirect(url_for("login"))
 
-    return render_template("search.html", user=user)
+    user_data = {"username": session.get("username"), "role": session.get("role")}
+    return render_template("search.html", user=user_data)
 
 
 @app.route("/admin_dashboard")
 def admin_dashboard():
-    user = session.get("user")
-
-    if not user or user.get("role") != "admin":
+    if session.get("role") != "admin":
         flash("Unauthorized access.", "danger")
-        return redirect(url_for("search_page"))
+        return redirect(url_for("login"))
 
-    return render_template("admin_dashboard.html", user=user)
+    user_data = {"username": session.get("username"), "role": session.get("role")}
+    return render_template("admin_dashboard.html", user=user_data)
 
 
 @app.route("/delivery_dashboard")
 def delivery_dashboard():
-    user = session.get("user")
-
-    if not user or user.get("role") != "delivery_person":
+    # We check for 'delivery' because that is what we saved in the login function
+    if session.get("role") != "delivery":
         flash("Unauthorized access.", "danger")
-        return redirect(url_for("search_page"))
+        return redirect(url_for("login"))
 
-    return render_template("delivery_dashboard.html", user=user)
+    user_data = {"username": session.get("username"), "role": session.get("role")}
+    return render_template("delivery_dashboard.html", user=user_data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Logout
 # -----------------------------
