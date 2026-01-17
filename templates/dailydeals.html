@@ -1,378 +1,346 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Daily Deals - Tesco Food City</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Daily Deals - Tesco Food City</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f7f7f7;
+    margin:0;
+    padding:0;
+}
 
-        h1 {
-            text-align: center;
-            padding: 20px;
-        }
+h1{
+    text-align:center;
+    padding:20px;
+}
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:20px;
+    padding:20px;
+}
 
-        .product-card {
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: 0.2s;
-        }
+.product-card{
+    background:#fff;
+    padding:10px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    text-align:center;
+    transition:0.2s;
+}
 
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
+.product-card:hover{
+    transform:translateY(-5px);
+}
 
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: contain;
-        }
+.product-card img{
+    width:100%;
+    height:150px;
+    object-fit:contain;
+}
 
-        .product-name {
-            font-size: 14px;
-            margin: 8px 0;
-        }
+.product-name{
+    font-size:14px;
+    margin:8px 0;
+}
 
-        .product-price {
-            color: green;
-            font-weight: bold;
-        }
+.product-price{
+    color:green;
+    font-weight:bold;
+}
 
-        .product-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .footer {
-            margin-top: 60px;
-            background: #2e7d32;
-            color: white;
-            padding: 30px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        footer h3 {
-            margin-bottom: 8px;
-        }
-    </style>
+.product-link{
+    text-decoration:none;
+    color:inherit;
+}
+</style>
 </head>
 
 <body>
 
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Beverages - Tesco Food City</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Beverages - Tesco Food City</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#d9ece0;
+    margin:0;
+    padding:0;
+}
 
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background: #d9ece0;
-                margin: 0;
-                padding: 0;
-            }
+h1{
+    text-align:center;
+    padding:20px;
+}
 
-            h1 {
-                text-align: center;
-                padding: 20px;
-            }
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:20px;
+    padding:20px;
+}
 
-            .product-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                gap: 20px;
-                padding: 20px;
-            }
+.product-card{
+    background:#fff;
+    border:1px solid #7cbd14;
+    padding:10px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    text-align:center;
+    transition:0.2s;
+}
 
-            .product-card {
-                background: #fff;
-                border: 1px solid #7cbd14;
-                padding: 10px;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-                transition: 0.2s;
-            }
+.product-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 4px 10px rgba(3, 97, 19, 0.2); 
+    transform:translateY(-5px); 
+    transition: all 0.3s ease; 
 
-            .product-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 4px 10px rgba(3, 97, 19, 0.2);
-                transform: translateY(-5px);
-                transition: all 0.3s ease;
+}
 
-            }
+.product-card img{
+    width:100%;
+    height:150px;
+    object-fit:contain;
+}
 
-            .product-card img {
-                width: 100%;
-                height: 150px;
-                object-fit: contain;
-            }
+.product-name{
+    font-size:14px;
+    margin:8px 0;
+}
 
-            .product-name {
-                font-size: 14px;
-                margin: 8px 0;
-            }
+.product-price{
+    color:green;
+    font-weight:bold;
+}
+.product-price-old{
+    color:rgb(0, 0, 0);
+    font-weight:bold;
+    text-decoration: line-through
+}
 
-            .product-price {
-                color: green;
-                font-weight: bold;
-            }
+.product-link{
+    text-decoration:none;
+    color:inherit;
+}
+</style>
+</head>
 
-            .product-price-old {
-                color: rgb(0, 0, 0);
-                font-weight: bold;
-                text-decoration: line-through
-            }
-
-            .product-link {
-                text-decoration: none;
-                color: inherit;
-            }
-        </style>
-    </head>
-
-    <body>
+<body>
 
 
-        <h1>Daily Deals</h1>
+<h1>Daily Deals</h1>
 
-        <div class="product-grid">
+<div class="product-grid">
 
-            <a href="{{ url_for('product_detail', product_id=201) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal1.jpeg') }}">
-                    <div class="product-name">Coca Cola 1.25L</div>
-                    <div class="product-price">Rs.300.00</div>
-                    <div class="product-price-old">Rs.320.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=201) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal1.jpeg') }}">
+<div class="product-name">Coca Cola 1.25L</div>
+<div class="product-price">Rs.300.00</div>
+<div class="product-price-old">Rs.320.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=202) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal2.jpg') }}">
-                    <div class="product-name">Ponds Super Light Gel 25g</div>
-                    <div class="product-price">Rs.380.50</div>
-                    <div class="product-price-old">Rs.470.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=202) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal2.jpg') }}">
+<div class="product-name">Ponds Super Light Gel 25g</div>
+<div class="product-price">Rs.380.50</div>
+<div class="product-price-old">Rs.470.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=203) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal3.jpg') }}">
-                    <div class="product-name">Pepsi Pet Bottle 1L</div>
-                    <div class="product-price">Rs.300.00</div>
-                    <div class="product-price-old">Rs.310.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=203) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal3.jpg') }}">
+<div class="product-name">Pepsi Pet Bottle 1L</div>
+<div class="product-price">Rs.300.00</div>
+<div class="product-price-old">Rs.310.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=204) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal4.jpg') }}">
-                    <div class="product-name">Flora Facial Tissue Box 2Ply 200S</div>
-                    <div class="product-price">Rs.425.00</div>
-                    <div class="product-price-old">Rs.575.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=204) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal4.jpg') }}">
+<div class="product-name">Flora Facial Tissue Box 2Ply 200S</div>
+<div class="product-price">Rs.425.00</div>
+<div class="product-price-old">Rs.575.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=205) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal5.jpg') }}">
-                    <div class="product-name">Sprite Pet Bottle 1.5L</div>
-                    <div class="product-price">Rs.410.00</div>
-                    <div class="product-price-old">Rs.420.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=205) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal5.jpg') }}">
+<div class="product-name">Sprite Pet Bottle 1.5L</div>
+<div class="product-price">Rs.410.00</div>
+<div class="product-price-old">Rs.420.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=206) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal6.jpg') }}">
-                    <div class="product-name">Vim Liquid Dishwash Lime Fresh - 750.00 ml</div>
-                    <div class="product-price">Rs.420.00</div>
-                    <div class="product-price-old">Rs.560.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=206) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal6.jpg') }}">
+<div class="product-name">Vim Liquid Dishwash Lime Fresh - 750.00 ml</div>
+<div class="product-price">Rs.420.00</div>
+<div class="product-price-old">Rs.560.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=207) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal7.jpg') }}">
-                    <div class="product-name">Clogard Toothpaste Natural Salt - 120.00 g</div>
-                    <div class="product-price">Rs.150.00</div>
-                    <div class="product-price-old">Rs.250.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=207) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal7.jpg') }}">
+<div class="product-name">Clogard Toothpaste Natural Salt - 120.00 g</div>
+<div class="product-price">Rs.150.00</div>
+<div class="product-price-old">Rs.250.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=208) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal8.jpg') }}">
-                    <div class="product-name">Red Bull Energy Drink 250Ml 4 Set Pack</div>
-                    <div class="product-price">Rs.2500.00</div>
-                    <div class="product-price-old">Rs.2800.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=208) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal8.jpg') }}">
+<div class="product-name">Red Bull Energy Drink 250Ml 4 Set Pack</div>
+<div class="product-price">Rs.2500.00</div>
+<div class="product-price-old">Rs.2800.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=209) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal9.jpg') }}">
-                    <div class="product-name">Monster Energy Drink Can 355ml</div>
-                    <div class="product-price">Rs.690.00</div>
-                    <div class="product-price-old">Rs.700.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=209) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal9.jpg') }}">
+<div class="product-name">Monster Energy Drink Can 355ml</div>
+<div class="product-price">Rs.690.00</div>
+<div class="product-price-old">Rs.700.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=210) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal10.jpg') }}">
-                    <div class="product-name">Kumarika Hair Oil 200ml</div>
-                    <div class="product-price">Rs.360.00</div>
-                    <div class="product-price-old">Rs.500.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=210) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal10.jpg') }}">
+<div class="product-name">Kumarika Hair Oil 200ml</div>
+<div class="product-price">Rs.360.00</div>
+<div class="product-price-old">Rs.500.00</div>
+</div>
+</a>
 
-            <!-- 11–20 -->
+<!-- 11–20 -->
 
-            <a href="{{ url_for('product_detail', product_id=211) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal11.jpg') }}">
-                    <div class="product-name">Ride Classic Energy Drink - 250.00 ml</div>
-                    <div class="product-price">Rs.280.00</div>
-                    <div class="product-price-old">Rs.350.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=211) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal11.jpg') }}">
+<div class="product-name">Ride Classic Energy Drink - 250.00 ml</div>
+<div class="product-price">Rs.280.00</div>
+<div class="product-price-old">Rs.350.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=212) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal12.jpg') }}">
-                    <div class="product-name">Rexona Deodorant Roll-On Shower Clean 50ml</div>
-                    <div class="product-price">Rs.699.00</div>
-                    <div class="product-price-old">Rs.850.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=212) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal12.jpg') }}">
+<div class="product-name">Rexona Deodorant Roll-On Shower Clean 50ml</div>
+<div class="product-price">Rs.699.00</div>
+<div class="product-price-old">Rs.850.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=213) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal13.jpg') }}">
-                    <div class="product-name">Closeup Red Hot Toothpaste - 120.00 g</div>
-                    <div class="product-price">Rs.285.00</div>
-                    <div class="product-price-old">Rs.375.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=213) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal13.jpg') }}">
+<div class="product-name">Closeup Red Hot Toothpaste - 120.00 g</div>
+<div class="product-price">Rs.285.00</div>
+<div class="product-price-old">Rs.375.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=214) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal14.jpg') }}">
-                    <div class="product-name">Dettol Liquid - 500.00 ml</div>
-                    <div class="product-price">Rs.1050.00</div>
-                    <div class="product-price-old">Rs.1150.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=214) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal14.jpg') }}">
+<div class="product-name">Dettol Liquid - 500.00 ml</div>
+<div class="product-price">Rs.1050.00</div>
+<div class="product-price-old">Rs.1150.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=215) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal15.jpg') }}">
-                    <div class="product-name">Prima Kottu Mee Cheese & Onion Noodles - 85.00 g</div>
-                    <div class="product-price">Rs.108.50</div>
-                    <div class="product-price-old">Rs.135.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=215) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal15.jpg') }}">
+<div class="product-name">Prima Kottu Mee Cheese & Onion Noodles - 85.00 g</div>
+<div class="product-price">Rs.108.50</div>
+<div class="product-price-old">Rs.135.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=216) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal16.jpg') }}">
-                    <div class="product-name">Pears Bedtime Baby Cologne 100ml</div>
-                    <div class="product-price">Rs.432.00</div>
-                    <div class="product-price-old">Rs.585.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=216) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal16.jpg') }}">
+<div class="product-name">Pears Bedtime Baby Cologne 100ml</div>
+<div class="product-price">Rs.432.00</div>
+<div class="product-price-old">Rs.585.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=217) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal17.jpg') }}">
-                    <div class="product-name">Milo RTD Multi Pack 180 ml - 6.00 pcs</div>
-                    <div class="product-price">Rs.680.00</div>
-                    <div class="product-price-old">Rs.775.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=217) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal17.jpg') }}">
+<div class="product-name">Milo RTD Multi Pack 180 ml - 6.00 pcs</div>
+<div class="product-price">Rs.680.00</div>
+<div class="product-price-old">Rs.775.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=218) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal18.jpg') }}">
-                    <div class="product-name">Kist Tomato Ketchup - 375.00 g</div>
-                    <div class="product-price">Rs.412.00</div>
-                    <div class="product-price-old">Rs.550.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=218) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal18.jpg') }}">
+<div class="product-name">Kist Tomato Ketchup - 375.00 g</div>
+<div class="product-price">Rs.412.00</div>
+<div class="product-price-old">Rs.550.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=219) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal19.jpg') }}">
-                    <div class="product-name">Edinborough Oyster Sauce - 385.00 g</div>
-                    <div class="product-price">Rs.408.00</div>
-                    <div class="product-price-old">Rs.510.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=219) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal19.jpg') }}">
+<div class="product-name">Edinborough Oyster Sauce - 385.00 g</div>
+<div class="product-price">Rs.408.00</div>
+<div class="product-price-old">Rs.510.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=220) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal20.jpg') }}">
-                    <div class="product-name">Axe Deodorant Body Spray, Black - 135.00 ml</div>
-                    <div class="product-price">Rs.1230.00</div>
-                    <div class="product-price-old">Rs.1790.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=220) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal20.jpg') }}">
+<div class="product-name">Axe Deodorant Body Spray, Black - 135.00 ml</div>
+<div class="product-price">Rs.1230.00</div>
+<div class="product-price-old">Rs.1790.00</div>
+</div>
+</a>
 
-            <a href="{{ url_for('product_detail', product_id=221) }}" class="product-link">
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='images/product/deal/deal21.jpg') }}">
-                    <div class="product-name">Dove Hair Fall Rescue Conditioner - 180.00 ml</div>
-                    <div class="product-price">Rs.698.00</div>
-                    <div class="product-price-old">Rs.833.00</div>
-                </div>
-            </a>
+<a href="{{ url_for('product_detail', product_id=221) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/deal/deal21.jpg') }}">
+<div class="product-name">Dove Hair Fall Rescue Conditioner - 180.00 ml</div>
+<div class="product-price">Rs.622.20</div>
+<div class="product-price-old">Rs.830.00</div>
+</div>
+</a>
 
-            <footer>
-                <div class="footer-content">
-                    <h3>Tesco Food City</h3>
-                    <p>Crafting exceptional shopping experiences.</p>
-                </div>
-                <div>
-                    <h3>Contact</h3>
-                    <p>📍 Panagoda Homagama</p>
-                    <p>📞 0763659784</p>
-                    <p>📧 TescoFoodCity@gmail.com</p>
-                </div>
-                <div>
-                    <h3>Quick Links</h3>
-                    <p>Privacy Policy</p>
-                    <p>Shipping Info</p>
-                </div>
-            </footer>
-
-    </body>
-
-    </html>
+</body>
+</html>
