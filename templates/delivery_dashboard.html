@@ -38,8 +38,9 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white px-4">
-  <a class="navbar-brand fw-bold text-success" href="#">
-    <i class="fa-solid fa-truck-fast"></i> Delivery Dashboard
+  <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="#">
+    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="40" class="me-2">
+    Delivery Dashboard
   </a>
 
   <div class="ms-auto">
@@ -123,7 +124,7 @@
         </div>
         <div class="col-md">
           <label class="form-label small text-muted">Total Amount</label>
-          <input type="text" id="total" class="form-control" placeholder="e.g., $50.00">
+          <input type="text" id="total" class="form-control" placeholder="e.g., Rs.50.00">
         </div>
         <div class="col-md">
           <label class="form-label small text-muted">Status</label>
