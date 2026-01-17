@@ -8,28 +8,24 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ====== BASIC RESET ====== */
-
-        :root {
+         :root {
             --primary-green: #1acc31;
             --light-green: #5eae5d;
-            --dark-green: #1b5e20;
+            --dark-green: #16671b;
             --accent-green: #81c784;
         }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: Arial, sans-serif;
             background: #f7f7f7;
         }
-
-    
-
-
+        
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -38,35 +34,35 @@
             background: #fff;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
-
+        
         .nav-links {
             list-style: none;
             display: flex;
             gap: 20px;
         }
-
+        
         .nav-links a {
             text-decoration: none;
             color: #333;
             font-weight: 600;
         }
-
+        
         .nav-links a:hover {
             color: #43a047;
             /* green on hover */
         }
-
+        
         .icons span {
             margin-left: 15px;
             cursor: pointer;
         }
-
         /* Icon Styling */
+        
         .icons {
             display: flex;
             gap: 15px;
         }
-
+        
         .icons .icon {
             font-size: 20px;
             color: #333;
@@ -74,14 +70,14 @@
             position: relative;
             transition: transform 0.2s ease, color 0.3s ease;
         }
-
+        
         .icons .icon:hover {
             color: #43a047;
             /* green on hover */
             transform: scale(1.2);
         }
-
         /* Example: notification badge */
+        
         .icons .icon .badge {
             position: absolute;
             top: -5px;
@@ -93,34 +89,34 @@
             padding: 2px 5px;
             border-radius: 50%;
         }
-
-
-         /* Hero Section */
-         .hero-section {
+        /* Hero Section */
+        
+        .hero-section {
             background: linear-gradient(135deg, var(--primary-green), var(--light-green));
             color: white;
             padding: 4rem 0;
             margin: 2rem 0;
             border-radius: 15px;
         }
-
+        
         .hero-title {
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 1rem;
         }
-
+        
         .hero-subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
         }
-
         /* Mission & Vision Cards */
+        
         .mission-vision {
             margin: 4rem 0;
         }
-
-        .mission-card, .vision-card {
+        
+        .mission-card,
+        .vision-card {
             background: rgb(196, 193, 193);
             border-radius: 10px;
             padding: 2rem;
@@ -129,24 +125,26 @@
             height: 100%;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .mission-card:hover, .vision-card:hover {
+        
+        .mission-card:hover,
+        .vision-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            color:var(--dark-green);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            color: var(--dark-green);
         }
-
-        .mission-card h3, .vision-card h3 {
+        
+        .mission-card h3,
+        .vision-card h3 {
             color: whitesmoke;
             margin-bottom: 1rem;
             font-weight: bold;
         }
-
         /* Key Features */
+        
         .features-section {
             margin: 4rem 0;
         }
-
+        
         .features-title {
             text-align: center;
             font-size: 2rem;
@@ -154,7 +152,7 @@
             margin-bottom: 3rem;
             font-weight: bold;
         }
-
+        
         .feature-card {
             background: var(--primary-green);
             color: white;
@@ -168,31 +166,31 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-
+        
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(45, 134, 89, 0.3);
         }
-
+        
         .feature-card i {
             font-size: 2rem;
             margin-bottom: 0.5rem;
         }
-
+        
         .feature-card span {
             font-weight: 600;
             font-size: 0.9rem;
         }
-
         /* Team Section */
+        
         .team-section {
             margin: 4rem 0;
             padding: 3rem 0;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
+        
         .team-title {
             text-align: center;
             font-size: 1.8rem;
@@ -202,12 +200,12 @@
             display: inline-block;
             padding-bottom: 0.5rem;
         }
-
+        
         .team-member {
             text-align: center;
             padding: 1rem;
         }
-
+        
         .team-member-avatar {
             width: 80px;
             height: 80px;
@@ -221,17 +219,17 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
-
+        
         .team-member h5 {
             color: var(--primary-green);
             margin-bottom: 0.5rem;
         }
-
+        
         .team-member p {
             font-size: 0.9rem;
             color: #666;
         }
-
+        
         .team-footer {
             text-align: center;
             margin-top: 2rem;
@@ -240,28 +238,25 @@
             color: white;
             border-radius: 10px;
         }
-
-
         /* ====== FOOTER ====== */
+        
         footer {
             background: #2e7d32;
             color: white;
             padding: 30px 20px;
         }
-
+        
         .footer-content {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 30px;
         }
-
+        
         .footer-content h3 {
             margin-bottom: 10px;
         }
         /* ====== NAVBAR ====== */
-
-
     </style>
 
     <!-- Font Awesome for icons -->
@@ -275,7 +270,7 @@
         <nav class="navbar">
             <!-- Brand Logo on the top left corner -->
             <div class="logo">
-              <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
                 <!-- replace logo.png with your logo -->
             </div>
 
@@ -283,16 +278,19 @@
 
             <ul class="nav-links">
 
-                
+
             </ul>
 
-            
+
 
             <!-- Icons on right -->
             <div class="icons">
-                <span class="icon"><i class="fa-solid fa-bell"></i></span> <!-- Notification -->
-                <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span> <!-- Cart -->
-                <span class="icon"><i class="fa-solid fa-user"></i></span> <!-- Account -->
+                <span class="icon"><i class="fa-solid fa-bell"></i></span>
+                <!-- Notification -->
+                <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
+                <!-- Cart -->
+                <span class="icon"><i class="fa-solid fa-user"></i></span>
+                <!-- Account -->
             </div>
 
 
@@ -471,20 +469,18 @@
     </footer>
 
     <script>
-
-
-  document.querySelector('a[href="#contact"]').addEventListener('click', function (e) {
-      e.preventDefault(); // stop the default jump
-      // Hide other sections
-      document.querySelectorAll('.page-section').forEach(sec => sec.style.display = 'none');
-      // Show contact section
-      document.getElementById('contact-section').style.display = 'block';
-      // Smooth scroll into view
-      document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
-  });
-  
-  
-  </script>
+        document.querySelector('a[href="#contact"]').addEventListener('click', function(e) {
+            e.preventDefault(); // stop the default jump
+            // Hide other sections
+            document.querySelectorAll('.page-section').forEach(sec => sec.style.display = 'none');
+            // Show contact section
+            document.getElementById('contact-section').style.display = 'block';
+            // Smooth scroll into view
+            document.getElementById('contact-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
 
 </html>
