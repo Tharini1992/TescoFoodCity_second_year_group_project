@@ -4,11 +4,19 @@
 <meta charset="UTF-8">
 <title>Frozen Products</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#d9ece0; }
 h1 { text-align:center; margin:20px 0; }
 .product-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; padding:20px; }
-.product-card { background:#fff; border:1px solid #ddd; border-radius:8px; padding:10px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+.product-card { background:#fff; border:1px solid #7cbd14; border-radius:8px; padding:10px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
 .product-card img { width:100%; height:150px; object-fit:cover; border-radius:5px; }
+
+.product-card:hover { 
+    
+    box-shadow:0 4px 10px rgba(3, 97, 19, 0.2); 
+    transform:translateY(-5px); 
+    transition: all 0.3s ease; 
+}
+
 .product-name { margin-top:10px; font-weight:bold; }
 .product-price { margin-top:5px; color:#0f5132; font-weight:bold; }
 
@@ -156,25 +164,25 @@ h1 { text-align:center; margin:20px 0; }
 
 <a href="{{ url_for('product_detail', product_id=417) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/frozen/frozen17.png') }}">
-<div class="product-name">Frozen Mango Cubes 300g</div>
-<div class="product-price">Rs.450.00</div>
+<img src="{{ url_for('static', filename='images/product/frozen/frozen17.jpg') }}">
+<div class="product-name">Crescent Spicy Chicken Popcorn 200g</div>
+<div class="product-price">Rs.775.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=418) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/frozen/frozen18.png') }}">
-<div class="product-name">Frozen Okra 500g</div>
-<div class="product-price">Rs.400.00</div>
+<img src="{{ url_for('static', filename='images/product/frozen/frozen18.jpg') }}">
+<div class="product-name">Crescent Crispy Chicken Burger 360g</div>
+<div class="product-price">Rs.800.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=419) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/frozen/frozen19.png') }}">
-<div class="product-name">Frozen Spinach Cubes 250g</div>
-<div class="product-price">Rs.280.00</div>
+<img src="{{ url_for('static', filename='images/product/frozen/frozen19.jpg') }}">
+<div class="product-name">Crescent Potato Kievs 20S 500g</div>
+<div class="product-price">Rs.1280.00</div>
 </div>
 </a>
 
@@ -183,6 +191,14 @@ h1 { text-align:center; margin:20px 0; }
 <img src="{{ url_for('static', filename='images/product/frozen/frozen20.jpg') }}">
 <div class="product-name">Krest Chicken Chinese Rolls 300g</div>
 <div class="product-price">Rs.550.00</div>
+</div>
+</a>
+
+<a href="{{ url_for('product_detail', product_id=421) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/frozen/frozen21.jpg') }}">
+<div class="product-name">Fresh Harvest Tuna Cubes - 500.00 g</div>
+<div class="product-price">Rs.1550.00</div>
 </div>
 </a>
 

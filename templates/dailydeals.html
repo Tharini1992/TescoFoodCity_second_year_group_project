@@ -81,7 +81,7 @@ h1{
 <style>
 body{
     font-family: Arial, sans-serif;
-    background:#f7f7f7;
+    background:#d9ece0;
     margin:0;
     padding:0;
 }
@@ -100,6 +100,7 @@ h1{
 
 .product-card{
     background:#fff;
+    border:1px solid #7cbd14;
     padding:10px;
     border-radius:8px;
     box-shadow:0 2px 8px rgba(0,0,0,0.1);
@@ -109,6 +110,10 @@ h1{
 
 .product-card:hover{
     transform:translateY(-5px);
+    box-shadow:0 4px 10px rgba(3, 97, 19, 0.2); 
+    transform:translateY(-5px); 
+    transition: all 0.3s ease; 
+
 }
 
 .product-card img{
@@ -143,7 +148,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=201) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal1.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal1.jpeg') }}">
 <div class="product-name">Coca Cola 1.25L</div>
 <div class="product-price">Rs.320.00</div>
 </div>
@@ -151,7 +156,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=202) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal2.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal2.png') }}">
 <div class="product-name">Prima Sandwich Bread</div>
 <div class="product-price">Rs.200.00</div>
 </div>
@@ -159,7 +164,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=203) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal3.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal3.png') }}">
 <div class="product-name">Pepsi 1.25L</div>
 <div class="product-price">Rs.310.00</div>
 </div>
@@ -167,7 +172,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=204) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal4.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal4.png') }}">
 <div class="product-name">Butter Cake</div>
 <div class="product-price">Rs.300.00</div>
 </div>
@@ -175,7 +180,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=205) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal5.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal5.png') }}">
 <div class="product-name">Sprite 1.25L</div>
 <div class="product-price">Rs.300.00</div>
 </div>
@@ -183,7 +188,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=206) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal6.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal6.png') }}">
 <div class="product-name">Chocolate Roll</div>
 <div class="product-price">Rs.170.00</div>
 </div>
@@ -191,7 +196,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=207) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal7.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal7.png') }}">
 <div class="product-name">Cup Cake</div>
 <div class="product-price">Rs.150.00</div>
 </div>
@@ -199,7 +204,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=208) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal8.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal8.png') }}">
 <div class="product-name">Red Bull</div>
 <div class="product-price">Rs.400.00</div>
 </div>
@@ -207,15 +212,15 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=209) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal9.png') }}">
-<div class="product-name">Monster Energy</div>
-<div class="product-price">Rs.450.00</div>
+<img src="{{ url_for('static', filename='images/product/deal/deal9.jpg') }}">
+<div class="product-name">Monster Energy Drink Can 355ml</div>
+<div class="product-price">Rs.700.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=210) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal10.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal10.png') }}">
 <div class="product-name">Sausage Bun</div>
 <div class="product-price">Rs.140.00</div>
 </div>
@@ -225,7 +230,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=211) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal11.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal11.png') }}">
 <div class="product-name">Pizza Bun</div>
 <div class="product-price">Rs.150.00</div>
 </div>
@@ -233,7 +238,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=212) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal12.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal12.png') }}">
 <div class="product-name">Garlic Bread</div>
 <div class="product-price">Rs.180.00</div>
 </div>
@@ -241,7 +246,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=213) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal13.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal13.png') }}">
 <div class="product-name">Blueberry Muffin</div>
 <div class="product-price">Rs.160.00</div>
 </div>
@@ -249,7 +254,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=214) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal14.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal14.png') }}">
 <div class="product-name">Vanilla Muffin</div>
 <div class="product-price">Rs.150.00</div>
 </div>
@@ -257,7 +262,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=215) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal15.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal15.png') }}">
 <div class="product-name">Chocolate Brownie</div>
 <div class="product-price">Rs.200.00</div>
 </div>
@@ -265,7 +270,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=216) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal16.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal16.png') }}">
 <div class="product-name">Oreo Cookie</div>
 <div class="product-price">Rs.140.00</div>
 </div>
@@ -273,7 +278,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=217) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal17.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal17.png') }}">
 <div class="product-name">Nestlé Milo</div>
 <div class="product-price">Rs.340.00</div>
 </div>
@@ -281,7 +286,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=218) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal18.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal18.png') }}">
 <div class="product-name">Anchor Chocolate Milk</div>
 <div class="product-price">Rs.230.00</div>
 </div>
@@ -289,7 +294,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=219) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal19.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal19.png') }}">
 <div class="product-name">Lipton Ice Tea</div>
 <div class="product-price">Rs.180.00</div>
 </div>
@@ -297,7 +302,7 @@ h1{
 
 <a href="{{ url_for('product_detail', product_id=220) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/deal20.png') }}">
+<img src="{{ url_for('static', filename='images/product/deal/deal20.png') }}">
 <div class="product-name">Sunquick Orange</div>
 <div class="product-price">Rs.500.00</div>
 </div>

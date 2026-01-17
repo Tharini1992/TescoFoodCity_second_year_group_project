@@ -4,11 +4,19 @@
 <meta charset="UTF-8">
 <title>Dairy - Daily Deals</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#d9ece0; }
 h1 { text-align:center; margin:20px 0; }
 .product-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; padding:20px; }
-.product-card { background:#fff; border:1px solid #ddd; border-radius:8px; padding:10px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+.product-card { background:#fff; border:1px solid #7cbd14; border-radius:8px; padding:10px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
 .product-card img { width:100%; height:150px; object-fit:cover; border-radius:5px; }
+
+.product-card:hover { 
+    
+    box-shadow:0 4px 10px rgba(3, 97, 19, 0.2); 
+    transform:translateY(-5px); 
+    transition: all 0.3s ease; 
+}
+
 .product-name { margin-top:10px; font-weight:bold; }
 .product-price { margin-top:5px; color:#0f5132; font-weight:bold; }
 
@@ -26,81 +34,81 @@ h1 { text-align:center; margin:20px 0; }
 
 <a href="{{ url_for('product_detail', product_id=301) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy1.png') }}">
-<div class="product-name">Anchor Milk 1L</div>
-<div class="product-price">Rs.350.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy1.jpg') }}">
+<div class="product-name">Anchor Full Cream Milk Powder Packet 1kg</div>
+<div class="product-price">Rs.2875.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=302) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy2.png') }}">
-<div class="product-name">Nestlé Fresh Milk 1L</div>
-<div class="product-price">Rs.340.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy2.jpg') }}">
+<div class="product-name">Anchor Hot Choc 200g</div>
+<div class="product-price">Rs.1650.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=303) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy3.png') }}">
-<div class="product-name">Nido Milk Powder 400g</div>
-<div class="product-price">Rs.900.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy3.jpg') }}">
+<div class="product-name">Anlene High Calcium Low Fat Milk Powder Packet 400g</div>
+<div class="product-price">Rs.1350.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=304) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy4.png') }}">
-<div class="product-name">Anchor Butter 200g</div>
-<div class="product-price">Rs.450.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy4.jpg') }}">
+<div class="product-name">Anchor Cheese Slices 6S 100g</div>
+<div class="product-price">Rs.900.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=305) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy5.png') }}">
-<div class="product-name">Cheddar Cheese 250g</div>
-<div class="product-price">Rs.700.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy5.jpg') }}">
+<div class="product-name">Happy Cow Cheese Portion Regular 120g</div>
+<div class="product-price">Rs.840.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=306) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy6.png') }}">
-<div class="product-name">Yogurt 500g</div>
-<div class="product-price">Rs.250.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy6.jpg') }}">
+<div class="product-name">Kotmale Yoghurt Multi Pack 6S 480g</div>
+<div class="product-price">Rs.480.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=307) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy7.png') }}">
-<div class="product-name">Amul Paneer 250g</div>
-<div class="product-price">Rs.320.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy7.jpg') }}">
+<div class="product-name">Kandawatta Curd Clay Pot 900ml</div>
+<div class="product-price">Rs.770.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=308) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy8.png') }}">
-<div class="product-name">Milkmaid Condensed Milk</div>
-<div class="product-price">Rs.400.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy8.jpg') }}">
+<div class="product-name">Nestle Milkmaid 190g</div>
+<div class="product-price">Rs.490.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=309) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy9.png') }}">
-<div class="product-name">Cream 250ml</div>
-<div class="product-price">Rs.280.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy9.jpg') }}">
+<div class="product-name">Daily Flavored Milk Uht Chocolate Milk Tetra 180Ml</div>
+<div class="product-price">Rs.130.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=310) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy10.png') }}">
-<div class="product-name">Mozzarella Cheese 200g</div>
-<div class="product-price">Rs.600.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy10.jpg') }}">
+<div class="product-name">Almarai Shredded Mozzarella 180g</div>
+<div class="product-price">Rs.1750.00</div>
 </div>
 </a>
 
@@ -108,83 +116,93 @@ h1 { text-align:center; margin:20px 0; }
 
 <a href="{{ url_for('product_detail', product_id=311) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy11.png') }}">
-<div class="product-name">Butter Milk 500ml</div>
-<div class="product-price">Rs.180.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy11.jpg') }}">
+<div class="product-name">Ambewela Cheese Block Gouda Plain 200g</div>
+<div class="product-price">Rs.1350.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=312) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy12.png') }}">
-<div class="product-name">Greek Yogurt 200g</div>
-<div class="product-price">Rs.350.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy12.jpg') }}">
+<div class="product-name">Milo Food Drink Chocolate Tetra 180ml</div>
+<div class="product-price">Rs.130.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=313) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy13.png') }}">
-<div class="product-name">Cheese Slices 200g</div>
-<div class="product-price">Rs.380.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy13.jpg') }}">
+<div class="product-name">Ambewela Full Cream Fresh Milk Tetra 1L</div>
+<div class="product-price">Rs.500.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=314) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy14.png') }}">
-<div class="product-name">Fresh Cream 200ml</div>
-<div class="product-price">Rs.250.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy14.jpg') }}">
+<div class="product-name">Lakspray Full Cream Milk Powder Pouch 400g</div>
+<div class="product-price">Rs.1150.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=315) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy15.png') }}">
-<div class="product-name">Mozzarella Block 300g</div>
-<div class="product-price">Rs.650.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy15.jpg') }}">
+<div class="product-name">Cic Creamoo Set Yoghurt 75g</div>
+<div class="product-price">Rs.70.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=316) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy16.png') }}">
-<div class="product-name">Cow Ghee 500ml</div>
-<div class="product-price">Rs.750.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy16.jpg') }}">
+<div class="product-name">Almarai Cheese Tin Full Fat 113g</div>
+<div class="product-price">Rs.950.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=317) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy17.png') }}">
-<div class="product-name">Cheese Cubes 250g</div>
-<div class="product-price">Rs.450.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy17.jpg') }}">
+<div class="product-name">Diamond Full Cream Milk Powder Pouch 400G</div>
+<div class="product-price">Rs.1100.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=318) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy18.png') }}">
-<div class="product-name">Flavored Yogurt 200g</div>
-<div class="product-price">Rs.220.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy18.jpg') }}">
+<div class="product-name">Sustagen Nutritional Supplement Powder Vanilla Tin 400G</div>
+<div class="product-price">Rs.3900.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=319) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy19.png') }}">
-<div class="product-name">Cow Milk 2L</div>
-<div class="product-price">Rs.680.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy19.jpg') }}">
+<div class="product-name">Sustagen Nutritional Supplement Powder Chocolate Tin 400G</div>
+<div class="product-price">Rs.3900.00</div>
 </div>
 </a>
 
 <a href="{{ url_for('product_detail', product_id=320) }}" class="product-link">
 <div class="product-card">
-<img src="{{ url_for('static', filename='images/product/dairy20.png') }}">
-<div class="product-name">Probiotic Yogurt 200g</div>
-<div class="product-price">Rs.300.00</div>
+<img src="{{ url_for('static', filename='images/product/dairy/dairy20.jpg') }}">
+<div class="product-name">Highland Yoghurt Set Plain 80g</div>
+<div class="product-price">Rs.70.00</div>
 </div>
 </a>
+
+
+<a href="{{ url_for('product_detail', product_id=321) }}" class="product-link">
+<div class="product-card">
+<img src="{{ url_for('static', filename='images/product/dairy/dairy21.jpg') }}">
+<div class="product-name">Richlife Cheese Wedges Regular 8S 120g</div>
+<div class="product-price">Rs.570.00</div>
+</div>
+</a>
+
 
 </div>
 </body>
