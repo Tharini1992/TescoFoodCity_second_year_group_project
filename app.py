@@ -409,7 +409,27 @@ def delivery_dashboard():
     return render_template("delivery_dashboard.html", user=user_data)
 
 
+# -----------------------------
+# My Account Page
+# -----------------------------
+@app.route('/my_account')
+def my_account():
+    # Check if user is logged in
+    if 'username' not in session:
+        flash("Please login to view your account.", "warning")
+        return redirect(url_for('login'))
+    
+    # Render the new account page HTML
+    return render_template("account.html", username=session['username'])
 
+# Placeholder routes for the buttons in your account page (to avoid errors)
+@app.route('/personal_data')
+def personal_data():
+    return "Personal Data Page (Under Construction)"
+
+@app.route('/change_password')
+def change_password():
+    return "Change Password Page (Under Construction)"
 
 
 
