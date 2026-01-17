@@ -7,12 +7,14 @@
     <title>Contact - Tesco Food City</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
          :root {
             --primary-green: #1acc31;
             --light-green: #5eae5d;
             --dark-green: #164619;
             --accent-green: #81c784;
+            --gradient-green: linear-gradient(135deg, #1acc31 0%, #2e7d32 100%);
         }
         
         * {
@@ -22,8 +24,9 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
         }
         
         .navbar {
@@ -67,21 +70,272 @@
             color: #43a047;
             transform: scale(1.2);
         }
+        /* Hero Banner */
+        
+        .contact-hero {
+            background: var(--gradient-green);
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.5;
+        }
+        
+        .contact-hero h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-hero p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        /* Contact Section */
         
         .contact-section {
-            padding: 4rem 0;
+            padding: 5rem 0;
         }
         
-        .contact-section h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--primary-green);
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
+        /* Contact Info Cards */
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+        
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .info-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        
+        .info-content h4 {
+            color: var(--dark-green);
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .info-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        /* Social Links */
+        
+        .social-links {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .social-links h4 {
+            color: var(--dark-green);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-icon.facebook {
+            background: #1877f2;
+        }
+        
+        .social-icon.twitter {
+            background: #1da1f2;
+        }
+        
+        .social-icon.instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+        
+        .social-icon.whatsapp {
+            background: #25d366;
+        }
+        /* Contact Form */
+        
+        .contact-form-wrapper {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-form-wrapper h3 {
+            color: var(--dark-green);
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .contact-form-wrapper h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-green);
+            border-radius: 2px;
+        }
+        
+        .form-floating {
+            margin-bottom: 20px;
+        }
+        
+        .form-floating .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem 1rem;
+            height: auto;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-floating .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(26, 204, 49, 0.1);
+        }
+        
+        .form-floating label {
+            padding: 1rem;
+            color: #888;
+        }
+        
+        .form-floating textarea.form-control {
+            min-height: 150px;
+        }
+        
+        .btn-submit {
+            background: var(--gradient-green);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(26, 204, 49, 0.3);
+            color: white;
+        }
+        
+        .btn-submit i {
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-submit:hover i {
+            transform: translateX(5px);
+        }
+        /* Map Section */
+        
+        .map-section {
+            padding: 0 0 5rem;
+        }
+        
+        .map-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 350px;
+            border: none;
+        }
+        /* Footer */
         
         footer {
-            background: #2e7d32;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             color: white;
-            padding: 30px 20px;
+            padding: 40px 20px;
         }
         
         .footer-content {
@@ -89,19 +343,54 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
         
         .footer-content h3 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
         
-        .btn-success {
-            background-color: var(--primary-green);
-            border: none;
+        .footer-content p {
+            margin-bottom: 8px;
+            opacity: 0.9;
         }
         
-        .btn-success:hover {
-            background-color: var(--light-green);
+        .footer-content a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer-content a:hover {
+            opacity: 0.7;
+        }
+        /* Responsive */
+        
+        @media (max-width: 992px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+            .contact-info {
+                order: 2;
+            }
+            .contact-form-wrapper {
+                order: 1;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .contact-hero h1 {
+                font-size: 2rem;
+            }
+            .contact-form-wrapper {
+                padding: 25px;
+            }
+            .navbar {
+                padding: 15px 20px;
+            }
         }
     </style>
 </head>
@@ -122,28 +411,109 @@
         </nav>
     </header>
 
+    <!-- HERO BANNER -->
+    <section class="contact-hero">
+        <h1>Get In Touch</h1>
+        <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+    </section>
+
     <!-- CONTACT SECTION -->
     <section class="contact-section">
         <div class="container">
-            <h2>Contact Us</h2>
-            <div class="row">
-                <div class="col-md-8 mx-auto">
-                    <form id="contact-form" class="bg-white p-4 rounded shadow">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name *</label>
-                            <input type="text" class="form-control" id="name" required>
+            <div class="contact-wrapper">
+                <!-- Contact Info -->
+                <div class="contact-info">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" required>
+                        <div class="info-content">
+                            <h4>Our Location</h4>
+                            <p>380/F Leyland Junction, Panagoda Homagama</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message *</label>
-                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-phone-alt"></i>
                         </div>
-                        <button type="submit" class="btn btn-success">Send Message</button>
+                        <div class="info-content">
+                            <h4>Phone Number</h4>
+                            <p>077 365 9784</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Email Address</h4>
+                            <p>TescoFoodCity@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Working Hours</h4>
+                            <p>Mon - Sun: 8:00 AM - 10:00 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="social-links">
+                        <h4>Follow Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-wrapper">
+                    <h3>Send us a Message</h3>
+                    <form id="contact-form">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                            <label for="name"><i class="fas fa-user me-2"></i>Your Name</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                            <label for="email"><i class="fas fa-envelope me-2"></i>Your Email</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" placeholder="Phone Number">
+                            <label for="phone"><i class="fas fa-phone me-2"></i>Phone Number (Optional)</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                            <label for="subject"><i class="fas fa-tag me-2"></i>Subject</label>
+                        </div>
+                        <div class="form-floating">
+                            <textarea class="form-control" id="message" placeholder="Your Message" required></textarea>
+                            <label for="message"><i class="fas fa-comment me-2"></i>Your Message</label>
+                        </div>
+                        <button type="submit" class="btn btn-submit">
+                            Send Message <i class="fas fa-paper-plane"></i>
+                        </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="map-section">
+        <div class="container">
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.5!2d80.0!3d6.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTEnMDAuMCJOIDgwwrAwMCcwMC4wIkU!5e0!3m2!1sen!2slk!4v1600000000000!5m2!1sen!2slk" allowfullscreen=""
+                    loading="lazy"></iframe>
             </div>
         </div>
     </section>
@@ -163,14 +533,15 @@
             </div>
             <div>
                 <h3>Quick Links</h3>
-                <p><a href="{{ url_for('about') }}" style="color:white;">About</a></p>
-                <p>Privacy Policy</p>
-                <p>Return Policy</p>
-                <p>Shipping Info</p>
+                <p><a href="{{ url_for('about') }}">About</a></p>
+                <p><a href="#">Privacy Policy</a></p>
+                <p><a href="#">Return Policy</a></p>
+                <p><a href="#">Shipping Info</a></p>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
