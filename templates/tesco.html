@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <style>
-   #welcome-msg {
+    #welcome-msg {
       padding: 15px 20px;
       background-color: #d4edda;
       border: 1px solid #c3e6cb;
@@ -18,57 +19,55 @@
       opacity: 1;
       transition: opacity 1s ease;
     }
+  </style>
 
 
+</head>
 
-    </style>
-
-    
-  </head>
 <body>
 
 
   <!-- ✅ HEADER / NAVBAR -->
- >
+  >
 
-    
 
-      <ul class="nav-links">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Delivery</a></li>
-        <li><a href="#">Product</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
 
-        <!-- ✅ Search Bar -->
-      <div class="search-bar">
-        <input type="text" placeholder="Search for products...">
-        <button type="button">🔍</button>
-      </div>
-      
-        
-      <!-- ✅ Account + Icons -->
-      <div class="icons">
-        <span class="icon"><i class="fa-solid fa-bell"></i></span>
-        <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
-        <span class="icon">
-          <a href="{{ url_for('dashboard') }}" class="account-link">
-            <i class="fa-solid fa-user"></i>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Delivery</a></li>
+    <li><a href="#">Product</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
 
-              <span class="account-name">{{ username }}</span>
-  
-              <span class="account-name">Login</span>
-    
-          </a>
-        </span>
-      </div>
-    </nav>
+  <!-- ✅ Search Bar -->
+  <div class="search-bar">
+    <input type="text" placeholder="Search for products...">
+    <button type="button">🔍</button>
+  </div>
+
+
+  <!-- ✅ Account + Icons -->
+  <div class="icons">
+    <span class="icon"><i class="fa-solid fa-bell"></i></span>
+    <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
+    <span class="icon">
+      <a href="{{ url_for('dashboard') }}" class="account-link">
+        <i class="fa-solid fa-user"></i>
+
+        <span class="account-name">{{ username }}</span>
+
+        <span class="account-name">Login</span>
+
+      </a>
+    </span>
+  </div>
+  </nav>
   </header>
 
 
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 
 
@@ -82,7 +81,7 @@
 
 
 
-<!-- ✅ TOP BANNER -->
+  <!-- ✅ TOP BANNER -->
   <!-- ✅ SLIDER SECTION (with next/previous) -->
   <section class="slider">
     <!-- Slide content (could be images or banners) -->
@@ -101,54 +100,49 @@
     <button class="next">&#10095;</button>
   </section>
 
-    <!-- Next/Prev buttons -->
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
+  <!-- ✅ CATEGORY SECTION WITH IMAGES -->
+  <section class="categories">
+    <h2>Category</h2>
+    <div class="category-list">
+
+      <!-- Category Item -->
+      <div class="cat-item">
+        <img src="images/categories/beverages.jpg" alt="Beverages">
+        <p>Beverages</p>
+      </div>
+
+      <div class="cat-item">
+        <img src="images/categories/bakery.jpg" alt="Bakery">
+        <p>Bakery</p>
+      </div>
+
+      <div class="cat-item">
+        <img src="images/categories/dailydeals.jpeg" alt="Daily Deals">
+        <p>Daily Deals</p>
+      </div>
+
+      <div class="cat-item">
+        <img src="images/categories/dairy.jpg" alt="Dairy">
+        <p>Dairy</p>
+      </div>
+
+      <div class="cat-item">
+        <img src="images/categories/frozen.jpeg" alt="Frozen">
+        <p>Frozen</p>
+      </div>
+
+      <div class="cat-item">
+        <img src="images/categories/grocery.jpg" alt="Grocery">
+        <p>Grocery</p>
+      </div>
+
+    </div>
   </section>
 
-  <!-- ✅ CATEGORY SECTION WITH IMAGES -->
-<section class="categories">
-  <h2>Category</h2>
-  <div class="category-list">
-    
-    <!-- Category Item -->
-    <div class="cat-item">
-      <img src="images/categories/beverages.jpg" alt="Beverages">
-      <p>Beverages</p>
-    </div>
-
-    <div class="cat-item">
-      <img src="images/categories/bakery.jpg" alt="Bakery">
-      <p>Bakery</p>
-    </div>
-
-    <div class="cat-item">
-      <img src="images/categories/dailydeals.jpeg" alt="Daily Deals">
-      <p>Daily Deals</p>
-    </div>
-
-    <div class="cat-item">
-      <img src="images/categories/dairy.jpg" alt="Dairy">
-      <p>Dairy</p>
-    </div>
-
-    <div class="cat-item">
-      <img src="images/categories/frozen.jpeg" alt="Frozen">
-      <p>Frozen</p>
-    </div>
-
-    <div class="cat-item">
-      <img src="images/categories/grocery.jpg" alt="Grocery">
-      <p>Grocery</p>
-    </div>
-
-  </div>
-</section>
-
   <!-- ✅ SOLID BANNER IMAGE SECTION -->
-<section class="banner">
-  <img src="images/banner/banner1.jpg" alt="Promotional Banner">
-</section>
+  <section class="banner">
+    <img src="images/banner/banner1.jpg" alt="Promotional Banner">
+  </section>
 
   <!-- ✅ PRODUCT LISTING -->
   <section class="products">
@@ -196,66 +190,66 @@
   </section>
 
   <!-- ✅ ADVERTISEMENT CAROUSEL -->
-<section class="ads-carousel">
-  <div class="ads-slide active">
-    <img src="images/B_ad/ad1.png" alt="Ad 1">
-  </div>
-  <div class="ads-slide">
-    <img src="images/B_ad/ad2.png" alt="Ad 2">
-  </div>
-  <div class="ads-slide">
-    <img src="images/B_ad/ad3.png" alt="Ad 3">
-  </div>
-
-  <!-- Next & Prev buttons -->
-  <button class="ads-prev">&#10094;</button>
-  <button class="ads-next">&#10095;</button>
-  
-  <div class="ads-dots">
-    <span class="dot active" data-index="0"></span>
-    <span class="dot" data-index="1"></span>
-    <span class="dot" data-index="2"></span>
-  </div>
-
-</section>
-
-<!-- ✅ PRODUCT BRANDS SECTION -->
-<section class="brands">
-  <h2>Our Brands</h2>
-  <div class="brand-list">
-
-    <div class="brand-item">
-      <img src="images/brand/brand1.png" alt="Nestlé">
-      <p>Nestlé</p>
+  <section class="ads-carousel">
+    <div class="ads-slide active">
+      <img src="images/B_ad/ad1.png" alt="Ad 1">
+    </div>
+    <div class="ads-slide">
+      <img src="images/B_ad/ad2.png" alt="Ad 2">
+    </div>
+    <div class="ads-slide">
+      <img src="images/B_ad/ad3.png" alt="Ad 3">
     </div>
 
-    <div class="brand-item">
-      <img src="images/brand/brand2.png" alt="Unilever">
-      <p>Unilever</p>
+    <!-- Next & Prev buttons -->
+    <button class="ads-prev">&#10094;</button>
+    <button class="ads-next">&#10095;</button>
+
+    <div class="ads-dots">
+      <span class="dot active" data-index="0"></span>
+      <span class="dot" data-index="1"></span>
+      <span class="dot" data-index="2"></span>
     </div>
 
-    <div class="brand-item">
-      <img src="images/brand/brand3.png" alt="Elephant House">
-      <p>Elephant House</p>
-    </div>
+  </section>
 
-    <div class="brand-item">
-      <img src="images/brand/brand4.png" alt="Coca-Cola">
-      <p>Coca-Cola</p>
-    </div>
+  <!-- ✅ PRODUCT BRANDS SECTION -->
+  <section class="brands">
+    <h2>Our Brands</h2>
+    <div class="brand-list">
 
-    <div class="brand-item">
-      <img src="images/brand/brand5.png" alt="Pepsi">
-      <p>Pepsi</p>
-    </div>
+      <div class="brand-item">
+        <img src="images/brand/brand1.png" alt="Nestlé">
+        <p>Nestlé</p>
+      </div>
 
-    <div class="brand-item">
-      <img src="images/brand/brand6.png" alt="Maliban">
-      <p>Maliban</p>
-    </div>
+      <div class="brand-item">
+        <img src="images/brand/brand2.png" alt="Unilever">
+        <p>Unilever</p>
+      </div>
 
-  </div>
-</section>
+      <div class="brand-item">
+        <img src="images/brand/brand3.png" alt="Elephant House">
+        <p>Elephant House</p>
+      </div>
+
+      <div class="brand-item">
+        <img src="images/brand/brand4.png" alt="Coca-Cola">
+        <p>Coca-Cola</p>
+      </div>
+
+      <div class="brand-item">
+        <img src="images/brand/brand5.png" alt="Pepsi">
+        <p>Pepsi</p>
+      </div>
+
+      <div class="brand-item">
+        <img src="images/brand/brand6.png" alt="Maliban">
+        <p>Maliban</p>
+      </div>
+
+    </div>
+  </section>
 
 
 
@@ -284,4 +278,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
