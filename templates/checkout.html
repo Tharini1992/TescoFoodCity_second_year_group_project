@@ -5,7 +5,6 @@
     <title>Payment - Tesco Food City</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -76,6 +75,7 @@
             padding: 15px;
             margin-bottom: 15px;
             cursor: pointer;
+            display: block; /* Ensure block display */
         }
 
         .payment-option:hover {
@@ -98,6 +98,7 @@
             margin: 8px 0;
             border-radius: 5px;
             border: 1px solid #ccc;
+            box-sizing: border-box; /* Fix width issues */
         }
 
         .pay-btn {
@@ -135,10 +136,29 @@
             margin: 8px 0 15px 0;
             border-radius: 5px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         .delivery-box label {
             font-weight: 500;
+        }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        #success-view {
+            display: none; /* Hidden by default */
+            text-align: center;
+            padding: 50px;
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        #success-view i {
+            color: #28a745;
+            font-size: 60px;
+            margin-bottom: 20px;
         }
 
         /* ===== FOOTER ===== */
@@ -162,6 +182,7 @@
             background: rgba(0,0,0,0.6); 
             justify-content: center; 
             align-items: center;
+            z-index: 1000;
         }
 
         #confirmModal .modal-content {
@@ -178,6 +199,7 @@
             margin: 12px 0; 
             border-radius: 5px; 
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         #confirmModal button {
@@ -198,106 +220,31 @@
                 grid-template-columns: 1fr;
             }
         }
+        
         .icons { display:flex; gap:15px; align-items:center; position:relative; }
-.icons i { cursor:pointer; position:relative; }
+        .icons i { cursor:pointer; position:relative; }
 
-/* Red badge for all icons except user/account */
-.icons i:not(.user-icon)::after { 
-    content: attr(data-count); 
-    position:absolute; 
-    top:-8px; 
-    right:-8px; 
-    background:red; 
-    color:white; 
-    font-size:12px; 
-    width:18px; 
-    height:18px; 
-    display:flex; 
-    justify-content:center; 
-    align-items:center; 
-    border-radius:50%; 
-}
-
-.toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
-
-#notification-dropdown, #wishlist-dropdown {
-    display:none;
-    position:absolute;
-    top:50px;
-    background:#fff;
-    width:300px;
-    max-height:350px;
-    overflow-y:auto;
-    box-shadow:0 2px 10px rgba(0,0,0,0.3);
-    border-radius:8px;
-    padding:10px;
-    z-index:1000;
-}
-
-#notification-dropdown ul, #wishlist-dropdown ul {
-    list-style:none;
-    padding:0;
-    margin:0;
-}
-
-#notification-dropdown ul li, #wishlist-dropdown ul li {
-    padding:5px 0;
-    border-bottom:1px solid #eee;
-}
-
-#wishlist-dropdown { right:60px; }
-#notification-dropdown { right:120px; }
-
-.product-details { display:flex; gap:20px; padding:20px; background:#fff; margin:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
-.product-gallery img { border-radius:8px; }
-.product-info { max-width:400px; }
-.quantity { display:flex; gap:5px; margin:10px 0; }
-.quantity input { width:50px; text-align:center; }
-.btn { padding:8px 12px; margin-right:10px; cursor:pointer; border:none; border-radius:4px; background:#155724; color:white; }
-.btn.wishlist { background:#f44336; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        /* Red badge for all icons except user/account */
+        .icons i:not(.user-icon)::after { 
+            content: attr(data-count); 
+            position:absolute; 
+            top:-8px; 
+            right:-8px; 
+            background:red; 
+            color:white; 
+            font-size:12px; 
+            width:18px; 
+            height:18px; 
+            display:flex; 
+            justify-content:center; 
+            align-items:center; 
+            border-radius:50%; 
+        }
 
     </style>
 </head>
 <body>
 
-<!-- ===== NAVBAR ===== -->
 <header>
     <nav class="navbar">
         <div class="logo">
@@ -311,112 +258,112 @@
             <li><a href="{{ url_for('contact') }}">Contact</a></li>
         </ul>
 
-               <div class="icons">
-    <!-- Notification Icon -->
-    <i class="fa-solid fa-bell" id="notification-icon" data-count="0"></i>
-
-    <!-- Cart Icon with link -->
-    <a href="{{ url_for('cart') }}">
-        <i class="fa-solid fa-cart-shopping" id="cart-icon" data-count="0"></i>
-    </a>
-
-    <!-- User Icon: Dynamic Login/Account -->
-    {% if session.get('user') %}
-    <a href="{{ url_for('account') }}" title="Account" class="user-icon">
-        <i class="fa-solid fa-user"></i> {{ session['user']['name'] }}
-    </a>
-    {% else %}
-    <a href="{{ url_for('login') }}" title="Login" class="user-icon">
-          <i class="fa-solid fa-user user-icon"></i>
-          </a>Account
-    
-    {% endif %}
-</div>
+        <div class="icons">
+            <i class="fa-solid fa-bell" id="notification-icon" data-count="0"></i>
+            <a href="{{ url_for('cart') }}">
+                <i class="fa-solid fa-cart-shopping" id="cart-icon" data-count="0"></i>
+            </a>
+            {% if session.get('user') %}
+            <a href="{{ url_for('account') }}" title="Account" class="user-icon">
+                <i class="fa-solid fa-user"></i> {{ session['user']['name'] }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('login') }}" title="Login" class="user-icon">
+                <i class="fa-solid fa-user user-icon"></i> Account
+            </a>
+            {% endif %}
+        </div>
     </nav>
 </header>
 
-<h1>💳 Payment</h1>
-
-<div class="payment-wrapper">
-
-    <!-- DELIVERY INFORMATION -->
-    <div class="delivery-box">
-        <h2>Delivery Information</h2>
-        {% if session.get('user') %}
-            <label>Full Name</label>
-            <input type="text" name="name" value="{{ session['user']['name'] }}" required>
-            <label>Email</label>
-            <input type="email" name="email" value="{{ session['user']['email'] }}" required>
-        {% else %}
-            <label>Full Name</label>
-            <input type="text" name="name" placeholder="John Doe" required>
-            <label>Email</label>
-            <input type="email" name="email" placeholder="email@example.com" required>
-        {% endif %}
-        <label>Address</label>
-        <input type="text" name="address" placeholder="123 Street, City" required>
-        <label>Phone</label>
-        <input type="text" name="phone" placeholder="076xxxxxxx" required>
+<div id="success-view">
+    <i class="fa-solid fa-circle-check"></i>
+    <h2>Order Placed Successfully!</h2>
+    <p>Thank you for shopping with Tesco Food City.</p>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <p style="font-size: 18px; margin: 0;">Total Paid:</p>
+        <h1 style="color: #28a745; margin: 10px 0;">Rs. {{ total }}</h1>
     </div>
 
-    <!-- PAYMENT OPTIONS -->
-    <div class="payment-box">
-        <h2>Select Payment Method</h2>
-        <form method="POST" action="" id="paymentForm">
-
-            <!-- PAYPAL -->
-            <label class="payment-option">
-                <input type="radio" name="payment_method" value="paypal" required>
-                <i class="fa-brands fa-paypal"></i> PayPal
-            </label>
-
-            <!-- STRIPE -->
-            <label class="payment-option">
-                <input type="radio" name="payment_method" value="stripe">
-                <i class="fa-brands fa-cc-stripe"></i>
-                <div class="card-fields">
-                    <input type="text" placeholder="Card Number">
-                    <input type="text" placeholder="MM / YY">
-                    <input type="text" placeholder="CVC">
-                </div>
-            </label>
-
-            <!-- CASH ON DELIVERY -->
-            <label class="payment-option">
-                <input type="radio" name="payment_method" value="cod">
-                <i class="fa-solid fa-truck"></i> Cash on Delivery
-            </label>
-
-            <button type="button" class="pay-btn" id="confirmBtn">Confirm Order</button>
-        </form>
-    </div>
-
-    <!-- ORDER SUMMARY -->
-    <div class="summary-box">
-        <h2>Order Summary</h2>
-        <div class="summary-line">
-            <span>Total Amount</span>
-            <span>Rs. {{ total }}</span>
-        </div>
-        <div class="summary-line summary-total">
-            <span>Payable</span>
-            <span>Rs. {{ total }}</span>
-        </div>
-    </div>
-
+    <a href="{{ url_for('search_page') }}" class="pay-btn" style="text-decoration:none; display:inline-block; width:200px;">Continue Shopping</a>
 </div>
 
-<!-- ===== CONFIRMATION MODAL ===== -->
+<div id="payment-main-content">
+    <h1>💳 Payment</h1>
+    <div class="payment-wrapper">
+
+        <div class="delivery-box">
+            <h2>Delivery Information</h2>
+            {% if session.get('user') %}
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ session['user']['name'] }}" required>
+                <label>Email</label>
+                <input type="email" name="email" value="{{ session['user']['email'] }}" required>
+            {% else %}
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required>
+                <label>Email</label>
+                <input type="email" name="email" placeholder="email@example.com" required>
+            {% endif %}
+            <label>Address</label>
+            <input type="text" name="address" placeholder="123 Street, City" required>
+            <label>Phone</label>
+            <input type="text" name="phone" placeholder="076xxxxxxx" required>
+        </div>
+
+        <div class="payment-box">
+            <h2>Select Payment Method</h2>
+            <form method="POST" action="" id="paymentForm">
+
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="paypal" required>
+                    <i class="fa-brands fa-paypal"></i> PayPal
+                </label>
+
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="stripe">
+                    <i class="fa-brands fa-cc-stripe"></i> Stripe
+                    <div class="card-fields">
+                        <input type="text" placeholder="Card Number">
+                        <input type="text" placeholder="MM / YY">
+                        <input type="text" placeholder="CVC">
+                    </div>
+                </label>
+
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="cod">
+                    <i class="fa-solid fa-truck"></i> Cash on Delivery
+                </label>
+
+                <button type="button" class="pay-btn" id="confirmBtn">Confirm Order</button>
+            </form>
+        </div>
+
+        <div class="summary-box">
+            <h2>Order Summary</h2>
+            <div class="summary-line">
+                <span>Total Amount</span>
+                <span>Rs. {{ total }}</span>
+            </div>
+            <div class="summary-line summary-total">
+                <span>Payable</span>
+                <span>Rs. {{ total }}</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <div id="confirmModal">
     <div class="modal-content">
         <h2>Order Confirmation</h2>
         <p>✅ Your order has been received! A confirmation code has been sent to your email.</p>
-        <input type="text" id="confirmationCode" placeholder="Enter code here">
+        <input type="text" id="confirmationCode" placeholder="Enter code here (Try: 123456)">
         <button id="verifyBtn">Verify Code</button>
     </div>
 </div>
 
-<!-- ===== FOOTER ===== -->
 <footer>
     <div>
         <h3>Tesco Food City</h3>
@@ -436,20 +383,43 @@
 </footer>
 
 <script>
-document.getElementById('confirmBtn').addEventListener('click', function() {
-    document.getElementById('confirmModal').style.display = 'flex';
-    console.log('Order submitted. Send confirmation code to email.');
-});
+    // 1. Show Modal on Confirm
+    document.getElementById('confirmBtn').addEventListener('click', function() {
+        document.getElementById('confirmModal').style.display = 'flex';
+        console.log('Order submitted. Waiting for code.');
+    });
 
-document.getElementById('verifyBtn').addEventListener('click', function() {
-    const codeEntered = document.getElementById('confirmationCode').value.trim();
-    if(codeEntered === "123456"){
-        alert("✅ Code verified! Your order is confirmed.");
-        document.getElementById('paymentForm').submit();
-    } else {
-        alert("❌ Invalid code. Please check your email.");
+    // 2. Handle Verification and Show Success Message
+    document.getElementById('verifyBtn').addEventListener('click', function() {
+        const codeEntered = document.getElementById('confirmationCode').value.trim();
+        
+        // Simple check (Change "123456" to your logic if needed)
+        if(codeEntered === "123456"){
+            
+            // A. Hide the Modal
+            document.getElementById('confirmModal').style.display = 'none';
+
+            // B. Hide the Main Payment Form
+            document.getElementById('payment-main-content').style.display = 'none';
+
+            // C. Show the Success Message
+            document.getElementById('success-view').style.display = 'block';
+            
+            // D. Submit form in background (Optional: Remove if you just want UI change)
+            // document.getElementById('paymentForm').submit(); 
+
+        } else {
+            alert("❌ Invalid code. Please check your email.");
+        }
+    });
+
+    // Close modal if clicking outside box
+    window.onclick = function(event) {
+        const modal = document.getElementById('confirmModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
-});
 </script>
 
 </body>
