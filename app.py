@@ -337,7 +337,36 @@ def grocery():
 
 
 
+# -----------------------------
+# MISSING ROUTE: Update Personal Info
+# -----------------------------
+@app.route('/update_info', methods=['POST'])
+def update_info():
+    # 1. Check if user is logged in
+    if 'user' not in session:
+        return redirect(url_for('login'))
 
+    user_id = session['user']['id']
+    new_name = request.form.get('name')
+    new_email = request.form.get('email')
+
+    try:
+        # 2. Update Name
+        if new_name:
+            cursor.execute("UPDATE users SET username = %s WHERE id = %s", (new_name, user_id))
+            session['user']['name'] = new_name # Update session immediately
+
+        # 3. Update Email (if provided)
+        if new_email:
+            cursor.execute("UPDATE users SET email = %s WHERE id = %s", (new_email, user_id))
+        
+        db.commit()
+        flash("Information updated successfully!", "success")
+        
+    except mysql.connector.Error as err:
+        flash(f"Error updating info: {err}", "danger")
+
+    return redirect(url_for('my_account'))
 
 # -----------------------------
 # Manual Login
@@ -457,48 +486,44 @@ def personal_data():
 
     return render_template("personal_data.html", user=user)
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/change_password', methods=['POST'])
 def change_password():
-    if 'user_id' not in session:
+    # 1. Check if user is logged in
+    if 'user' not in session:
         return redirect(url_for('login'))
 
-    if request.method == 'POST':
-        current_pass = request.form['current_password']
-        new_pass = request.form['new_password']
-        confirm_pass = request.form['confirm_password']
+    user_id = session['user']['id']
+    current_pass = request.form.get('current_password')
+    new_pass = request.form.get('new_password')
+    confirm_pass = request.form.get('confirm_password')
 
-        if new_pass != confirm_pass:
-            flash("New passwords do not match!", "danger")
-            return redirect(url_for('change_password'))
+    # 2. Check if new passwords match
+    if new_pass != confirm_pass:
+        flash("New passwords do not match!", "danger")
+        return redirect(url_for('my_account'))
 
-        conn = get_db_connection() # type: ignore
-        cursor = conn.cursor(dictionary=True)
-        # Get the current password hash from DB to verify
-        cursor.execute("SELECT password FROM users WHERE id=%s", (session['user_id'],))
-        user = cursor.fetchone()
+    try:
+        # 3. Get current password hash from DB
+        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
+        result = cursor.fetchone()
 
-        if user and check_password_hash(user['password'], current_pass):
-            # Create new hash and update DB
-            new_hash = generate_password_hash(new_pass)
-            cursor.execute("UPDATE users SET password=%s WHERE id=%s", (new_hash, session['user_id']))
-            conn.commit()
+        if result:
+            stored_hash = result['password']
             
-            flash("Password changed successfully!", "success")
-            cursor.close()
-            conn.close()
-            return redirect(url_for('my_account'))
-        else:
-            flash("Incorrect current password.", "danger")
-            cursor.close()
-            conn.close()
+            # 4. Verify current password
+            if check_password_hash(stored_hash, current_pass):
+                # 5. Hash new password and update
+                new_hash = generate_password_hash(new_pass)
+                cursor.execute("UPDATE users SET password = %s WHERE id = %s", (new_hash, user_id))
+                db.commit()
+                flash("Password changed successfully!", "success")
+            else:
+                flash("Incorrect current password.", "danger")
+        
+    except mysql.connector.Error as err:
+        flash(f"Error changing password: {err}", "danger")
 
-    return render_template("change_password.html")
-
-
-
-
-
-
+    return redirect(url_for('my_account'))
 
 
 
