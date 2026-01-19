@@ -10,22 +10,63 @@
 <style>
     :root {
         --primary-color: #00539f; /* Tesco Blue */
-        --sidebar-bg: #1e293b;
-        --sidebar-text: #94a3b8;
-        --sidebar-active: #ffffff;
+        --sidebar-bg: #ffffff;
+        --sidebar-text: #64748b;
+        --sidebar-active: #00539f; 
         --bg-light: #f3f4f6;
     }
-    body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); display: flex; }
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); display: flex; min-height: 100vh;}
     
     /* SIDEBAR */
-    .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); color: #fff; position: fixed; display: flex; flex-direction: column; padding: 20px; transition: 0.3s; z-index: 1000; }
-    .sidebar h4 { font-weight: 700; color: #fff; margin-bottom: 40px; letter-spacing: 0.5px; }
-    .nav-link { color: var(--sidebar-text); padding: 12px 15px; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; font-size: 0.95rem; }
-    .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: var(--sidebar-active); transform: translateX(5px); }
+    .sidebar { 
+        width: 260px; 
+        height: 100vh; 
+        background: var(--sidebar-bg); 
+        color: #333; 
+        position: fixed; 
+        display: flex; 
+        flex-direction: column; 
+        padding: 20px; 
+        transition: 0.3s; 
+        z-index: 1000;
+        border-right: 1px solid #e2e8f0; 
+    }
+    .sidebar h4 { 
+        font-weight: 700; 
+        color: #0f172a; 
+        margin-bottom: 40px; 
+        letter-spacing: 0.5px; 
+    }
+    .nav-link { 
+        color: var(--sidebar-text); 
+        padding: 12px 15px; 
+        border-radius: 8px; 
+        margin-bottom: 5px; 
+        transition: 0.2s; 
+        font-size: 0.95rem; 
+        font-weight: 500;
+    }
+    .nav-link:hover { 
+        background: #f1f5f9; 
+        color: var(--primary-color); 
+        transform: translateX(5px); 
+    }
+    .nav-link.active { 
+        background: #eff6ff; 
+        color: var(--primary-color); 
+        font-weight: 600;
+    }
     .nav-link i { margin-right: 12px; font-size: 1.1rem; }
     
     /* MAIN CONTENT */
-    .main-content { margin-left: 260px; width: calc(100% - 260px); padding: 30px; }
+    .main-content { 
+        margin-left: 260px; 
+        width: calc(100% - 260px); 
+        padding: 30px; 
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
     
     /* STAT CARDS */
     .stat-card { background: #fff; border: none; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; transition: 0.3s; }
@@ -51,12 +92,25 @@
     /* BUTTONS */
     .btn-primary-custom { background: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 500; }
     .btn-primary-custom:hover { background: #004485; }
+
+    /* FOOTER STYLES UPDATED */
+    .admin-footer {
+        background-color: #15803d; /* CHANGED TO GREEN */
+        color: white;
+        margin-top: auto; 
+        padding: 40px 0 20px 0;
+        border-radius: 12px 12px 0 0;
+        margin-top: 50px;
+    }
+    .admin-footer a { color: #dcfce7; transition: 0.2s; }
+    .admin-footer a:hover { color: white; }
 </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h4 class="ps-2"><i class="bi bi-cart4 text-primary"></i> Food City <span class="fs-6 fw-normal text-muted">Admin</span></h4>
+    <div class="sidebar shadow-sm">
+         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="40" class="me-2">Tesco Food City <span class="fs-6 fw-normal text-muted">| Admin</span></h4>
+        
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
             <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#dashboard">
                 <i class="bi bi-grid-1x2-fill"></i> Dashboard
@@ -301,6 +355,34 @@
             </div>
 
         </div>
+
+        <footer class="admin-footer">
+            <div class="container text-center text-md-start">
+                <div class="row">
+                    <div class="col-md-4 mb-3 ps-md-4">
+                        <h5 class="fw-bold d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="40" class="me-2" style="border-radius: 8px;">
+                            Tesco Food City
+                        </h5>
+                        <p class="small text-white-50">Crafting exceptional shopping experiences for our valued customers.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">Contact Us</h5>
+                        <p class="small mb-1"><i class="bi bi-geo-alt-fill me-2"></i>380/F Leyland Junction, Panagoda</p>
+                        <p class="small mb-1"><i class="bi bi-telephone-fill me-2"></i>0763659784</p>
+                        <p class="small"><i class="bi bi-envelope-fill me-2"></i>TescoFoodCity@gmail.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="fw-bold">Quick Links</h5>
+                        <ul class="list-unstyled small">
+                            <li><a href="#" class="text-decoration-none">Privacy Policy</a></li>
+                            <li><a href="#" class="text-decoration-none">Return Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
     </div>
 
     <div class="modal fade" id="addProductModal" tabindex="-1">
