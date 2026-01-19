@@ -35,7 +35,9 @@
         font-weight: 700; 
         color: #0f172a; 
         margin-bottom: 40px; 
-        letter-spacing: 0.5px; 
+        letter-spacing: 0.5px;
+        display: flex;       /* Added for logo alignment */
+        align-items: center; /* Added for logo alignment */
     }
     .nav-link { 
         color: var(--sidebar-text); 
@@ -93,9 +95,9 @@
     .btn-primary-custom { background: var(--primary-color); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 500; }
     .btn-primary-custom:hover { background: #004485; }
 
-    /* FOOTER STYLES UPDATED */
+    /* FOOTER STYLES */
     .admin-footer {
-        background-color: #15803d; /* CHANGED TO GREEN */
+        background-color: #15803d; 
         color: white;
         margin-top: auto; 
         padding: 40px 0 20px 0;
@@ -109,7 +111,10 @@
 <body>
 
     <div class="sidebar shadow-sm">
-         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="40" class="me-2">Tesco Food City <span class="fs-6 fw-normal text-muted">| Admin</span></h4>
+        <h4 class="ps-2">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="40" class="me-2"> 
+            Tesco Food City <span class="fs-6 fw-normal text-muted ms-2">| Admin</span>
+        </h4>
         
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
             <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#dashboard">
