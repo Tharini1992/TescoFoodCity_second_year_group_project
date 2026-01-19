@@ -36,6 +36,15 @@ db = mysql.connector.connect(
     database="digital_wallet_app"
 )
 cursor = db.cursor(dictionary=True)
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="", 
+        database="digital_wallet_app"
+    )
+
+# ... then your routes ...
 
 # -----------------------------
 # SendGrid client
@@ -336,6 +345,170 @@ def grocery():
     return render_template('grocery.html')
 
 
+# -----------------------------
+# ADMIN DASHBOARD ROUTES
+# -----------------------------
+
+# --- ADD THIS FUNCTION TO app.py ---
+
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    # Now this line will work:
+    conn = get_db_connection() 
+    # 1. Security Check
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # 2. Get Current User
+        cursor.execute("SELECT * FROM users WHERE id = %s", (session['user_id'],))
+        current_user = cursor.fetchone()
+
+        # 3. Fetch Data
+        cursor.execute("SELECT * FROM products")
+        products = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM orders ORDER BY id DESC")
+        orders = cursor.fetchall()
+
+        # 4. Stats Calculation
+        cursor.execute("SELECT SUM(total_price) as revenue FROM orders")
+        res = cursor.fetchone()
+        total_revenue = res['revenue'] if res and res['revenue'] else 0
+        
+        cursor.execute("SELECT COUNT(*) as count FROM users WHERE role != 'admin'")
+        customer_count = cursor.fetchone()['count']
+
+        stats = {
+            "revenue": "{:,.2f}".format(float(total_revenue)),
+            "orders": len(orders),
+            "products": len(products),
+            "customers": customer_count
+        }
+
+        # 5. Render
+        return render_template(
+            "admin_dashboard.html",
+            user=current_user,
+            stats=stats,
+            products=products,
+            orders=orders,
+            users=users
+        )
+    finally:
+        cursor.close()
+        conn.close()
+
+# -----------------------------
+# PRODUCT ACTIONS
+# -----------------------------
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    if 'user_id' not in session: 
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        price = request.form['price']
+        image_url = request.form['image_url']
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            query = "INSERT INTO products (name, price, image_url) VALUES (%s, %s, %s)"
+            cursor.execute(query, (name, price, image_url))
+            conn.commit()
+            flash('Product added successfully!', 'success')
+        except Exception as e:
+            flash(f'Error adding product: {e}', 'danger')
+        finally:
+            cursor.close()
+            conn.close()
+            
+        return redirect(url_for('admin_dashboard'))
+
+@app.route('/delete_product/<int:id>')
+def delete_product(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM products WHERE id = %s", (id,))
+        conn.commit()
+        flash('Product deleted.', 'warning')
+    except Exception as e:
+        flash('Error deleting product.', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
+        
+    return redirect(url_for('admin_dashboard'))
+
+# -----------------------------
+# ORDER ACTIONS
+# -----------------------------
+
+@app.route('/update_order_status/<int:id>', methods=['POST'])
+def update_order_status(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+
+    new_status = request.form.get('status')
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE orders SET status = %s WHERE id = %s", (new_status, id))
+        conn.commit()
+        flash(f'Order #{id} updated to {new_status}.', 'info')
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('admin_dashboard'))
+
+# -----------------------------
+# USER ACTIONS
+# -----------------------------
+
+@app.route('/delete_user/<int:id>')
+def delete_user(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Check role before deleting
+        cursor.execute("SELECT role FROM users WHERE id = %s", (id,))
+        user_to_delete = cursor.fetchone()
+        
+        if user_to_delete and user_to_delete['role'] == 'admin':
+            flash("You cannot delete an admin account.", "danger")
+        else:
+            cursor.execute("DELETE FROM users WHERE id = %s", (id,))
+            conn.commit()
+            flash('User removed.', 'success')
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('admin_dashboard'))
+
+# -----------------------------
+# AUTHENTICATION
+# -----------------------------
+
+
+
+
+
 
 # -----------------------------
 # MISSING ROUTE: Update Personal Info
@@ -417,14 +590,6 @@ def customer_dashboard():
     return render_template("search.html", user=user_data)
 
 
-@app.route("/admin_dashboard")
-def admin_dashboard():
-    if session.get("role") != "admin":
-        flash("Unauthorized access.", "danger")
-        return redirect(url_for("login"))
-
-    user_data = {"username": session.get("username"), "role": session.get("role")}
-    return render_template("admin_dashboard.html", user=user_data)
 
 
 @app.route("/delivery_dashboard")
@@ -436,6 +601,152 @@ def delivery_dashboard():
 
     user_data = {"username": session.get("username"), "role": session.get("role")}
     return render_template("delivery_dashboard.html", user=user_data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # -----------------------------
@@ -525,39 +836,7 @@ def change_password():
 
     return redirect(url_for('my_account'))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ------------------------------------------------
 
 
 
