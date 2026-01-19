@@ -6,118 +6,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: "Segoe UI", Arial, sans-serif; background: #f4f6f8; margin: 0; }
-        .payment-wrapper { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 2fr 1fr; gap: 25px; padding: 20px; }
-        .payment-box, .summary-box, .delivery-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .pay-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; background: #f4f6f8; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .logo img { height: 50px; }
+        .nav-links { list-style: none; display: flex; gap: 20px; padding: 0; margin: 0; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 500; }
+        .icons i { margin-left: 15px; font-size: 18px; color: #333; cursor: pointer; }
+        h1 { text-align: center; margin: 30px 0; }
+        .payment-wrapper { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 2fr 1fr; gap: 25px; padding: 0 15px; }
+        .payment-box, .summary-box, .delivery-box { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .payment-option { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; cursor: pointer; display: block; }
+        .payment-option:hover { border-color: #28a745; background: #f8fff9; }
+        .payment-option input { margin-right: 10px; }
+        .card-fields input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        .pay-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 20px; }
         .pay-btn:hover { background: #218838; }
-        
-        /* Modal Styles */
-        #confirmModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
-        
-        /* Success View */
-        #success-view { text-align: center; padding: 50px; background: white; margin: 50px auto; max-width: 600px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .summary-line { display: flex; justify-content: space-between; margin: 10px 0; }
+        .summary-total { font-weight: bold; font-size: 18px; border-top: 1px solid #ddd; padding-top: 10px; }
+        .delivery-box input { width: 100%; padding: 10px; margin: 8px 0 15px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        #confirmModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        #confirmModal .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; }
+        #confirmModal input { width: 100%; padding: 10px; margin: 12px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        #confirmModal button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-{% if success %}
-    <div id="success-view">
-        <i class="fa-solid fa-circle-check" style="color:#28a745; font-size:60px; margin-bottom:20px;"></i>
-        <h2>Order Placed Successfully!</h2>
-        <p>Your order has been saved to the database.</p>
-        
-        <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin:20px 0;">
-            <p style="margin:0;">Total Paid:</p>
-            <h1 style="color: #28a745; margin:10px 0;">Rs. {{ total }}</h1>
+<header>
+    <nav class="navbar">
+        <div class="logo"><img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"></div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('search_page') }}">Home</a></li>
+            <li><a href="{{ url_for('cart_page') }}">Cart</a></li>
+        </ul>
+        <div class="icons">
+            <a href="{{ url_for('my_account') }}"><i class="fa-solid fa-user"></i> My Account</a>
         </div>
-
-        <a href="{{ url_for('account') }}" class="pay-btn" style="text-decoration:none; display:inline-block; width:200px;">View My Orders</a>
-    </div>
-
-{% else %}
+    </nav>
+</header>
 
 <div id="payment-main-content">
-    <h1 style="text-align:center; margin-top:30px;">💳 Payment</h1>
+    <h1>💳 Payment</h1>
     <div class="payment-wrapper">
-        
         <div class="delivery-box">
-            <h2>Delivery Details</h2>
-            
-            <form method="POST" action="{{ url_for('payment') }}" id="paymentForm">
+            <h2>Delivery Information</h2>
+            <form method="POST" action="{{ url_for('place_order') }}" id="paymentForm">
                 
+                {% if session.get('user') %}
+                    <label>Full Name</label>
+                    <input type="text" name="name" value="{{ session['user']['name'] }}" readonly>
+                {% else %}
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="John Doe" required>
+                {% endif %}
+
                 <label>Address</label>
-                <input type="text" name="address" placeholder="123 Street, City" required style="width:100%; padding:10px; margin: 10px 0 20px 0; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;">
+                <input type="text" name="address" placeholder="123 Street, City" required>
                 
-                <h2>Payment Method</h2>
-                <div style="margin-bottom:15px;">
-                    <label style="display:block; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; cursor:pointer;">
-                        <input type="radio" name="payment_method" value="PayPal" required> 
-                        <i class="fa-brands fa-paypal" style="color:#003087; margin-left:10px;"></i> PayPal
-                    </label>
+                <label>Phone</label>
+                <input type="text" name="phone" placeholder="076xxxxxxx" required>
 
-                    <label style="display:block; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; cursor:pointer;">
-                        <input type="radio" name="payment_method" value="Card"> 
-                        <i class="fa-brands fa-cc-visa" style="color:#1a1f71; margin-left:10px;"></i> Credit Card
-                    </label>
+                <h2>Select Payment Method</h2>
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="paypal" required>
+                    <i class="fa-brands fa-paypal"></i> PayPal
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="stripe">
+                    <i class="fa-brands fa-cc-stripe"></i> Stripe
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="cod">
+                    <i class="fa-solid fa-truck"></i> Cash on Delivery
+                </label>
 
-                    <label style="display:block; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; cursor:pointer;">
-                        <input type="radio" name="payment_method" value="COD"> 
-                        <i class="fa-solid fa-truck" style="color:#555; margin-left:10px;"></i> Cash on Delivery
-                    </label>
-                </div>
-
-                <button type="button" class="pay-btn" id="confirmBtn">Confirm Order</button>
-            </form>
+                </form>
         </div>
 
         <div class="summary-box">
-            <h2>Summary</h2>
-            <div style="display:flex; justify-content:space-between; margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
-                <span style="font-weight:bold; font-size:1.2rem;">Total</span>
-                <span style="font-weight:bold; font-size:1.2rem; color:#28a745;">Rs. {{ total }}</span>
+            <h2>Order Summary</h2>
+            <div class="summary-line">
+                <span>Total Amount</span>
+                <span>Rs. {{ total }}</span>
             </div>
+            <div class="summary-line summary-total">
+                <span>Payable</span>
+                <span>Rs. {{ total }}</span>
+            </div>
+            <button type="button" class="pay-btn" id="confirmBtn">Confirm Order</button>
         </div>
     </div>
 </div>
 
 <div id="confirmModal">
     <div class="modal-content">
-        <h3>Verify Order</h3>
-        <p>Please enter the code sent to your email.</p>
-        <p style="color:gray; font-size:0.9rem;">(Try code: 123456)</p>
-        
-        <input type="text" id="confirmationCode" placeholder="Enter Code" style="padding:10px; width:80%; margin-bottom:15px;">
-        <button class="pay-btn" id="verifyBtn">Verify & Pay</button>
-        <button onclick="document.getElementById('confirmModal').style.display='none'" style="background:transparent; border:none; color:gray; margin-top:10px; cursor:pointer;">Cancel</button>
+        <h2>Order Confirmation</h2>
+        <p>✅ A confirmation code has been sent.</p>
+        <input type="text" id="confirmationCode" placeholder="Enter code (Try: 123456)">
+        <button id="verifyBtn">Verify Code</button>
     </div>
 </div>
 
 <script>
-    // Show Modal
     document.getElementById('confirmBtn').addEventListener('click', function() {
-        // Simple check if form is filled
-        if(document.querySelector('input[name="address"]').value === "") {
-            alert("Please enter an address first.");
-            return;
+        // Validate form fields first
+        const form = document.getElementById('paymentForm');
+        if(form.reportValidity()){
+            document.getElementById('confirmModal').style.display = 'flex';
         }
-        document.getElementById('confirmModal').style.display = 'flex';
     });
 
-    // Handle Verify
     document.getElementById('verifyBtn').addEventListener('click', function() {
-        const code = document.getElementById('confirmationCode').value;
+        const code = document.getElementById('confirmationCode').value.trim();
         if(code === "123456"){
-            // SUBMIT FORM TO PYTHON
+            // Submit the real form to Python
             document.getElementById('paymentForm').submit();
         } else {
-            alert("❌ Invalid Code");
+            alert("❌ Invalid code.");
         }
     });
-</script>
 
-{% endif %}
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('confirmModal')) {
+            document.getElementById('confirmModal').style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
