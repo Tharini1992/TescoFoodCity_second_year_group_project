@@ -5,8 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Delivery - Tesco Food City</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
+         :root {
+            --primary-green: #1acc31;
+            --light-green: #5eae5d;
+            --dark-green: #16671b;
+            --accent-green: #81c784;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -18,12 +26,7 @@
             background: #f7f7f7;
             color: #333;
         }
-        /* ===== NAVBAR ===== */
-        
-        .brand-logo {
-            width: 50px;
-            height: auto;
-        }
+        /* ====== NAVBAR ====== */
         
         .navbar {
             display: flex;
@@ -32,55 +35,6 @@
             padding: 15px 40px;
             background: #fff;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #43a047;
-        }
-        
-        .search-bar {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .search-bar input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 20px 0 0 20px;
-            outline: none;
-            font-size: 14px;
-        }
-        
-        .search-bar button {
-            padding: 8px 12px;
-            background: #43a047;
-            color: white;
-            border: none;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        
-        .search-bar button:hover {
-            background: #2e7d32;
         }
         
         .icons {
@@ -96,126 +50,280 @@
         }
         
         .icon:hover {
-            color: #43a047;
+            color: var(--primary-green);
             transform: scale(1.2);
         }
-        /* ===== DELIVERY SECTION ===== */
+        /* ====== HERO SECTION ====== */
         
-        .delivery-section {
-            padding: 40px 60px;
-            background: #fff;
-            margin: 30px auto;
-            max-width: 1100px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
         }
         
-        .delivery-section h2 {
-            color: #2e7d32;
-            margin-bottom: 15px;
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        /* ====== SECTION TITLE ====== */
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-green);
+            margin: 8px auto 0;
+        }
+        /* ====== TRACKING BOX ====== */
+        
+        .tracking-section {
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            padding: 0 15px;
+        }
+        
+        .tracking-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tracking-box h3 {
+            color: var(--dark-green);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .tracking-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tracking-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .tracking-input input:focus {
+            border-color: var(--primary-green);
+        }
+        
+        .tracking-input button {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .tracking-input button:hover {
+            background: var(--dark-green);
+        }
+        /* ====== DELIVERY AREAS ====== */
+        
+        .areas-section {
+            padding: 4rem 0 2rem;
         }
         
         .city-search {
-            margin: 15px 0;
+            max-width: 350px;
+            margin: 0 auto 1.5rem;
         }
         
         .city-search input {
-            padding: 10px;
             width: 100%;
-            max-width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
             outline: none;
+            font-size: 1rem;
+        }
+        
+        .city-search input:focus {
+            border-color: var(--primary-green);
         }
         
         .city-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 15px;
+            justify-content: center;
         }
         
         .city-buttons button {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #a5d6a7;
-            padding: 8px 16px;
-            border-radius: 8px;
+            background: white;
+            color: var(--dark-green);
+            border: 2px solid #e8f5e9;
+            padding: 10px 20px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: 500;
-            transition: 0.3s;
+            transition: all 0.3s;
         }
         
         .city-buttons button:hover {
-            background: #43a047;
+            background: var(--primary-green);
             color: white;
+            border-color: var(--primary-green);
+            transform: translateY(-2px);
         }
-        /* ===== DELIVERY PROCESS ===== */
+        /* ====== PROCESS STEPS ====== */
         
         .process-section {
-            margin-top: 40px;
+            padding: 3rem 0;
+            background: white;
         }
         
-        .process-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .step {
-            background: #f1f8e9;
-            padding: 20px;
-            border-radius: 10px;
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
             text-align: center;
-            border: 1px solid #c5e1a5;
+            border: 2px solid #f0f0f0;
+            height: 100%;
+            transition: all 0.3s;
         }
         
-        .step h4 {
-            color: #2e7d32;
-            margin-bottom: 8px;
+        .step-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(26, 204, 49, 0.15);
         }
-        /* ===== FAQ SECTION ===== */
+        
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .step-card h4 {
+            color: var(--dark-green);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        /* ====== FAQ SECTION ====== */
         
         .faq-section {
-            margin-top: 40px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 3rem 0;
         }
         
         .faq-item {
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
         .faq-question {
+            padding: 1.2rem 1.5rem;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: #2e7d32;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .faq-question:hover {
+            color: var(--dark-green);
+        }
+        
+        .faq-question i {
+            color: var(--primary-green);
+            transition: transform 0.3s;
         }
         
         .faq-answer {
             display: none;
-            margin-top: 8px;
-            color: #333;
+            padding: 0 1.5rem 1.2rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        /* ====== CTA BANNER ====== */
+        
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
         }
         
-        .faq-question i {
-            color: #43a047;
+        .cta-banner h3 {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
         }
-        /* ===== FOOTER ===== */
+        
+        .cta-banner p {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-btn {
+            background: white;
+            color: var(--dark-green);
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        
+        .cta-btn:hover {
+            transform: scale(1.05);
+            color: var(--dark-green);
+        }
+        /* ====== FOOTER ====== */
         
         footer {
             background: #2e7d32;
             color: white;
             padding: 30px 20px;
-            margin-top: 40px;
         }
         
         .footer-content {
@@ -229,19 +337,24 @@
             margin-bottom: 10px;
         }
         
+        .footer-content a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-content a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .tracking-input {
+                flex-direction: column;
+            }
             .navbar {
-                flex-wrap: wrap;
-            }
-            .search-bar {
-                margin: 10px 0;
-                max-width: 100%;
-            }
-            .process-steps {
-                grid-template-columns: 1fr;
-            }
-            .city-buttons {
-                justify-content: center;
+                padding: 15px 20px;
             }
         }
     </style>
@@ -251,14 +364,9 @@
     <!-- ✅ HEADER -->
     <header>
         <nav class="navbar">
-            <!-- Brand Logo on the top left corner -->
             <div class="logo">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
-                <!-- replace logo.png with your logo -->
             </div>
-
-
-
             <div class="icons">
                 <span class="icon"><i class="fa-solid fa-bell"></i></span>
                 <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
@@ -267,71 +375,120 @@
         </nav>
     </header>
 
-    <!-- ✅ MAIN CONTENT -->
-    <section class="delivery-section">
-        <h2>📦 Available Delivery Areas in Sri Lanka</h2>
-        <p>We currently deliver to the following major cities and their surrounding areas:</p>
-
-        <div class="city-search">
-            <input type="text" id="citySearch" placeholder="Search for your city...">
+    <!-- ✅ HERO SECTION -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Delivery Information</h1>
+            <p class="hero-subtitle">Fast & reliable delivery across Sri Lanka</p>
         </div>
+    </section>
 
-        <div class="city-buttons" id="cityList">
-            <button>Colombo</button>
-            <button>Kandy</button>
-            <button>Galle</button>
-            <button>Negombo</button>
-            <button>Jaffna</button>
-            <button>Matara</button>
-            <button>Kurunegala</button>
-            <button>Anuradhapura</button>
-            <button>Ratnapura</button>
-            <button>Badulla</button>
-            <button>Trincomalee</button>
-            <button>Polonnaruwa</button>
-        </div>
-
-        <div class="process-section">
-            <h2>🚚 Our Delivery Process</h2>
-            <div class="process-steps">
-                <div class="step">
-                    <h4>1. Order Placed</h4>
-                    <p>You place your order online through our secure system.</p>
-                </div>
-                <div class="step">
-                    <h4>2. Packed with Care</h4>
-                    <p>We vacuum-pack your order to ensure hygiene and freshness.</p>
-                </div>
-                <div class="step">
-                    <h4>3. Dispatched</h4>
-                    <p>Your order is handed over to our trusted delivery partners.</p>
-                </div>
-                <div class="step">
-                    <h4>4. Delivered Fast</h4>
-                    <p>Delivered to your doorstep within 24–72 hours nationwide.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-section">
-            <h2>❓ Frequently Asked Questions</h2>
-
-            <div class="faq-item">
-                <div class="faq-question">How long does delivery take? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer">Delivery usually takes between 24–72 hours depending on your location.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Can I track my order? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer">Yes! Enter your tracking number above to see your order status in real time.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Do you deliver outside the city? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer">Yes, we deliver to suburban and rural areas across the country.</div>
+    <!-- ✅ TRACKING BOX -->
+    <section class="tracking-section">
+        <div class="tracking-box">
+            <h3><i class="fas fa-search me-2"></i>Track Your Order</h3>
+            <div class="tracking-input">
+                <input type="text" id="trackingNumber" placeholder="Enter tracking number (e.g., TFC-123456)">
+                <button onclick="trackOrder()"><i class="fas fa-search me-1"></i> Track</button>
             </div>
         </div>
     </section>
+
+    <div class="container">
+        <!-- ✅ DELIVERY AREAS -->
+        <section class="areas-section">
+            <h2 class="section-title">Available Delivery Areas</h2>
+            <p class="text-center text-muted mb-4">We deliver to major cities and surrounding areas</p>
+
+            <div class="city-search">
+                <input type="text" id="citySearch" placeholder="🔍 Search for your city...">
+            </div>
+
+            <div class="city-buttons" id="cityList">
+                <button>Colombo</button>
+                <button>Kandy</button>
+                <button>Galle</button>
+                <button>Negombo</button>
+                <button>Jaffna</button>
+                <button>Matara</button>
+                <button>Kurunegala</button>
+                <button>Anuradhapura</button>
+                <button>Ratnapura</button>
+                <button>Badulla</button>
+                <button>Trincomalee</button>
+                <button>Polonnaruwa</button>
+            </div>
+        </section>
+
+        <!-- ✅ DELIVERY PROCESS -->
+        <section class="process-section">
+            <h2 class="section-title">Our Delivery Process</h2>
+            <div class="row">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <h4>1. Order Placed</h4>
+                        <p>Place your order through our secure system</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-box"></i></div>
+                        <h4>2. Packed</h4>
+                        <p>We carefully pack to ensure freshness</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-truck"></i></div>
+                        <h4>3. Dispatched</h4>
+                        <p>Handed to trusted delivery partners</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="step-card">
+                        <div class="step-icon"><i class="fas fa-home"></i></div>
+                        <h4>4. Delivered</h4>
+                        <p>Delivered within 24-72 hours</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ FAQ SECTION -->
+        <section class="faq-section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="faq-item">
+                        <div class="faq-question">How long does delivery take? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Delivery usually takes between 24-72 hours depending on your location. Express delivery is available in Colombo.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I track my order? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Yes! Enter your tracking number above to see your order status in real time.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do you deliver outside the city? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Yes, we deliver to suburban and rural areas across the country.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What are the delivery charges? <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="faq-answer">Delivery is FREE for orders above Rs. 3,000. Otherwise, Rs. 250-500 depending on location.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ CTA BANNER -->
+        <div class="cta-banner">
+            <h3>Ready to Order?</h3>
+            <p>Fresh groceries delivered to your doorstep</p>
+            <a href="{{ url_for('landing_page') }}" class="cta-btn">
+                <i class="fas fa-shopping-basket me-2"></i>Shop Now
+            </a>
+        </div>
+    </div>
 
     <!-- ✅ FOOTER -->
     <footer>
@@ -348,16 +505,17 @@
             </div>
             <div>
                 <h3>Quick Links</h3>
-                <p><a href="about.html" style="color:white;">About</a></p>
-                <p>Privacy Policy</p>
-                <p>Return Policy</p>
-                <p>Shipping Info</p>
+                <p><a href="{{ url_for('about') }}">About</a></p>
+                <p><a href="#">Privacy Policy</a></p>
+                <p><a href="#">Return Policy</a></p>
+                <p><a href="#">Shipping Info</a></p>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ✅ FAQ Toggle
+        // FAQ Toggle
         document.querySelectorAll('.faq-question').forEach(q => {
             q.addEventListener('click', () => {
                 const answer = q.nextElementSibling;
@@ -373,7 +531,7 @@
             });
         });
 
-        // ✅ Search Filter for City List
+        // City Search Filter
         const citySearch = document.getElementById('citySearch');
         const cityList = document.getElementById('cityList').getElementsByTagName('button');
 
@@ -384,6 +542,16 @@
                 btn.style.display = text.includes(filter) ? '' : 'none';
             }
         });
+
+        // Track Order
+        function trackOrder() {
+            const num = document.getElementById('trackingNumber').value;
+            if (num.trim()) {
+                alert('Tracking: ' + num + '\n\nOrder status will be displayed here.');
+            } else {
+                alert('Please enter a tracking number');
+            }
+        }
     </script>
 </body>
 
