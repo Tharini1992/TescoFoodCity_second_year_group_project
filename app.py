@@ -37,7 +37,7 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",   # Your MySQL password
-    database="digital_wallet_app"
+    database="tesco_food_city"
 )
 cursor = db.cursor(dictionary=True)
 def get_db_connection():
@@ -45,7 +45,7 @@ def get_db_connection():
         host="localhost",
         user="root",
         password="", 
-        database="digital_wallet_app"
+        database="tesco_food_city"
     )
 
 # ... then your routes ...
@@ -216,61 +216,54 @@ def cart_page():
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    # Ensure user is logged in
     if 'user_id' not in session:
-        flash("Please log in to checkout.", "warning")
         return redirect(url_for('login'))
-
+        
     cart = session.get('cart', [])
-    total = sum(float(item['price']) * int(item.get('qty', 1)) for item in cart)
+    total_price = sum(item['price'] for item in cart)
 
-    # HANDLE ORDER SUBMISSION
     if request.method == 'POST':
-        if not cart:
-            flash("Your cart is empty.", "warning")
-            return redirect(url_for('landing_page'))
-
-        # 1. Get Form Data
-        name = request.form.get('customer_name')
-        address = request.form.get('address')
-        payment = request.form.get('payment_method')
-
+        customer_name = request.form['customer_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        payment_method = request.form['payment_method']
+        
+        # --- Database Logic (Save Order) ---
         conn = get_db_connection()
         cursor = conn.cursor()
-
-        try:
-            # 2. Insert Order into 'orders' table
-            query_order = """
-                INSERT INTO orders (user_id, customer_name, address, total_price, payment_method, status, date_ordered)
-                VALUES (%s, %s, %s, %s, %s, 'Processing', NOW())
-            """
-            cursor.execute(query_order, (session['user_id'], name, address, total, payment))
-            order_id = cursor.lastrowid  # Get the ID of the order we just created
-
-            # 3. Insert Items into 'order_items' table
-            query_item = "INSERT INTO order_items (order_id, product_name, price, quantity) VALUES (%s, %s, %s, %s)"
+        
+        # 1. Insert Order
+        cursor.execute('''
+            INSERT INTO orders (user_id, total_price, status, payment_method, customer_name, address, phone) 
+            VALUES (%s, %s, 'Pending', %s, %s, %s, %s)
+        ''', (session['user_id'], total_price, payment_method, customer_name, address, phone))
+        
+        order_id = cursor.lastrowid
+        
+        # 2. Insert Order Items
+        for item in cart:
+            cursor.execute('''
+                INSERT INTO order_items (order_id, item_name, price, quantity)
+                VALUES (%s, %s, %s, 1)
+            ''', (order_id, item['name'], item['price']))
             
-            for item in cart:
-                cursor.execute(query_item, (order_id, item['name'], item['price'], item.get('qty', 1)))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        # --- Clear Cart ---
+        session.pop('cart', None)
+        
+        # --- SHOW SUCCESS PAGE (Updated Line) ---
+        # We pass 'total_price' to the new template so it can display it
+        return render_template('order_success.html', total_price=total_price)
 
-            conn.commit()
-            
-            # 4. Clear Cart
-            session.pop('cart', None)
-            flash("Order placed successfully!", "success")
-            return redirect(url_for('my_account'))
-
-        except Exception as e:
-            conn.rollback()
-            print(f"Error saving order: {e}")
-            flash("Something went wrong processing your order.", "danger")
-        finally:
-            cursor.close()
-            conn.close()
-
-    # RENDER CHECKOUT PAGE (GET)
-    # Pass user info to pre-fill the form
-    return render_template('checkout.html', cart=cart, total=total, user=session)
+    # GET Request (Show the form)
+    if not cart:
+        return redirect(url_for('landing_page'))
+        
+    user = {'username': session.get('username'), 'email': session.get('email')}
+    return render_template('checkout.html', cart=cart, total=total_price, user=user)
 
 
 
