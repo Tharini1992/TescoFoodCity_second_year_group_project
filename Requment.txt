@@ -34,6 +34,7 @@ werkzeug==3.0.4
 pip install flask mysql-connector-python werkzeug
 pip install flask-login
 pip install reportlab
+if you using python python -m pip install reportlab
 
 -- 2. Users Table
 CREATE TABLE IF NOT EXISTS users (
