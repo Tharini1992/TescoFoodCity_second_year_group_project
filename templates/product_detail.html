@@ -54,21 +54,28 @@
     .icons i { cursor:pointer; position:relative; }
 
     /* Red badge for all icons except user/account */
-    .icons i:not(.user-icon)::after { 
-        content: attr(data-count); 
-        position:absolute; 
-        top:-8px; 
-        right:-8px; 
-        background:red; 
-        color:white; 
-        font-size:12px; 
-        width:18px; 
-        height:18px; 
-        display:flex; 
-        justify-content:center; 
-        align-items:center; 
-        border-radius:50%; 
-    }
+  /* Badge ONLY for notification & cart */
+.icons i:not(.user-icon)::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Hide badge if count is 0 */
+.icons i[data-count="0"]::after {
+    display: none;
+}
+
 
     .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
 

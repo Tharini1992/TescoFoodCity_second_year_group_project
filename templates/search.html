@@ -377,21 +377,32 @@
 .icons i { cursor:pointer; position:relative; }
 
 /* Red badge for all icons except user/account */
-.icons i:not(.user-icon)::after { 
-    content: attr(data-count); 
-    position:absolute; 
-    top:-8px; 
-    right:-8px; 
-    background:red; 
-    color:white; 
-    font-size:12px; 
-    width:18px; 
-    height:18px; 
-    display:flex; 
-    justify-content:center; 
-    align-items:center; 
-    border-radius:50%; 
+/* Red badge ONLY for bell & cart icons */
+/* Red badge ONLY for bell & cart icons */
+/* Badge ONLY for notification & cart */
+.icons i:not(.user-icon)::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
+
+/* Hide badge if count is 0 */
+.icons i[data-count="0"]::after {
+    display: none;
+}
+
+
+
 
 .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
 
@@ -508,20 +519,23 @@
        data-bs-toggle="dropdown"
        aria-expanded="false">
 
-        <i class="fa-solid fa-circle-user fa-lg me-2 text-success"></i>
+      <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i>
+
         <span class="fw-bold">{{ session['username'] }}</span>
     </a>
 
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navUserDrop">
         <li>
             <a class="dropdown-item" href="{{ url_for('my_account') }}">
-                <i class="fa-solid fa-user me-2"></i> My Account
+               <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i>
+My Account
             </a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
             <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
-                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                <i class="fa-solid fa-circle-user fa-lg me-2 user-icon"></i>
+ Logout
             </a>
         </li>
     </ul>
@@ -720,11 +734,13 @@
 
 <a href="{{ url_for('product_detail', product_id=76) }}" class="product-link">
     <div class="product-card">
+       
         <img src="{{ url_for('static', filename='images/product/product10.png') }}">
+    </a>
         <div class="product-name">Sunquick Orange 1L</div>
         <div class="product-price">Rs.1,350.00</div>
     </div>
-</a>
+
 
 <a href="{{ url_for('product_detail', product_id=77) }}" class="product-link">
     <div class="product-card">
