@@ -293,12 +293,12 @@ def search_products():
         return jsonify([])
 
     cursor.execute(
-        "SELECT id, name, price, image_url FROM products WHERE name LIKE %s",
+        "SELECT id, name, price FROM products WHERE name LIKE %s",
         ('%' + query + '%',)
     )
     products = cursor.fetchall()
     results = [
-        {"id": p["id"], "name": p["name"], "price": float(p["price"]), "image_url": p["image_url"]}
+        {"id": p["id"], "name": p["name"], "price": float(p["price"])}
         for p in products
     ]
     return jsonify(results)
