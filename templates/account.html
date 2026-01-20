@@ -57,6 +57,10 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
         }
 
         .nav-pills .nav-link:hover {
@@ -183,9 +187,15 @@
             <a href="{{ url_for('landing_page') }}" class="nav-link nav-link-dashboard mb-3">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
+            
+            <a href="{{ url_for('cart') }}" class="nav-link">
+                <i class="bi bi-cart3"></i> Cart
+            </a>
+
             <button class="nav-link active" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab">
                 <i class="bi bi-receipt"></i> Orders
             </button>
+            
             <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab">
                 <i class="bi bi-person-gear"></i> Account Settings
             </button>
@@ -217,6 +227,7 @@
         {% endwith %}
 
         <div class="tab-content" id="v-pills-tabContent">
+            
             <div class="tab-pane fade show active" id="v-pills-orders" role="tabpanel">
                 <div class="page-header">
                     <h2 class="h4">Order History</h2>
