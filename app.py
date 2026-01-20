@@ -37,7 +37,11 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",   # Your MySQL password
-    database="digital_wallet_app"
+    database="digital_wallet_app",
+     autocommit=True,
+    connection_timeout=30
+
+    
 )
 cursor = db.cursor(dictionary=True)
 def get_db_connection():
@@ -45,7 +49,9 @@ def get_db_connection():
         host="localhost",
         user="root",
         password="", 
-        database="digital_wallet_app"
+        database="digital_wallet_app",
+         autocommit=True,
+    connection_timeout=30
     )
 
 # ... then your routes ...
