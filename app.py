@@ -37,7 +37,7 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",   # Your MySQL password
-    database="tesco_food_city"
+    database="digital_wallet_app"
 )
 cursor = db.cursor(dictionary=True)
 def get_db_connection():
@@ -45,7 +45,7 @@ def get_db_connection():
         host="localhost",
         user="root",
         password="", 
-        database="tesco_food_city"
+        database="digital_wallet_app"
     )
 
 # ... then your routes ...
