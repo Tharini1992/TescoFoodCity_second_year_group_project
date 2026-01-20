@@ -39,11 +39,11 @@
         .brand-logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #198754; /* Tesco Green */
+            color: #198754; 
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
-            text-decoration: none; /* Remove underline for link */
+            text-decoration: none; 
         }
 
         .nav-pills .nav-link {
@@ -64,16 +64,14 @@
             color: #000;
         }
 
-        /* Style for the active tab */
         .nav-pills .nav-link.active {
-            background-color: #e8f5e9; /* Light Green bg */
-            color: #198754; /* Dark Green text */
+            background-color: #e8f5e9; 
+            color: #198754; 
             font-weight: 600;
         }
         
-        /* Special style for the "Dashboard/Back" link to distinguish it */
         .nav-link-dashboard {
-            color: #198754 !important; /* Tesco Green */
+            color: #198754 !important;
             font-weight: 600 !important;
         }
         
@@ -157,7 +155,6 @@
         .status-processing { background-color: #cff4fc; color: #055160; }
         .status-completed { background-color: #d1e7dd; color: #0f5132; }
 
-        /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -171,7 +168,6 @@
                 margin-left: 0;
                 padding: 1rem;
             }
-            .d-none-mobile { display: none; }
         }
     </style>
 </head>
@@ -184,11 +180,9 @@
         </a>
         
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-            
             <a href="{{ url_for('landing_page') }}" class="nav-link nav-link-dashboard mb-3">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-
             <button class="nav-link active" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab">
                 <i class="bi bi-receipt"></i> Orders
             </button>
@@ -209,19 +203,11 @@
     </nav>
 
     <main class="main-content">
-        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="mb-4">
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0" role="alert">
-                        {% if category == 'success' %}
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                        {% elif category == 'danger' %}
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        {% else %}
-                            <i class="bi bi-info-circle-fill me-2"></i>
-                        {% endif %}
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -231,11 +217,10 @@
         {% endwith %}
 
         <div class="tab-content" id="v-pills-tabContent">
-            
             <div class="tab-pane fade show active" id="v-pills-orders" role="tabpanel">
                 <div class="page-header">
                     <h2 class="h4">Order History</h2>
-                    <p class="text-muted">View details and status of your past purchases.</p>
+                    <p class="text-muted">View details and download invoices.</p>
                 </div>
 
                 <div class="content-card">
@@ -245,24 +230,19 @@
                             <thead>
                                 <tr>
                                     <th class="ps-4">Order ID</th>
-                                    <th>Date Ordered</th>
+                                    <th>Date</th>
                                     <th>Items</th>
                                     <th>Total</th>
                                     <th>Status</th>
-                                </tr>
+                                    <th>Invoice</th> </tr>
                             </thead>
                             <tbody>
                                 {% for order in orders %}
                                 <tr>
                                     <td class="ps-4 fw-bold text-primary">#{{ order.id }}</td>
+                                    <td>{{ order.date_ordered }}</td>
                                     <td>
-                                        <div class="d-flex flex-column">
-                                            <span>{{ order.date_ordered }}</span>
-                                            <span class="small text-muted">{{ order.payment_method }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="d-inline-block text-truncate" style="max-width: 250px;" title="{{ order.items_str }}">
+                                        <span class="d-inline-block text-truncate" style="max-width: 200px;" title="{{ order.items_str }}">
                                             {{ order.items_str }}
                                         </span>
                                     </td>
@@ -278,6 +258,11 @@
                                             <span class="badge bg-secondary">{{ order.status }}</span>
                                         {% endif %}
                                     </td>
+                                    <td>
+                                        <a href="{{ url_for('download_invoice', order_id=order.id) }}" class="btn btn-sm btn-outline-dark">
+                                            <i class="bi bi-download"></i> PDF
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -285,11 +270,7 @@
                     </div>
                     {% else %}
                     <div class="text-center p-5">
-                        <div class="mb-3">
-                            <i class="bi bi-cart-x text-muted" style="font-size: 3rem;"></i>
-                        </div>
                         <h5 class="text-muted">No orders found</h5>
-                        <p class="text-muted small">Looks like you haven't made any purchases yet.</p>
                         <a href="{{ url_for('landing_page') }}" class="btn btn-outline-success btn-sm mt-2">Go Shopping</a>
                     </div>
                     {% endif %}
@@ -299,9 +280,7 @@
             <div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
                 <div class="page-header">
                     <h2 class="h4">Account Settings</h2>
-                    <p class="text-muted">Manage your personal information and security preferences.</p>
                 </div>
-
                 <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="content-card h-100">
@@ -312,24 +291,21 @@
                                 <form action="{{ url_for('update_info') }}" method="POST">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="floatingName" name="name" 
-                                               value="{{ session.get('username', '') }}" placeholder="Name" required>
+                                               value="{{ session.get('username', '') }}" required>
                                         <label for="floatingName">Full Name</label>
                                     </div>
                                     <div class="form-floating mb-4">
                                         <input type="email" class="form-control" id="floatingEmail" name="email" 
-                                               value="{{ session.get('email', '') }}" placeholder="name@example.com">
+                                               value="{{ session.get('email', '') }}">
                                         <label for="floatingEmail">Email Address</label>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            Save Changes
-                                        </button>
+                                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-6">
                         <div class="content-card h-100">
                             <div class="card-header-clean">
@@ -338,21 +314,19 @@
                             <div class="p-4">
                                 <form action="{{ url_for('change_password') }}" method="POST">
                                     <div class="form-floating mb-3">
-                                        <input type="password" class="form-control" id="currentPass" name="current_password" placeholder="Current Password" required>
-                                        <label for="currentPass">Current Password</label>
+                                        <input type="password" class="form-control" name="current_password" placeholder="Current" required>
+                                        <label>Current Password</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input type="password" class="form-control" id="newPass" name="new_password" placeholder="New Password" required>
-                                        <label for="newPass">New Password</label>
+                                        <input type="password" class="form-control" name="new_password" placeholder="New" required>
+                                        <label>New Password</label>
                                     </div>
                                     <div class="form-floating mb-4">
-                                        <input type="password" class="form-control" id="confirmPass" name="confirm_password" placeholder="Confirm Password" required>
-                                        <label for="confirmPass">Confirm New Password</label>
+                                        <input type="password" class="form-control" name="confirm_password" placeholder="Confirm" required>
+                                        <label>Confirm New Password</label>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-outline-danger px-4">
-                                            Update Password
-                                        </button>
+                                        <button type="submit" class="btn btn-outline-danger px-4">Update Password</button>
                                     </div>
                                 </form>
                             </div>
@@ -363,8 +337,6 @@
 
         </div>
     </main>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

@@ -33,4 +33,5 @@ werkzeug==3.0.4
 
 pip install flask mysql-connector-python werkzeug
 pip install flask-login
+pip install reportlab
 
