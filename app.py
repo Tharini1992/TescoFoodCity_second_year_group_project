@@ -1,4 +1,8 @@
 import os
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from flask import send_file
 import random
 import string
 import secrets
@@ -614,7 +618,74 @@ def delete_user(id):
 # AUTHENTICATION
 # -----------------------------
 
+@app.route('/download_invoice/<int:order_id>')
+def download_invoice(order_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get Order Info
+    cursor.execute("SELECT * FROM orders WHERE id = %s AND user_id = %s", (order_id, session['user_id']))
+    order = cursor.fetchone()
+    
+    if not order:
+        cursor.close()
+        conn.close()
+        flash("Order not found.", "danger")
+        return redirect(url_for('my_account'))
+        
+    # Get Order Items
+    cursor.execute("SELECT * FROM order_items WHERE order_id = %s", (order_id,))
+    items = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
 
+    # Generate PDF
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    
+    # Header
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, 750, "Tesco Food City - Invoice")
+    
+    p.setFont("Helvetica", 12)
+    p.drawString(50, 730, f"Order ID: #{order['id']}")
+    p.drawString(50, 715, f"Date: {order['date_ordered']}")
+    p.drawString(50, 700, f"Customer: {session.get('username')}")
+    p.drawString(50, 685, f"Status: {order['status']}")
+    
+    p.line(50, 670, 550, 670)
+    
+    # Items
+    y = 650
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Item")
+    p.drawString(350, y, "Qty")
+    p.drawString(450, y, "Price")
+    y -= 20
+    
+    p.setFont("Helvetica", 12)
+    for item in items:
+        p.drawString(50, y, item['item_name'])
+        p.drawString(350, y, str(item['quantity']))
+        p.drawString(450, y, f"Rs. {item['price']}")
+        y -= 20
+        
+    p.line(50, y, 550, y)
+    y -= 20
+    
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(350, y, "Total Amount:")
+    p.drawString(450, y, f"Rs. {order['total_price']}")
+    
+    p.showPage()
+    p.save()
+    
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name=f"invoice_{order_id}.pdf", mimetype='application/pdf')
 
 
 
