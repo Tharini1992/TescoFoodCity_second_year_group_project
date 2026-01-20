@@ -19,9 +19,7 @@
             <ul class="list-group mb-3 shadow-sm">
                 {% for item in cart %}
                 <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0">{{ item.name }}</h6>
-                    </div>
+                    <div><h6 class="my-0">{{ item.name }}</h6></div>
                     <span class="text-muted">Rs. {{ item.price }}</span>
                 </li>
                 {% endfor %}
@@ -38,39 +36,31 @@
                     <h4 class="mb-3">Billing Details</h4>
                     <form action="{{ url_for('checkout') }}" method="POST">
                         <div class="row g-3">
-                            
                             <div class="col-12">
                                 <label class="form-label">Full Name</label>
                                 <input type="text" class="form-control" name="customer_name" value="{{ user.username }}" required>
                             </div>
-
                             <div class="col-12">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="user_email" value="{{ user.email }}" required>
                             </div>
-
                             <div class="col-12">
                                 <label class="form-label">Phone Number</label>
                                 <input type="text" class="form-control" name="phone" placeholder="07xxxxxxxx" required>
                             </div>
-
                             <div class="col-12">
                                 <label class="form-label">Delivery Address</label>
                                 <input type="text" class="form-control" name="address" placeholder="123 Main St, City" required>
                             </div>
-
                             <div class="col-12">
                                 <label class="form-label">Payment Method</label>
                                 <select class="form-select" name="payment_method">
                                     <option value="Cash on Delivery">Cash on Delivery</option>
                                     <option value="Credit Card">Credit Card</option>
-                                    <option value="Bank Transfer">Bank Transfer</option>
                                 </select>
                             </div>
                         </div>
-
                         <hr class="my-4">
-
                         <button class="w-100 btn btn-primary btn-lg" type="submit">Confirm Order</button>
                     </form>
                 </div>
@@ -78,6 +68,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

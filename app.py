@@ -203,20 +203,71 @@ def remove_from_cart():
     session['cart'] = cart
     return redirect(url_for('cart_page'))
 
-
-
-@app.route('/checkout')
-def checkout():
-    cart_items = session.get('cart', [])
-    total = sum(item['price'] * item['qty'] for item in cart_items)
-    return render_template('checkout.html', total=total)
-
-
 @app.route('/cart')
 def cart_page():
     cart = session.get('cart', [])
     total = sum(float(item['price']) * int(item['qty']) for item in cart)
     return render_template('cart.html', cart_items=cart, total=total)
+
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    # Ensure user is logged in
+    if 'user_id' not in session:
+        flash("Please log in to checkout.", "warning")
+        return redirect(url_for('login'))
+
+    cart = session.get('cart', [])
+    total = sum(float(item['price']) * int(item.get('qty', 1)) for item in cart)
+
+    # HANDLE ORDER SUBMISSION
+    if request.method == 'POST':
+        if not cart:
+            flash("Your cart is empty.", "warning")
+            return redirect(url_for('landing_page'))
+
+        # 1. Get Form Data
+        name = request.form.get('customer_name')
+        address = request.form.get('address')
+        payment = request.form.get('payment_method')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        try:
+            # 2. Insert Order into 'orders' table
+            query_order = """
+                INSERT INTO orders (user_id, customer_name, address, total_price, payment_method, status, date_ordered)
+                VALUES (%s, %s, %s, %s, %s, 'Processing', NOW())
+            """
+            cursor.execute(query_order, (session['user_id'], name, address, total, payment))
+            order_id = cursor.lastrowid  # Get the ID of the order we just created
+
+            # 3. Insert Items into 'order_items' table
+            query_item = "INSERT INTO order_items (order_id, product_name, price, quantity) VALUES (%s, %s, %s, %s)"
+            
+            for item in cart:
+                cursor.execute(query_item, (order_id, item['name'], item['price'], item.get('qty', 1)))
+
+            conn.commit()
+            
+            # 4. Clear Cart
+            session.pop('cart', None)
+            flash("Order placed successfully!", "success")
+            return redirect(url_for('my_account'))
+
+        except Exception as e:
+            conn.rollback()
+            print(f"Error saving order: {e}")
+            flash("Something went wrong processing your order.", "danger")
+        finally:
+            cursor.close()
+            conn.close()
+
+    # RENDER CHECKOUT PAGE (GET)
+    # Pass user info to pre-fill the form
+    return render_template('checkout.html', cart=cart, total=total, user=session)
+
 
 
 @app.route('/about')
@@ -812,13 +863,37 @@ def delivery_dashboard():
 # -----------------------------
 @app.route('/my_account')
 def my_account():
-    # Check if user is logged in
-    if 'username' not in session:
+    if 'user_id' not in session:
         flash("Please login to view your account.", "warning")
         return redirect(url_for('login'))
     
-    # Render the new account page HTML
-    return render_template("account.html", username=session['username'])
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    orders = []
+    
+    try:
+        # 1. Fetch User's Orders
+        cursor.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY date_ordered DESC", (session['user_id'],))
+        orders = cursor.fetchall()
+        
+        # 2. Fetch Items for each Order (to display "Milk, Rice" etc.)
+        for order in orders:
+            cursor.execute("SELECT product_name, quantity FROM order_items WHERE order_id = %s", (order['id'],))
+            items = cursor.fetchall()
+            
+            # Create a string like "Fresh Milk (x2), Rice (x1)"
+            item_list = [f"{i['product_name']} (x{i['quantity']})" for i in items]
+            order['items_str'] = ", ".join(item_list)
+            
+    except Exception as e:
+        print(f"Error fetching account data: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template("account.html", username=session.get('username'), orders=orders)
+
 
 # Placeholder routes for the buttons in your account page (to avoid errors)
 @app.route('/personal_data', methods=['GET', 'POST'])
