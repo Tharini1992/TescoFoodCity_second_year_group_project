@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - Tesco Food City</title>
+    <title>About Us - Tesco Food City</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
          :root {
             --primary-green: #1acc31;
@@ -25,6 +25,7 @@
             font-family: Arial, sans-serif;
             background: #f7f7f7;
         }
+        /* ====== NAVBAR ====== */
         
         .navbar {
             display: flex;
@@ -35,29 +36,6 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-        }
-        
-        .nav-links a:hover {
-            color: #43a047;
-            /* green on hover */
-        }
-        
-        .icons span {
-            margin-left: 15px;
-            cursor: pointer;
-        }
-        /* Icon Styling */
-        
         .icons {
             display: flex;
             gap: 15px;
@@ -67,36 +45,20 @@
             font-size: 20px;
             color: #333;
             cursor: pointer;
-            position: relative;
             transition: transform 0.2s ease, color 0.3s ease;
         }
         
         .icons .icon:hover {
-            color: #43a047;
-            /* green on hover */
+            color: var(--primary-green);
             transform: scale(1.2);
         }
-        /* Example: notification badge */
-        
-        .icons .icon .badge {
-            position: absolute;
-            top: -5px;
-            right: -8px;
-            background: red;
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 2px 5px;
-            border-radius: 50%;
-        }
-        /* Hero Section */
+        /* ====== HERO SECTION ====== */
         
         .hero-section {
-            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: white;
             padding: 4rem 0;
-            margin: 2rem 0;
-            border-radius: 15px;
+            text-align: center;
         }
         
         .hero-title {
@@ -109,108 +71,112 @@
             font-size: 1.2rem;
             opacity: 0.9;
         }
-        /* Mission & Vision Cards */
+        /* ====== SECTION TITLE ====== */
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-green);
+            margin: 8px auto 0;
+        }
+        /* ====== MISSION & VISION ====== */
         
         .mission-vision {
-            margin: 4rem 0;
+            padding: 3rem 0;
         }
         
-        .mission-card,
-        .vision-card {
-            background: rgb(196, 193, 193);
-            border-radius: 10px;
+        .mv-card {
+            background: white;
+            border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(162, 45, 45, 0.1);
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             height: 100%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            border-top: 4px solid var(--primary-green);
+            transition: transform 0.3s ease;
         }
         
-        .mission-card:hover,
-        .vision-card:hover {
+        .mv-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            color: var(--dark-green);
         }
         
-        .mission-card h3,
-        .vision-card h3 {
-            color: whitesmoke;
-            margin-bottom: 1rem;
+        .mv-card h3 {
+            color: var(--dark-green);
             font-weight: bold;
+            margin-bottom: 1rem;
         }
-        /* Key Features */
+        
+        .mv-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        /* ====== FEATURES ====== */
         
         .features-section {
-            margin: 4rem 0;
-        }
-        
-        .features-title {
-            text-align: center;
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 3rem;
-            font-weight: bold;
+            padding: 3rem 0;
+            background: white;
         }
         
         .feature-card {
             background: var(--primary-green);
             color: white;
             border-radius: 10px;
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             text-align: center;
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transition: all 0.3s ease;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
         
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(45, 134, 89, 0.3);
+            box-shadow: 0 8px 20px rgba(26, 204, 49, 0.3);
         }
         
         .feature-card i {
             font-size: 2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
         
-        .feature-card span {
+        .feature-card h5 {
             font-weight: 600;
-            font-size: 0.9rem;
+            margin: 0;
         }
-        /* Team Section */
+        /* ====== TEAM SECTION ====== */
         
         .team-section {
-            margin: 4rem 0;
             padding: 3rem 0;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .team-title {
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            color: #333;
-            border-bottom: 2px solid var(--primary-green);
-            display: inline-block;
-            padding-bottom: 0.5rem;
         }
         
         .team-member {
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
         }
         
         .team-member-avatar {
             width: 80px;
             height: 80px;
-            background: var(--accent-green);
-            border-radius: 100%;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+            border-radius: 50%;
             margin: 0 auto 1rem;
             display: flex;
             align-items: center;
@@ -221,22 +187,52 @@
         }
         
         .team-member h5 {
-            color: var(--primary-green);
-            margin-bottom: 0.5rem;
+            color: var(--dark-green);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
         }
         
         .team-member p {
-            font-size: 0.9rem;
-            color: #666;
+            font-size: 0.85rem;
+            color: var(--primary-green);
+            margin: 0;
+        }
+        /* ====== CTA BANNER ====== */
+        
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
         }
         
-        .team-footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            background: var(--primary-green);
-            color: white;
-            border-radius: 10px;
+        .cta-banner h3 {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cta-banner p {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-btn {
+            background: white;
+            color: var(--dark-green);
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-btn:hover {
+            transform: scale(1.05);
+            color: var(--dark-green);
         }
         /* ====== FOOTER ====== */
         
@@ -256,11 +252,16 @@
         .footer-content h3 {
             margin-bottom: 10px;
         }
-        /* ====== NAVBAR ====== */
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .navbar {
+                padding: 15px 20px;
+            }
+        }
     </style>
-
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -268,182 +269,127 @@
     <!-- ✅ HEADER / NAVBAR -->
     <header>
         <nav class="navbar">
-            <!-- Brand Logo on the top left corner -->
             <div class="logo">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" height="50">
-                <!-- replace logo.png with your logo -->
             </div>
-
-
-
-            <ul class="nav-links">
-
-
-            </ul>
-
-
-
-            <!-- Icons on right -->
             <div class="icons">
                 <span class="icon"><i class="fa-solid fa-bell"></i></span>
-                <!-- Notification -->
                 <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
-                <!-- Cart -->
                 <span class="icon"><i class="fa-solid fa-user"></i></span>
-                <!-- Account -->
             </div>
-
-
         </nav>
     </header>
 
+    <!-- ✅ HERO SECTION -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">About Tesco Food City</h1>
+            <p class="hero-subtitle">A modern solution for online grocery shopping in Sri Lanka</p>
+        </div>
+    </section>
+
     <div class="container">
-        <!-- Home Section -->
-        <div id="home-section" class="page-section">
-            <!-- Hero Section -->
-            <div class="hero-section text-center fade-in">
-                <h1 class="hero-title">About Tesco Food City Store System</h1>
-                <p class="hero-subtitle">A modern solution for online grocery shopping in Sri Lanka</p>
-            </div>
-
-            <!-- Mission & Vision -->
-            <div class="mission-vision">
-                <div class="row">
-                    <div class="col-md-6 mb-4">
-                        <div class="mission-card fade-in">
-                            <h3>Our Mission</h3>
-                            <p>To bring convenience to grocery shopping with secure payment, delivery tracking, and customer-friendly online services.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="vision-card fade-in">
-                            <h3>Our Vision</h3>
-                            <p>To become the most reliable and customer-friendly online grocery store in Sri Lanka.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Key Features -->
-            <div class="features-section">
-                <h2 class="features-title">Key Features</h2>
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <div class="feature-card" onclick="showFeatureDetail('secure-payment')">
-                            <i class="fas fa-lock"></i>
-                            <span>Secure Payment</span>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="feature-card" onclick="showFeatureDetail('order-tracking')">
-                            <i class="fas fa-truck"></i>
-                            <span>Order Tracking</span>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="feature-card" onclick="showFeatureDetail('fresh-delivery')">
-                            <i class="fas fa-leaf"></i>
-                            <span>Fresh Delivery</span>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="feature-card" onclick="showFeatureDetail('easy-returns')">
-                            <i class="fas fa-undo"></i>
-                            <span>Easy Returns & Refunds</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Team Section -->
-            <div class="team-section">
-                <div class="container">
-                    <h2 class="team-title">Meet Our Team</h2>
-                    <div class="row">
-                        <div class="col-md-2 col-sm-4 col-6">
-                            <div class="team-member">
-                                <div class="team-member-avatar">WS</div>
-                                <h5>W.S.Kavindya</h5>
-                                <p>Developer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-6">
-                            <div class="team-member">
-                                <div class="team-member-avatar">MD</div>
-                                <h5>M.D.D.Perera</h5>
-                                <p>Developer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-6">
-                            <div class="team-member">
-                                <div class="team-member-avatar">PM</div>
-                                <h5>P.M.Wijayasekara</h5>
-                                <p>Developer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-6">
-                            <div class="team-member">
-                                <div class="team-member-avatar">UK</div>
-                                <h5>U.K.T.M.Silva</h5>
-                                <p>Developer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-6">
-                            <div class="team-member">
-                                <div class="team-member-avatar">NA</div>
-                                <h5>N.A.S.S.Devinda</h5>
-                                <p>Developer</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-footer">
-                        <p><strong>Join thousands of Sri Lankans making grocery shopping easier everyday</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Section -->
-        <div id="products-section" class="page-section" style="display: none;">
+        <!-- ✅ MISSION & VISION -->
+        <section class="mission-vision">
+            <h2 class="section-title">Our Mission & Vision</h2>
             <div class="row">
-                <div class="col-12">
-                    <h2 class="mb-4">Our Products</h2>
-                    <div class="row" id="product-list">
-                        <!-- Products will be loaded here -->
+                <div class="col-md-6 mb-4">
+                    <div class="mv-card">
+                        <h3><i class="fas fa-bullseye me-2"></i>Our Mission</h3>
+                        <p>To bring convenience to grocery shopping with secure payment, delivery tracking, and customer-friendly online services.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="mv-card">
+                        <h3><i class="fas fa-eye me-2"></i>Our Vision</h3>
+                        <p>To become the most reliable and customer-friendly online grocery store in Sri Lanka.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Contact Form Section -->
-        <div id="contact-section" class="page-section" style="display: none;">
+        <!-- ✅ KEY FEATURES -->
+        <section class="features-section">
+            <h2 class="section-title">Key Features</h2>
             <div class="row">
-                <div class="col-md-8 mx-auto">
-                    <h2 class="mb-4 text-center">Contact Us</h2>
-                    <form id="contact-form" class="bg-white p-4 rounded shadow">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name *</label>
-                            <input type="text" class="form-control" id="name" required>
-                            <div class="invalid-feedback">Please enter your name.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" required>
-                            <div class="invalid-feedback">Please enter a valid email.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message *</label>
-                            <textarea class="form-control" id="message" rows="4" required></textarea>
-                            <div class="invalid-feedback">Please enter your message.</div>
-                        </div>
-                        <button type="submit" class="btn btn-success">Send Message</button>
-                    </form>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="feature-card">
+                        <i class="fas fa-lock"></i>
+                        <h5>Secure Payment</h5>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="feature-card">
+                        <i class="fas fa-truck"></i>
+                        <h5>Order Tracking</h5>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="feature-card">
+                        <i class="fas fa-leaf"></i>
+                        <h5>Fresh Delivery</h5>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="feature-card">
+                        <i class="fas fa-undo"></i>
+                        <h5>Easy Returns</h5>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <!-- ✅ TEAM SECTION -->
+        <section class="team-section">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="team-member">
+                        <div class="team-member-avatar">WS</div>
+                        <h5>W.S.Kavindya</h5>
+                        <p>Developer</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="team-member">
+                        <div class="team-member-avatar">MD</div>
+                        <h5>M.D.D.Perera</h5>
+                        <p>Developer</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="team-member">
+                        <div class="team-member-avatar">PM</div>
+                        <h5>P.M.Wijayasekara</h5>
+                        <p>Developer</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="team-member">
+                        <div class="team-member-avatar">UK</div>
+                        <h5>U.K.T.M.Silva</h5>
+                        <p>Developer</p>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="team-member">
+                        <div class="team-member-avatar">NA</div>
+                        <h5>N.A.S.S.Devinda</h5>
+                        <p>Developer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ CTA BANNER -->
+        <div class="cta-banner">
+            <h3>Ready to Start Shopping?</h3>
+            <p>Join thousands of Sri Lankans making grocery shopping easier every day</p>
+            <a href="{{ url_for('landing_page') }}" class="cta-btn">
+                <i class="fas fa-shopping-cart me-2"></i>Shop Now
+            </a>
         </div>
     </div>
-
-
 
     <!-- ✅ FOOTER -->
     <footer>
@@ -468,19 +414,7 @@
         </div>
     </footer>
 
-    <script>
-        document.querySelector('a[href="#contact"]').addEventListener('click', function(e) {
-            e.preventDefault(); // stop the default jump
-            // Hide other sections
-            document.querySelectorAll('.page-section').forEach(sec => sec.style.display = 'none');
-            // Show contact section
-            document.getElementById('contact-section').style.display = 'block';
-            // Smooth scroll into view
-            document.getElementById('contact-section').scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
