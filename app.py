@@ -1,4 +1,8 @@
 import os
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from flask import send_file
 import random
 import string
 import secrets
@@ -203,20 +207,71 @@ def remove_from_cart():
     session['cart'] = cart
     return redirect(url_for('cart_page'))
 
-
-
-@app.route('/checkout')
-def checkout():
-    cart_items = session.get('cart', [])
-    total = sum(item['price'] * item['qty'] for item in cart_items)
-    return render_template('checkout.html', total=total)
-
-
 @app.route('/cart')
 def cart_page():
     cart = session.get('cart', [])
     total = sum(float(item['price']) * int(item['qty']) for item in cart)
     return render_template('cart.html', cart_items=cart, total=total)
+
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    # Ensure user is logged in
+    if 'user_id' not in session:
+        flash("Please log in to checkout.", "warning")
+        return redirect(url_for('login'))
+
+    cart = session.get('cart', [])
+    total = sum(float(item['price']) * int(item.get('qty', 1)) for item in cart)
+
+    # HANDLE ORDER SUBMISSION
+    if request.method == 'POST':
+        if not cart:
+            flash("Your cart is empty.", "warning")
+            return redirect(url_for('landing_page'))
+
+        # 1. Get Form Data
+        name = request.form.get('customer_name')
+        address = request.form.get('address')
+        payment = request.form.get('payment_method')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        try:
+            # 2. Insert Order into 'orders' table
+            query_order = """
+                INSERT INTO orders (user_id, customer_name, address, total_price, payment_method, status, date_ordered)
+                VALUES (%s, %s, %s, %s, %s, 'Processing', NOW())
+            """
+            cursor.execute(query_order, (session['user_id'], name, address, total, payment))
+            order_id = cursor.lastrowid  # Get the ID of the order we just created
+
+            # 3. Insert Items into 'order_items' table
+            query_item = "INSERT INTO order_items (order_id, product_name, price, quantity) VALUES (%s, %s, %s, %s)"
+            
+            for item in cart:
+                cursor.execute(query_item, (order_id, item['name'], item['price'], item.get('qty', 1)))
+
+            conn.commit()
+            
+            # 4. Clear Cart
+            session.pop('cart', None)
+            flash("Order placed successfully!", "success")
+            return redirect(url_for('my_account'))
+
+        except Exception as e:
+            conn.rollback()
+            print(f"Error saving order: {e}")
+            flash("Something went wrong processing your order.", "danger")
+        finally:
+            cursor.close()
+            conn.close()
+
+    # RENDER CHECKOUT PAGE (GET)
+    # Pass user info to pre-fill the form
+    return render_template('checkout.html', cart=cart, total=total, user=session)
+
 
 
 @app.route('/about')
@@ -343,6 +398,64 @@ def frozen():
 @app.route('/category/grocery')
 def grocery():
     return render_template('grocery.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # -----------------------------
@@ -505,41 +618,77 @@ def delete_user(id):
 # AUTHENTICATION
 # -----------------------------
 
-
-
-
-
-
-# -----------------------------
-# MISSING ROUTE: Update Personal Info
-# -----------------------------
-@app.route('/update_info', methods=['POST'])
-def update_info():
-    # 1. Check if user is logged in
-    if 'user' not in session:
+@app.route('/download_invoice/<int:order_id>')
+def download_invoice(order_id):
+    if 'user_id' not in session:
         return redirect(url_for('login'))
-
-    user_id = session['user']['id']
-    new_name = request.form.get('name')
-    new_email = request.form.get('email')
-
-    try:
-        # 2. Update Name
-        if new_name:
-            cursor.execute("UPDATE users SET username = %s WHERE id = %s", (new_name, user_id))
-            session['user']['name'] = new_name # Update session immediately
-
-        # 3. Update Email (if provided)
-        if new_email:
-            cursor.execute("UPDATE users SET email = %s WHERE id = %s", (new_email, user_id))
         
-        db.commit()
-        flash("Information updated successfully!", "success")
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get Order Info
+    cursor.execute("SELECT * FROM orders WHERE id = %s AND user_id = %s", (order_id, session['user_id']))
+    order = cursor.fetchone()
+    
+    if not order:
+        cursor.close()
+        conn.close()
+        flash("Order not found.", "danger")
+        return redirect(url_for('my_account'))
         
-    except mysql.connector.Error as err:
-        flash(f"Error updating info: {err}", "danger")
+    # Get Order Items
+    cursor.execute("SELECT * FROM order_items WHERE order_id = %s", (order_id,))
+    items = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
 
-    return redirect(url_for('my_account'))
+    # Generate PDF
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    
+    # Header
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, 750, "Tesco Food City - Invoice")
+    
+    p.setFont("Helvetica", 12)
+    p.drawString(50, 730, f"Order ID: #{order['id']}")
+    p.drawString(50, 715, f"Date: {order['date_ordered']}")
+    p.drawString(50, 700, f"Customer: {session.get('username')}")
+    p.drawString(50, 685, f"Status: {order['status']}")
+    
+    p.line(50, 670, 550, 670)
+    
+    # Items
+    y = 650
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Item")
+    p.drawString(350, y, "Qty")
+    p.drawString(450, y, "Price")
+    y -= 20
+    
+    p.setFont("Helvetica", 12)
+    for item in items:
+        p.drawString(50, y, item['item_name'])
+        p.drawString(350, y, str(item['quantity']))
+        p.drawString(450, y, f"Rs. {item['price']}")
+        y -= 20
+        
+    p.line(50, y, 550, y)
+    y -= 20
+    
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(350, y, "Total Amount:")
+    p.drawString(450, y, f"Rs. {order['total_price']}")
+    
+    p.showPage()
+    p.save()
+    
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name=f"invoice_{order_id}.pdf", mimetype='application/pdf')
+
+
+
 
 # -----------------------------
 # Manual Login
@@ -754,92 +903,148 @@ def delivery_dashboard():
 # -----------------------------
 @app.route('/my_account')
 def my_account():
-    # Check if user is logged in
-    if 'username' not in session:
+    if 'user_id' not in session:
         flash("Please login to view your account.", "warning")
         return redirect(url_for('login'))
     
-    # Render the new account page HTML
-    return render_template("account.html", username=session['username'])
-
-# Placeholder routes for the buttons in your account page (to avoid errors)
-@app.route('/personal_data', methods=['GET', 'POST'])
-def personal_data():
-    if 'user_id' not in session:
-        flash("Please login first.", "danger")
-        return redirect(url_for('login'))
-
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
-    if request.method == 'POST':
-        new_username = request.form['username']
-        new_email = request.form['email']
-        
-        try:
-            # Update user in database
-            cursor.execute("UPDATE users SET username=%s, email=%s WHERE id=%s", 
-                           (new_username, new_email, session['user_id']))
-            conn.commit()
-            
-            # Update session data so the name changes in the navbar immediately
-            session['username'] = new_username
-            flash("Profile updated successfully!", "success")
-        except Exception as e:
-            flash("Error updating profile. Email might already exist.", "danger")
-            print(f"Error: {e}")
-
-    # Fetch current user details to pre-fill the form
-    cursor.execute("SELECT * FROM users WHERE id=%s", (session['user_id'],))
-    user = cursor.fetchone()
-    cursor.close()
-    conn.close()
-
-    return render_template("personal_data.html", user=user)
-
-@app.route('/change_password', methods=['POST'])
-def change_password():
-    # 1. Check if user is logged in
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    user_id = session['user']['id']
-    current_pass = request.form.get('current_password')
-    new_pass = request.form.get('new_password')
-    confirm_pass = request.form.get('confirm_password')
-
-    # 2. Check if new passwords match
-    if new_pass != confirm_pass:
-        flash("New passwords do not match!", "danger")
-        return redirect(url_for('my_account'))
-
+    
+    orders = []
+    
     try:
-        # 3. Get current password hash from DB
-        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
-        result = cursor.fetchone()
-
-        if result:
-            stored_hash = result['password']
-            
-            # 4. Verify current password
-            if check_password_hash(stored_hash, current_pass):
-                # 5. Hash new password and update
-                new_hash = generate_password_hash(new_pass)
-                cursor.execute("UPDATE users SET password = %s WHERE id = %s", (new_hash, user_id))
-                db.commit()
-                flash("Password changed successfully!", "success")
-            else:
-                flash("Incorrect current password.", "danger")
+        # 1. Fetch User's Orders
+        cursor.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY date_ordered DESC", (session['user_id'],))
+        orders = cursor.fetchall()
         
-    except mysql.connector.Error as err:
-        flash(f"Error changing password: {err}", "danger")
+        # 2. Fetch Items for each Order (to display "Milk, Rice" etc.)
+        for order in orders:
+            cursor.execute("SELECT product_name, quantity FROM order_items WHERE order_id = %s", (order['id'],))
+            items = cursor.fetchall()
+            
+            # Create a string like "Fresh Milk (x2), Rice (x1)"
+            item_list = [f"{i['product_name']} (x{i['quantity']})" for i in items]
+            order['items_str'] = ", ".join(item_list)
+            
+    except Exception as e:
+        print(f"Error fetching account data: {e}")
+    finally:
+        cursor.close()
+        conn.close()
 
-    return redirect(url_for('my_account'))
+    return render_template("account.html", username=session.get('username'), orders=orders)
+
+
+
 
 # ------------------------------------------------
 
 
+# -----------------------------
+# 1. UPDATE PERSONAL INFO
+# -----------------------------
+@app.route('/update_info', methods=['POST'])
+def update_info():
+    # Security: Check if user is logged in
+    if 'user_id' not in session:
+        flash("Please log in to update your profile.", "danger")
+        return redirect(url_for('login'))
 
+    user_id = session['user_id']
+    new_name = request.form.get('name')
+    new_email = request.form.get('email')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # 1. Update the database
+        # We update both username and email for the logged-in user
+        query = "UPDATE users SET username = %s, email = %s WHERE id = %s"
+        cursor.execute(query, (new_name, new_email, user_id))
+        conn.commit()
+
+        # 2. Verify and Update Session
+        # If the database update was successful, we update the live session
+        # so the name in the navbar changes immediately without re-login.
+        session['username'] = new_name
+        
+        # Check if rows were actually affected (optional verification)
+        if cursor.rowcount > 0:
+            flash("Profile details updated successfully!", "success")
+        else:
+            flash("No changes were made.", "info")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        flash("Error updating profile. This email might already be in use.", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('my_account'))
+
+
+# -----------------------------
+# 2. CHANGE PASSWORD
+# -----------------------------
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    # Security: Check if user is logged in
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    current_pass = request.form.get('current_password')
+    new_pass = request.form.get('new_password')
+    confirm_pass = request.form.get('confirm_password')
+
+    # 1. Basic Validation
+    if new_pass != confirm_pass:
+        flash("New passwords do not match!", "danger")
+        return redirect(url_for('my_account'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # 2. Fetch current password hash to verify identity
+        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+
+        if user:
+            stored_hash = user['password']
+            
+            # 3. Verify the OLD password
+            if check_password_hash(stored_hash, current_pass):
+                
+                # 4. Hash the NEW password
+                new_hash = generate_password_hash(new_pass)
+                
+                # 5. Update Database
+                update_query = "UPDATE users SET password = %s WHERE id = %s"
+                cursor.execute(update_query, (new_hash, user_id))
+                conn.commit()
+                
+                flash("Password changed successfully! Please log in again.", "success")
+                
+                # Optional: Logout user after password change for security
+                # session.clear()
+                # return redirect(url_for('login'))
+                
+            else:
+                flash("Incorrect current password.", "danger")
+        else:
+            flash("User not found.", "danger")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        flash("An error occurred while changing password.", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('my_account'))
 
 
 
