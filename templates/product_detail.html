@@ -57,7 +57,8 @@
 
     /* Red badge for all icons except user/account */
   /* Badge ONLY for notification & cart */
-.icons i:not(.user-icon)::after {
+.icons i.fa-bell::after,
+.icons i.fa-cart-shopping::after {
     content: attr(data-count);
     position: absolute;
     top: -8px;
@@ -73,10 +74,16 @@
     border-radius: 50%;
 }
 
-/* Hide badge if count is 0 */
+/* Hide badge when count is 0 */
 .icons i[data-count="0"]::after {
     display: none;
 }
+
+/* ABSOLUTE SAFETY: NEVER show badge on account icons */
+.no-badge::after {
+    display: none !important;
+}
+
 
 
     .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
