@@ -380,7 +380,9 @@
 /* Red badge ONLY for bell & cart icons */
 /* Red badge ONLY for bell & cart icons */
 /* Badge ONLY for notification & cart */
-.icons i:not(.user-icon)::after {
+/* Badge ONLY for notification & cart */
+.icons i.fa-bell::after,
+.icons i.fa-cart-shopping::after {
     content: attr(data-count);
     position: absolute;
     top: -8px;
@@ -396,11 +398,15 @@
     border-radius: 50%;
 }
 
-/* Hide badge if count is 0 */
+/* Hide badge when count is 0 */
 .icons i[data-count="0"]::after {
     display: none;
 }
 
+/* ABSOLUTE SAFETY: NEVER show badge on account icons */
+.no-badge::after {
+    display: none !important;
+}
 
 
 
@@ -527,14 +533,16 @@
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navUserDrop">
         <li>
             <a class="dropdown-item" href="{{ url_for('my_account') }}">
-               <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i>
+               <i class="fa-solid fa-circle-user fa-lg me-2"></i>
+
 My Account
             </a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
             <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
-                <i class="fa-solid fa-circle-user fa-lg me-2 user-icon"></i>
+               <i class="fa-solid fa-circle-user fa-lg me-2"></i>
+
  Logout
             </a>
         </li>
