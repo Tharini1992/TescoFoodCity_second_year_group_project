@@ -490,6 +490,32 @@ def register():
 
     return render_template("register.html")
 
+
+correct regiter # -----------------------------
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'])
+        role = request.form['role']
+
+        try:
+            cursor.execute(
+                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
+                (username, email, password, role)
+            )
+            db.commit()
+            flash("Registration successful! Please login.", "success")
+            return redirect(url_for('login'))
+        except mysql.connector.IntegrityError:
+            flash("Username or Email already exists.", "danger")
+
+    return render_template("register.html")
+
+
+
+
 @app.route("/verify", methods=["GET", "POST"])
 def verify():
     if 'reg_data' not in session:
@@ -516,15 +542,6 @@ def verify():
 
     return render_template("verify.html")
 
-
-@app.route("/resend_otp")
-def resend_otp():
-    if 'reg_data' in session:
-        new_otp = str(random.randint(100000, 999999))
-        session['reg_data']['otp'] = new_otp # Update the code
-        print(f"NEW VERIFICATION CODE: {new_otp}")
-        flash("A new code has been sent!", "info")
-    return redirect(url_for('verify'))
 
 
 
