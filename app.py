@@ -303,28 +303,92 @@ def search_products():
     ]
     return jsonify(results)
 
+# --- 1. PRODUCT PAGE (Fetches Product + Reviews) ---
 @app.route('/product/<int:product_id>')
-def product_detail(product_id):
-    cursor.execute(
-        
-        
-              "SELECT * FROM products WHERE id = %s",
-        (product_id,)
-    )
+def product_detail(product_id):  # <--- CHANGED TO SINGULAR to match your HTML
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # A. Fetch Product
+    cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
     product = cursor.fetchone()
 
-    if product is None:
-        return "<h3>Product not found!</h3>", 404
+    if not product:
+        cursor.close()
+        conn.close()
+        return "Product not found", 404
 
-    return render_template(
-        'product_detail.html',
-        product=product
-    )
+    # B. Fetch Reviews for this product
+    cursor.execute("SELECT * FROM reviews WHERE product_id = %s ORDER BY id DESC", (product_id,))
+    reviews_list = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    # C. Calculate Average Rating
+    total_rating = sum(r['rating'] for r in reviews_list)
+    if reviews_list:
+        avg_rating = round(total_rating / len(reviews_list), 1)
+        product['rating'] = avg_rating
+        product['reviews'] = len(reviews_list)
+    else:
+        product['rating'] = "No Ratings"
+        product['reviews'] = 0
+
+    # D. Attach reviews to the product object
+    product['reviews_list'] = reviews_list
+
+    # Ensure this matches your actual file name (e.g., product_detail.html)
+    return render_template('product_detail.html', product=product)
 
 
+# --- 2. ADD REVIEW ROUTE (No changes needed here, this is perfect) ---
+@app.route('/add_review', methods=['POST'])
+def add_review():
+    # A. Check if user is logged in
+    user_logged_in = False
+    username = "Anonymous"
 
+    if 'user_id' in session:
+        user_logged_in = True
+        username = session.get('username', 'User')
+    elif 'user' in session: # Google OAuth structure
+        user_logged_in = True
+        username = session['user'].get('name', 'User')
 
+    if not user_logged_in:
+        return jsonify({'message': 'Please log in to review'}), 401
 
+    # B. Get Data
+    data = request.get_json()
+    product_id = data.get('product_id')
+    rating = data.get('rating')
+    comment = data.get('comment')
+    current_date = datetime.now().strftime("%Y-%m-%d")
+
+    # C. Validation
+    if not rating or not comment:
+        return jsonify({'message': 'Rating and comment are required'}), 400
+
+    # D. Save to Database
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        sql = """
+            INSERT INTO reviews (product_id, username, rating, comment, date)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (product_id, username, rating, comment, current_date))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        return jsonify({'message': 'Review submitted successfully!'}), 200
+
+    except Exception as e:
+        print(f"Error saving review: {e}")
+        return jsonify({'message': 'Database error'}), 500
 # Cart page  ✅ REQUIRED for url_for('cart')
 @app.route('/cart')
 def cart():
