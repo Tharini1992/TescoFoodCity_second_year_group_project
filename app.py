@@ -450,7 +450,6 @@ def cart():
     return render_template('cart.html')
     
 
-# -----------------------------
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -459,45 +458,73 @@ def register():
         password = generate_password_hash(request.form['password'])
         role = request.form['role']
 
-        try:
-            cursor.execute(
-                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
-                (username, email, password, role)
-            )
-            db.commit()
-            flash("Registration successful! Please login.", "success")
-            return redirect(url_for('login'))
-        except mysql.connector.IntegrityError:
-            flash("Username or Email already exists.", "danger")
+        # ONLY CUSTOMERS need to verify
+        if role == 'customer':
+            otp_code = str(random.randint(100000, 999999))
+            
+            # Store data in session
+            session['reg_data'] = {
+                'username': username,
+                'email': email,
+                'password': password,
+                'role': role,
+                'otp': otp_code
+            }
+            
+            print(f"CUSTOMER VERIFICATION CODE: {otp_code}") # For testing
+            flash("Verification code sent to your email.", "info")
+            return redirect(url_for('verify'))
+        
+        else:
+            # ADMINS and DELIVERY register immediately
+            try:
+                cursor.execute(
+                    "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
+                    (username, email, password, role)
+                )
+                db.commit()
+                flash(f"{role.capitalize()} registered successfully! Please login.", "success")
+                return redirect(url_for('login'))
+            except mysql.connector.IntegrityError:
+                flash("Username or Email already exists.", "danger")
 
     return render_template("register.html")
 
 @app.route("/verify", methods=["GET", "POST"])
 def verify():
-    email = request.args.get("email")
-    if not email:
-        flash("No email specified for verification.", "danger")
-        return redirect(url_for("register"))
+    if 'reg_data' not in session:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('register'))
 
-    cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-    user = cursor.fetchone()
-    if not user:
-        flash("User not found.", "danger")
-        return redirect(url_for("register"))
+    if request.method == 'POST':
+        user_otp = request.form.get('otp')
+        stored_data = session['reg_data']
 
-    if request.method == "POST":
-        code = request.form["code"]
-        cursor.execute("SELECT * FROM verification_codes WHERE user_id=%s AND code=%s", (user["id"], code))
-        if cursor.fetchone():
-            cursor.execute("UPDATE users SET is_verified=TRUE WHERE id=%s", (user["id"],))
+        if user_otp == stored_data['otp']:
+            # Success: Insert Customer into DB
+            cursor.execute(
+                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
+                (stored_data['username'], stored_data['email'], 
+                 stored_data['password'], stored_data['role'])
+            )
             db.commit()
-            session["user"] = {"name": user["first_name"], "email": email, "role": user["role"]}
-            flash("Email verified successfully!", "success")
-            return redirect_role_dashboard(user["role"])
+            session.pop('reg_data', None) # Clear session
+            flash("Email verified! Welcome to Tesco Food City.", "success")
+            return redirect(url_for('login'))
         else:
-            flash("Invalid verification code.", "danger")
+            flash("Incorrect code. Please check your email.", "danger")
 
-    return render_template("verify.html", email=email)
+    return render_template("verify.html")
+
+
+@app.route("/resend_otp")
+def resend_otp():
+    if 'reg_data' in session:
+        new_otp = str(random.randint(100000, 999999))
+        session['reg_data']['otp'] = new_otp # Update the code
+        print(f"NEW VERIFICATION CODE: {new_otp}")
+        flash("A new code has been sent!", "info")
+    return redirect(url_for('verify'))
 
 
 
