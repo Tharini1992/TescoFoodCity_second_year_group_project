@@ -227,56 +227,138 @@ def cart_page():
     return render_template('cart.html', cart_items=cart, total=total)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-        
-    cart = session.get('cart', [])
-    total_price = sum(item['price'] for item in cart)
+    # 1. Check if cart is empty
+    if 'cart' not in session or not session['cart']:
+        return redirect(url_for('search_page'))
 
+    cart = session['cart']
+    
+    # 2. Calculate Cart Total
+    cart_total = sum(float(item['price']) * int(item['qty']) for item in cart)
+    
+    # 3. Define Delivery Fee
+    delivery_fee = 350.0
+    
+    # 4. Calculate Grand Total
+    grand_total = cart_total + delivery_fee
+
+    # --- IF FORM SUBMITTED (POST) ---
     if request.method == 'POST':
-        customer_name = request.form['customer_name']
-        address = request.form['address']
-        phone = request.form['phone']
-        payment_method = request.form['payment_method']
-        
-        # --- Database Logic (Save Order) ---
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # 1. Insert Order
-        cursor.execute('''
-            INSERT INTO orders (user_id, total_price, status, payment_method, customer_name, address, phone) 
-            VALUES (%s, %s, 'Pending', %s, %s, %s, %s)
-        ''', (session['user_id'], total_price, payment_method, customer_name, address, phone))
-        
-        order_id = cursor.lastrowid
-        
-        # 2. Insert Order Items
-        for item in cart:
-            cursor.execute('''
-                INSERT INTO order_items (order_id, item_name, price, quantity)
-                VALUES (%s, %s, %s, 1)
-            ''', (order_id, item['name'], item['price']))
-            
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        # --- Clear Cart ---
-        session.pop('cart', None)
-        
-        # --- SHOW SUCCESS PAGE (Updated Line) ---
-        # We pass 'total_price' to the new template so it can display it
-        return render_template('order_success.html', total_price=total_price)
+        customer_name = request.form.get('customer_name')
+        email = request.form.get('user_email')
+        phone = request.form.get('phone')
+        address = request.form.get('address')
+        payment_method = request.form.get('payment_method')
 
-    # GET Request (Show the form)
-    if not cart:
-        return redirect(url_for('landing_page'))
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            # --- FIX: Use %s instead of ? for MySQL ---
+            cursor.execute('''
+                INSERT INTO orders (customer_name, email, phone, address, total_amount, payment_method)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (customer_name, email, phone, address, grand_total, payment_method))
+            
+            order_id = cursor.lastrowid
+
+            # --- FIX: Use %s here as well ---
+            for item in cart:
+                cursor.execute('''
+                    INSERT INTO order_items (order_id, product_name, price, qty, image_url)
+                    VALUES (%s, %s, %s, %s, %s)
+                ''', (order_id, item['name'], item['price'], item['qty'], item.get('image_url', '')))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            # Clear session and show success
+            session.pop('cart', None)
+            
+            # Render a nice success page or message
+            return render_template('order_success.html', order_id=order_id, total=grand_total)
+
+        except Exception as e:
+            return f"An error occurred: {e}"
+
+    # --- IF PAGE LOADING (GET) ---
+    user = session.get('user', {}) 
+    if 'username' in session:
+        user = {'username': session['username'], 'email': session.get('email', '')}
         
-    user = {'username': session.get('username'), 'email': session.get('email')}
-    return render_template('checkout.html', cart=cart, total=total_price, user=user)
+    return render_template('checkout.html', cart=cart, total=cart_total, user=user)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
