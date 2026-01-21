@@ -450,24 +450,33 @@
 
 
 
+.slide {
+    display: none; /* Hidden by default */
+    height: 100%;  /* Fills the slider height */
+    width: 100%;
+    
+    /* Centering logic */
+    align-items: center;     /* Centers vertically */
+    justify-content: center;  /* Centers horizontally */
+    
+    /* Colors */
+    background-color: #28a745; /* Solid Green */
+    color: #000000;            /* Solid Black */
+    
+    animation: fadeSlide 1s ease-in-out;
+}
 
+/* When the slide is active, it must use flex to center the text */
+.slide.active {
+    display: flex; 
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.slide h2 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 2rem;
+    color: #000000; /* Ensures text is black */
+}
 
 
 
