@@ -258,8 +258,6 @@ def cart_page():
 
 
 
-
-
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     # 1. Check if cart is empty
@@ -268,13 +266,10 @@ def checkout():
 
     cart = session['cart']
     
-    # 2. Calculate Cart Total
+    # 2. Calculate Totals correctly
+    # multiply price * qty for every item
     cart_total = sum(float(item['price']) * int(item['qty']) for item in cart)
-    
-    # 3. Define Delivery Fee
     delivery_fee = 350.0
-    
-    # 4. Calculate Grand Total
     grand_total = cart_total + delivery_fee
 
     # --- IF FORM SUBMITTED (POST) ---
@@ -284,37 +279,45 @@ def checkout():
         phone = request.form.get('phone')
         address = request.form.get('address')
         payment_method = request.form.get('payment_method')
+        
+        # Get User ID (Default to 0 if guest/not logged in, to prevent crash)
+        user_id = session.get('user_id', 0)
 
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            # --- FIX: Use %s instead of ? for MySQL ---
+            # --- 1. INSERT ORDER ---
+            # Using 'total_price' (matches your DB) and 'user_id'
             cursor.execute('''
-                INSERT INTO orders (customer_name, email, phone, address, total_amount, payment_method)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            ''', (customer_name, email, phone, address, grand_total, payment_method))
+                INSERT INTO orders (user_id, customer_name, email, phone, address, total_price, payment_method, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'Pending')
+            ''', (user_id, customer_name, email, phone, address, grand_total, payment_method))
             
             order_id = cursor.lastrowid
 
-            # --- FIX: Use %s here as well ---
+            # --- 2. INSERT ORDER ITEMS ---
             for item in cart:
+                # FIX: We use item['qty'] here, NOT 1
+                # Note: Ensure your table columns are 'item_name' and 'quantity'. 
+                # If your table uses 'product_name' or 'qty', change the words below.
                 cursor.execute('''
-                    INSERT INTO order_items (order_id, product_name, price, qty, image_url)
-                    VALUES (%s, %s, %s, %s, %s)
-                ''', (order_id, item['name'], item['price'], item['qty'], item.get('image_url', '')))
+                    INSERT INTO order_items (order_id, item_name, price, quantity)
+                    VALUES (%s, %s, %s, %s)
+                ''', (order_id, item['name'], item['price'], item['qty']))
 
             conn.commit()
             cursor.close()
             conn.close()
 
-            # Clear session and show success
+            # Clear session
             session.pop('cart', None)
             
-            # Render a nice success page or message
+            # Show Success Page
             return render_template('order_success.html', order_id=order_id, total=grand_total)
 
         except Exception as e:
+            print(f"Checkout Error: {e}") # Print error to console for debugging
             return f"An error occurred: {e}"
 
     # --- IF PAGE LOADING (GET) ---
@@ -323,43 +326,6 @@ def checkout():
         user = {'username': session['username'], 'email': session.get('email', '')}
         
     return render_template('checkout.html', cart=cart, total=cart_total, user=user)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @app.route('/about')
