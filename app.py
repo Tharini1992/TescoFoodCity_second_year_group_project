@@ -900,16 +900,95 @@ def customer_dashboard():
 
 
 
-
-@app.route("/delivery_dashboard")
+# --- 1. Dashboard Page ---
+@app.route('/delivery_dashboard')
 def delivery_dashboard():
-    # We check for 'delivery' because that is what we saved in the login function
-    if session.get("role") != "delivery":
-        flash("Unauthorized access.", "danger")
-        return redirect(url_for("login"))
+    # Check if user is logged in
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-    user_data = {"username": session.get("username"), "role": session.get("role")}
-    return render_template("delivery_dashboard.html", user=user_data)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Fetch orders
+    cursor.execute("SELECT * FROM orders ORDER BY date_ordered DESC")
+    orders = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template('delivery_dashboard.html', orders=orders, user=session)
+
+# --- 2. Update Status (Green Button) ---
+@app.route('/update_order_status', methods=['POST'])
+def update_order_status1():
+    data = request.get_json()
+    order_id = data.get('order_id')
+    new_status = data.get('status')
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            UPDATE orders 
+            SET status = %s, issue_type = NULL, issue_description = NULL 
+            WHERE id = %s
+        """, (new_status, order_id))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+# --- 3. Report Issue (Red Button) ---
+@app.route('/report_issue', methods=['POST'])
+def report_issue():
+    data = request.get_json()
+    order_id = data.get('order_id')
+    issue_type = data.get('issue_type')
+    description = data.get('description')
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            UPDATE orders 
+            SET status = 'Issue Reported', issue_type = %s, issue_description = %s 
+            WHERE id = %s
+        """, (issue_type, description, order_id))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1103,92 +1182,109 @@ def my_account():
 # -----------------------------
 # 1. UPDATE PERSONAL INFO
 # -----------------------------
-# --- ROUTE 1: Update Personal Information ---
 @app.route('/update_info', methods=['POST'])
 def update_info():
-    # 1. Check if user is logged in
+    # Security: Check if user is logged in
     if 'user_id' not in session:
-        return redirect(url_for('login_page'))
+        flash("Please log in to update your profile.", "danger")
+        return redirect(url_for('login'))
 
-    # 2. Get form data
-    name = request.form.get('name')
-    email = request.form.get('email')
     user_id = session['user_id']
+    new_name = request.form.get('name')
+    new_email = request.form.get('email')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # 3. Update the database
-        cursor.execute('''
-            UPDATE users 
-            SET username = %s, email = %s 
-            WHERE id = %s
-        ''', (name, email, user_id))
-        
+        # 1. Update the database
+        # We update both username and email for the logged-in user
+        query = "UPDATE users SET username = %s, email = %s WHERE id = %s"
+        cursor.execute(query, (new_name, new_email, user_id))
         conn.commit()
+
+        # 2. Verify and Update Session
+        # If the database update was successful, we update the live session
+        # so the name in the navbar changes immediately without re-login.
+        session['username'] = new_name
+        
+        # Check if rows were actually affected (optional verification)
+        if cursor.rowcount > 0:
+            flash("Profile details updated successfully!", "success")
+        else:
+            flash("No changes were made.", "info")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        flash("Error updating profile. This email might already be in use.", "danger")
+    finally:
         cursor.close()
         conn.close()
-
-        # 4. Update the session immediately (so the name updates in the sidebar instantly)
-        session['username'] = name
-        session['email'] = email
-        
-        flash('Personal information updated successfully!', 'success')
-
-    except Exception as e:
-        flash(f'Error updating info: {e}', 'danger')
 
     return redirect(url_for('my_account'))
 
 
-# --- ROUTE 2: Change Password ---
+# -----------------------------
+# 2. CHANGE PASSWORD
+# -----------------------------
 @app.route('/change_password', methods=['POST'])
 def change_password():
+    # Security: Check if user is logged in
     if 'user_id' not in session:
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login'))
 
-    current_password = request.form.get('current_password')
-    new_password = request.form.get('new_password')
-    confirm_password = request.form.get('confirm_password')
     user_id = session['user_id']
+    current_pass = request.form.get('current_password')
+    new_pass = request.form.get('new_password')
+    confirm_pass = request.form.get('confirm_password')
 
-    # 1. Check if new passwords match
-    if new_password != confirm_password:
-        flash('New passwords do not match!', 'danger')
+    # 1. Basic Validation
+    if new_pass != confirm_pass:
+        flash("New passwords do not match!", "danger")
         return redirect(url_for('my_account'))
 
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        # 2. Get the current password hash from DB
-        cursor.execute('SELECT password FROM users WHERE id = %s', (user_id,))
+        # 2. Fetch current password hash to verify identity
+        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
 
         if user:
-            # 3. Verify the Old Password
-            # Use check_password_hash if you used generate_password_hash during registration
-            if check_password_hash(user['password'], current_password):
+            stored_hash = user['password']
+            
+            # 3. Verify the OLD password
+            if check_password_hash(stored_hash, current_pass):
                 
-                # 4. Hash the New Password and Update DB
-                hashed_new_password = generate_password_hash(new_password)
+                # 4. Hash the NEW password
+                new_hash = generate_password_hash(new_pass)
                 
-                cursor.execute('UPDATE users SET password = %s WHERE id = %s', (hashed_new_password, user_id))
+                # 5. Update Database
+                update_query = "UPDATE users SET password = %s WHERE id = %s"
+                cursor.execute(update_query, (new_hash, user_id))
                 conn.commit()
-                flash('Password changed successfully!', 'success')
+                
+                flash("Password changed successfully! Please log in again.", "success")
+                
+                # Optional: Logout user after password change for security
+                # session.clear()
+                # return redirect(url_for('login'))
+                
             else:
-                flash('Incorrect current password!', 'danger')
+                flash("Incorrect current password.", "danger")
         else:
-            flash('User not found.', 'danger')
+            flash("User not found.", "danger")
 
+    except Exception as e:
+        print(f"Error: {e}")
+        flash("An error occurred while changing password.", "danger")
+    finally:
         cursor.close()
         conn.close()
 
-    except Exception as e:
-        flash(f'Error changing password: {e}', 'danger')
-
     return redirect(url_for('my_account'))
+
 
 
 
