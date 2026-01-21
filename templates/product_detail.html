@@ -11,7 +11,6 @@
 <style>
     body { font-family: Arial, sans-serif; background: #f7f7f7; margin:0; padding:0; display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* --- NAVBAR STYLES --- */
     .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#f8f9fa; border-bottom:1px solid #ddd; position:relative; }
     .logo img { height:50px; }
     .nav-links { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
@@ -23,7 +22,7 @@
     #searchBox { padding:6px; border:1px solid #ccc; border-radius:4px; width:250px; }
     #searchBtn { margin-left:5px; cursor:pointer; border:none; background:none; font-size:18px; }
 
-    /* Search Dropdown */
+    /* Search Dropdown Styles */
     #searchDropdown {
         position: absolute;
         top: 100%;
@@ -53,11 +52,10 @@
     .search-item .name { font-weight: bold; font-size: 14px; color: #333; }
     .search-item .price { color: #28a745; font-size: 12px; }
 
-    /* --- ICON STYLES --- */
     .icons { display:flex; gap:15px; align-items:center; position:relative; }
     .icons i { cursor:pointer; position:relative; }
 
-    /* Badges */
+    /* Badge ONLY for notification & cart */
     .icons i.fa-bell::after,
     .icons i.fa-cart-shopping::after {
         content: attr(data-count);
@@ -74,9 +72,18 @@
         justify-content: center;
         border-radius: 50%;
     }
-    .icons i[data-count="0"]::after { display: none; }
 
-    /* --- DROPDOWNS --- */
+    /* Hide badge when count is 0 */
+    .icons i[data-count="0"]::after {
+        display: none;
+    }
+
+    .no-badge::after {
+        display: none !important;
+    }
+
+    .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
+
     #notification-dropdown, #wishlist-dropdown {
         display:none;
         position:absolute;
@@ -90,12 +97,13 @@
         padding:10px;
         z-index:1000;
     }
+
     #notification-dropdown ul, #wishlist-dropdown ul { list-style:none; padding:0; margin:0; }
     #notification-dropdown ul li, #wishlist-dropdown ul li { padding:5px 0; border-bottom:1px solid #eee; }
+
     #wishlist-dropdown { right:60px; }
     #notification-dropdown { right:120px; }
 
-    /* --- PRODUCT DETAILS --- */
     .product-details { display:flex; gap:20px; padding:20px; background:#fff; margin:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); flex: 1;}
     .product-gallery img { border-radius:8px; }
     .product-info { max-width:400px; }
@@ -106,7 +114,7 @@
     
     /* --- NEW: REVIEWS SECTION CSS --- */
     .reviews-section {
-        max-width: 95%; 
+        max-width: 95%; /* Matches product-details margin roughly */
         margin: 0 20px 40px 20px;
         padding: 20px;
         background: #fff;
@@ -154,6 +162,7 @@
     .review-date { font-size: 12px; color: #777; }
     .review-stars { color: #ffc107; font-size: 14px; margin-left: 10px; }
     .review-text { color: #555; margin-top: 5px; }
+
 
     /* --- FOOTER STYLES --- */
     footer {
@@ -209,7 +218,6 @@
         font-size: 13px;
         color: #aaa;
     }
-    .toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:10000; }
 </style>
 </head>
 <body>
@@ -238,25 +246,40 @@
     {% if 'username' in session %}
     <div class="dropdown">
         <a class="nav-link dropdown-toggle d-flex align-items-center text-dark p-0"
-           href="#" id="navUserDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           href="#"
+           id="navUserDrop"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+
           <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i>
+
             <span class="fw-bold">{{ session['username'] }}</span>
         </a>
+
         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navUserDrop">
-            <li><a class="dropdown-item" href="{{ url_for('my_account') }}">
-                   <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i> My Account
-            </a></li>
+            <li>
+                <a class="dropdown-item" href="{{ url_for('my_account') }}">
+                   <i class="fa-solid fa-circle-user fa-lg me-2 text-success user-icon"></i>
+                   My Account
+                </a>
+            </li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
-                    <i class="fa-solid fa-circle-user fa-lg me-2 user-icon"></i> Logout
-            </a></li>
+            <li>
+                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                    <i class="fa-solid fa-circle-user fa-lg me-2 user-icon"></i>
+                    Logout
+                </a>
+            </li>
         </ul>
     </div>
     {% else %}
     <a href="{{ url_for('login') }}" class="nav-link d-flex align-items-center text-dark p-0">
-        <i class="fa-solid fa-circle-user fa-lg me-2"></i> <span>Account</span>
+        <i class="fa-solid fa-circle-user fa-lg me-2"></i>
+        <span>Account</span>
     </a>
     {% endif %}
+
   </div>
 
   <div id="notification-dropdown">
@@ -274,7 +297,8 @@
 
 <section class="product-details">
   <div class="product-gallery">
-      <img src="{{ url_for('static', filename=product['image_url']) }}" alt="{{ product['name'] }}" width="200">
+      <img src="{{ url_for('static', filename=product['image_url']) }}"
+        alt="{{ product['name'] }}" width="200">
   </div>
 
   <div class="product-info">
@@ -317,11 +341,11 @@
             <input type="hidden" id="reviewProductId" value="{{ product['id'] }}">
             
             <div class="star-rating" id="starRatingInput">
-                <i class="fa-regular fa-star" data-value="1"></i>
-                <i class="fa-regular fa-star" data-value="2"></i>
-                <i class="fa-regular fa-star" data-value="3"></i>
-                <i class="fa-regular fa-star" data-value="4"></i>
-                <i class="fa-regular fa-star" data-value="5"></i>
+                <i class="fa-solid fa-star" data-value="1"></i>
+                <i class="fa-solid fa-star" data-value="2"></i>
+                <i class="fa-solid fa-star" data-value="3"></i>
+                <i class="fa-solid fa-star" data-value="4"></i>
+                <i class="fa-solid fa-star" data-value="5"></i>
                 <input type="hidden" id="ratingValue" name="rating" value="0">
             </div>
 
@@ -392,7 +416,10 @@
             const query = $(this).val().trim();
             const dropdown = $('#searchDropdown');
             
-            if (query.length < 2) { dropdown.hide(); return; }
+            if (query.length < 2) {
+                dropdown.hide();
+                return;
+            }
 
             $.ajax({
                 url: '/search_products',
@@ -413,7 +440,10 @@
                                 </div>
                             </div>
                         `);
-                        el.on('click', () => window.location.href = '/product/' + item.id);
+
+                        el.on('click', () => {
+                            window.location.href = '/product/' + item.id;
+                        });
                         dropdown.append(el);
                     });
                     dropdown.show();
@@ -424,16 +454,37 @@
             });
         });
 
+        $('#searchBtn').on('click', function() {
+            const query = $('#searchBox').val().trim();
+            if (query.length > 1) {
+                $.ajax({
+                    url: '/search_products',
+                    method: 'GET',
+                    data: { q: query },
+                    success: function(res) {
+                        if (res.length === 1) window.location.href = '/product/' + res[0].id;
+                        else if (res.length > 1) $('#searchDropdown').show();
+                        else alert('No products found');
+                    }
+                });
+            }
+        });
+
         // Hide dropdown when clicking outside
         $(document).on('click', function(e) {
-            if (!$(e.target).closest('.search-bar').length) $('#searchDropdown').hide();
+            if (!$(e.target).closest('.search-bar').length) {
+                $('#searchDropdown').hide();
+            }
         });
     });
 
-    // --- UTILITIES ---
+    // --- EXISTING FUNCTIONS ---
+
+    // Quantity
     function increaseQty() { document.getElementById('qty').value = parseInt(document.getElementById('qty').value)+1; }
     function decreaseQty() { if(parseInt(document.getElementById('qty').value)>1) document.getElementById('qty').value -=1; }
 
+    // Toast
     function showToast(message, duration=2000){
         const toast=document.getElementById('toast');
         toast.innerText=message;
@@ -441,7 +492,7 @@
         setTimeout(()=>toast.style.display='none', duration);
     }
 
-    // --- DATA HOLDERS ---
+    // Notifications, Wishlist, Cart Data Holders
     let notifications=[], wishlist=[], cart=[];
 
     function addNotification(message){
@@ -449,28 +500,43 @@
         document.getElementById('notification-icon').setAttribute('data-count', notifications.length);
     }
 
-    // --- ADD TO CART ---
+    // Add to Cart
+    // Add to Cart
     document.querySelector('.add-cart').addEventListener('click', function(){
-        const qty=parseInt(document.getElementById('qty').value);
-        const productName="{{ product['name'] }}";
-        const productPrice="{{ product['price'] }}";
+        const qty = parseInt(document.getElementById('qty').value);
+        const productName = "{{ product['name'] }}";
+        const productPrice = "{{ product['price'] }}";
+        
+        // --- ADD THIS LINE (Get the image from Flask) ---
+        const productImage = "{{ product['image_url'] }}"; 
 
         fetch("/add_to_cart", {
             method:"POST",
             headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({id:"{{ product['id'] }}", name:productName, price:productPrice, qty:qty})
+            body: JSON.stringify({
+                id: "{{ product['id'] }}", 
+                name: productName, 
+                price: productPrice, 
+                qty: qty,
+                image: productImage  // --- ADD THIS LINE (Send it to Server) ---
+            })
         })
-        .then(res=>res.json())
-        .then(data=>{
+        .then(res => res.json())
+        .then(data => {
             showToast(data.message);
-            cart.push({name:productName, price:productPrice, qty:qty});
+            
+            // Add to cart array for the icon badge
+            cart.push({name: productName, price: productPrice, qty: qty});
             document.getElementById('cart-icon').setAttribute('data-count', cart.length);
             addNotification(`Added ${productName} to cart.`);
+            
+            // OPTIONAL: Reload page to ensure Session is updated visually
+            // location.reload(); 
         })
-        .catch(err=>showToast("Error adding to cart!"));
+        .catch(err => showToast("Error adding to cart!"));
     });
 
-    // --- ADD TO WISHLIST ---
+    // Add to Wishlist
     document.querySelector('.wishlist').addEventListener('click', function(){
         const productName="{{ product['name'] }}";
         const productPrice="{{ product['price'] }}";
@@ -490,6 +556,7 @@
         .catch(err=>showToast("Error adding to wishlist!"));
     });
 
+    // Update Wishlist Dropdown
     function updateWishlistDropdown(){
         const list=document.getElementById("wishlist-list");
         list.innerHTML="";
@@ -500,7 +567,7 @@
         });
     }
 
-    // --- NOTIFICATION & DROPDOWN TOGGLES ---
+    // Notification Dropdown Logic
     document.getElementById('notification-icon').addEventListener('click', ()=>{
         const dropdown=document.getElementById('notification-dropdown');
         const list=document.getElementById('notification-list');
@@ -513,6 +580,7 @@
         dropdown.style.display=dropdown.style.display==='none'?'block':'none';
     });
 
+    // Close Dropdowns on outside click
     document.addEventListener('click', function(event){
         if(!document.getElementById('notification-icon').contains(event.target) &&
            !document.getElementById('notification-dropdown').contains(event.target))
@@ -524,7 +592,7 @@
 
     // --- NEW: REVIEW SYSTEM LOGIC ---
     
-    // 1. Star Click Animation (Fill vs Outline)
+    // 1. Star Click Animation
     const stars = document.querySelectorAll('#starRatingInput i');
     const ratingInput = document.getElementById('ratingValue');
 
@@ -533,16 +601,16 @@
             const value = this.getAttribute('data-value');
             ratingInput.value = value;
             
-            // Highlight logic
+            // Highlight Stars
             stars.forEach(s => {
                 if(s.getAttribute('data-value') <= value) {
                     s.classList.add('active');
                     s.classList.remove('fa-regular');
-                    s.classList.add('fa-solid'); // Filled star
+                    s.classList.add('fa-solid');
                 } else {
                     s.classList.remove('active');
-                    s.classList.add('fa-regular'); // Outline star
-                    s.classList.remove('fa-solid');
+                    s.classList.add('fa-regular'); // Make empty star outlined
+                    s.classList.remove('fa-solid'); // Remove solid fill
                 }
             });
         });
@@ -562,7 +630,7 @@
         }
 
         $.ajax({
-            url: '/add_review',
+            url: '/add_review', // Ensure this route exists in Flask app.py
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -580,15 +648,14 @@
                     s.classList.add('fa-regular');
                     s.classList.remove('fa-solid');
                 });
+                // Optional: Reload to show new review
                 setTimeout(() => window.location.reload(), 1000);
             },
             error: function(err) {
-                // Specific handling for Unauthorized (Not Logged In)
                 if(err.status === 401) {
                     window.location.href = "{{ url_for('login') }}";
                 } else {
-                    // Generic handling for other errors (Server error, etc)
-                    showToast("Error submitting review. Please try again.");
+                    showToast("Error submitting review. Log in first?");
                 }
             }
         });

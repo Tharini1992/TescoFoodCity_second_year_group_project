@@ -350,7 +350,11 @@ My Account
 <div class="cart-box">
     {% for item in cart_items %}
     <div class="cart-item">
-        <img src="{{ item.image_url }}" alt="{{ item.name }}">
+        {% if item.image_url %}
+    <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" width="90">
+{% else %}
+    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="No Image" width="90">
+{% endif %}
 
         <div class="item-info">
             <h3>{{ item.name }}</h3>

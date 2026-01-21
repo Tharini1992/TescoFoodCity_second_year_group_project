@@ -36,8 +36,8 @@
         color: #0f172a; 
         margin-bottom: 40px; 
         letter-spacing: 0.5px;
-        display: flex;       /* Added for logo alignment */
-        align-items: center; /* Added for logo alignment */
+        display: flex;       
+        align-items: center; 
     }
     .nav-link { 
         color: var(--sidebar-text); 
@@ -47,6 +47,8 @@
         transition: 0.2s; 
         font-size: 0.95rem; 
         font-weight: 500;
+        text-align: left;
+        width: 100%;
     }
     .nav-link:hover { 
         background: #f1f5f9; 
@@ -129,6 +131,9 @@
             <button class="nav-link" data-bs-toggle="pill" data-bs-target="#customers">
                 <i class="bi bi-people-fill"></i> Customers
             </button>
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#feedback">
+                <i class="bi bi-chat-quote-fill"></i> Feedback
+            </button>
         </div>
         <div class="mt-auto">
             <a href="{{ url_for('logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Sign Out</a>
@@ -156,7 +161,10 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} shadow-sm border-0 rounded-3 mb-4">{{ message }}</div>
+                    <div class="alert alert-{{ category }} shadow-sm border-0 rounded-3 mb-4 alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -263,7 +271,7 @@
                                 <td>Rs. {{ product.price }}</td>
                                 <td><span class="badge bg-light text-dark border">General</span></td>
                                 <td class="text-end">
-                                    <a href="{{ url_for('delete_product', id=product.id) }}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('Delete this?')"><i class="bi bi-trash"></i></a>
+                                    <a href="{{ url_for('delete_product', id=product.id) }}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('Delete this product?')"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -359,9 +367,107 @@
                 </div>
             </div>
 
-        </div>
+            <div class="tab-pane fade" id="feedback">
+                <h4 class="fw-bold mb-4">User Feedback & Reviews</h4>
+                <div class="table-container mt-0">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Customer</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for review in reviews %}
+                            <tr>
+                                <td><span class="text-muted small">#{{ review.id }}</span></td>
+                                <td>
+                                    <span class="fw-bold text-primary">{{ review.product_name }}</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-weight: bold; font-size: 0.8rem;">
+                                            {{ review.username[0]|upper }}
+                                        </div>
+                                        <span>{{ review.username }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-warning small">
+                                        {{ review.rating }} <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
+                                        "{{ review.comment }}"
+                                    </p>
+                                </td>
+                                <td><small class="text-muted">{{ review.date }}</small></td>
+                                
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-primary border-0 me-1" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editReviewModal{{ review.id }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
 
-        <footer class="admin-footer">
+                                    <a href="{{ url_for('delete_review', id=review.id) }}" 
+                                       class="btn btn-sm btn-outline-danger border-0" 
+                                       title="Delete Review"
+                                       onclick="return confirm('Delete this review?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade" id="editReviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title fw-bold">Edit Review</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form action="{{ url_for('edit_review', id=review.id) }}" method="POST">
+                                            <div class="modal-body p-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted small fw-bold">Rating</label>
+                                                    <select name="rating" class="form-select bg-light border-0">
+                                                        <option value="5" {% if review.rating==5 %}selected{% endif %}>5 Stars</option>
+                                                        <option value="4" {% if review.rating==4 %}selected{% endif %}>4 Stars</option>
+                                                        <option value="3" {% if review.rating==3 %}selected{% endif %}>3 Stars</option>
+                                                        <option value="2" {% if review.rating==2 %}selected{% endif %}>2 Stars</option>
+                                                        <option value="1" {% if review.rating==1 %}selected{% endif %}>1 Star</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted small fw-bold">Comment</label>
+                                                    <textarea name="comment" class="form-control bg-light border-0" rows="3" required>{{ review.comment }}</textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary-custom w-100">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="bi bi-chat-square-dots display-6 d-block mb-2"></i>
+                                    No reviews found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div> <footer class="admin-footer">
             <div class="container text-center text-md-start">
                 <div class="row">
                     <div class="col-md-4 mb-3 ps-md-4">
@@ -388,9 +494,7 @@
             </div>
         </footer>
 
-    </div>
-
-    <div class="modal fade" id="addProductModal" tabindex="-1">
+    </div> <div class="modal fade" id="addProductModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
           <div class="modal-header border-0 pb-0">

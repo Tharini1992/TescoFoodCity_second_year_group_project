@@ -114,35 +114,42 @@ def search_page():
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
+    # 1. Get the data sent from JavaScript
     data = request.get_json()
-    if not data:
-        return jsonify({'message': 'No data provided'}), 400
+    
+    # 2. Extract values (including the new 'image')
+    product_id = int(data.get('id'))
+    product_name = data.get('name')
+    product_price = float(data.get('price'))
+    product_qty = int(data.get('qty'))
+    product_image = data.get('image')  # <--- CRITICAL: Getting the image path
 
+    # 3. Get the current cart from session (or start a new list)
     cart = session.get('cart', [])
 
-    product_id = int(data['id'])
-    product_qty = int(data['qty'])
-    product_name = data['name']
-    product_price = float(data['price'])
-
-    # Check if product already in cart
+    # 4. Check if item already exists (Update Quantity)
+    item_found = False
     for item in cart:
         if item['id'] == product_id:
             item['qty'] += product_qty
+            item_found = True
             break
-    else:
+
+    # 5. If item is new, add it to the list
+    if not item_found:
         cart.append({
             'id': product_id,
             'name': product_name,
             'price': product_price,
-            'qty': product_qty
+            'qty': product_qty,
+            'image_url': product_image  # <--- Saving it to the cart
         })
 
+    # 6. Save back to session
     session['cart'] = cart
     session.modified = True
 
-    return jsonify({'message': f"{product_name} added to cart successfully!"})
-
+    return jsonify({'message': f'{product_name} added to cart!'})
 
 @app.route('/add_to_wishlist', methods=['POST'])
 def add_to_wishlist():
@@ -527,11 +534,15 @@ def grocery():
 
 # --- ADD THIS FUNCTION TO app.py ---
 
+# -----------------------------
+# ==========================================
+# ADMIN DASHBOARD & MANAGEMENT ROUTES
+# ==========================================
+
+# 1. ADMIN DASHBOARD (View Stats, Orders, Reviews)
 @app.route('/admin_dashboard')
 def admin_dashboard():
-    # Now this line will work:
-    conn = get_db_connection() 
-    # 1. Security Check
+    # Security Check
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
@@ -539,11 +550,11 @@ def admin_dashboard():
     cursor = conn.cursor(dictionary=True)
 
     try:
-        # 2. Get Current User
+        # Get Current User Info
         cursor.execute("SELECT * FROM users WHERE id = %s", (session['user_id'],))
         current_user = cursor.fetchone()
 
-        # 3. Fetch Data
+        # Fetch All Data
         cursor.execute("SELECT * FROM products")
         products = cursor.fetchall()
 
@@ -553,7 +564,22 @@ def admin_dashboard():
         cursor.execute("SELECT * FROM orders ORDER BY id DESC")
         orders = cursor.fetchall()
 
-        # 4. Stats Calculation
+        # --- FIX: ROBUST REVIEW FETCHING ---
+        # Uses LEFT JOIN so reviews appear even if user/product was deleted
+        cursor.execute("""
+            SELECT 
+                r.*, 
+                COALESCE(p.name, 'Unknown Product') AS product_name, 
+                COALESCE(u.username, 'Deleted User') AS username 
+            FROM reviews r
+            LEFT JOIN products p ON r.product_id = p.id
+            LEFT JOIN users u ON r.user_id = u.id
+            ORDER BY r.id DESC
+        """)
+        reviews = cursor.fetchall()
+        # -----------------------------------
+
+        # Calculate Stats
         cursor.execute("SELECT SUM(total_price) as revenue FROM orders")
         res = cursor.fetchone()
         total_revenue = res['revenue'] if res and res['revenue'] else 0
@@ -568,27 +594,69 @@ def admin_dashboard():
             "customers": customer_count
         }
 
-        # 5. Render
         return render_template(
             "admin_dashboard.html",
             user=current_user,
             stats=stats,
             products=products,
             orders=orders,
-            users=users
+            users=users,
+            reviews=reviews  # <--- CRITICAL: Passes reviews to HTML
         )
     finally:
         cursor.close()
         conn.close()
 
-# -----------------------------
-# PRODUCT ACTIONS
-# -----------------------------
 
+# 2. REVIEW ACTIONS
+@app.route('/delete_review/<int:id>')
+def delete_review(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM reviews WHERE id = %s", (id,))
+        conn.commit()
+        flash('Review deleted successfully.', 'success')
+    except Exception as e:
+        flash(f'Error deleting review: {str(e)}', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/edit_review/<int:id>', methods=['POST'])
+def edit_review(id):
+    if 'user_id' not in session: return redirect(url_for('login'))
+    
+    # Get new data from form
+    new_rating = request.form['rating']
+    new_comment = request.form['comment']
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("""
+            UPDATE reviews 
+            SET rating = %s, comment = %s 
+            WHERE id = %s
+        """, (new_rating, new_comment, id))
+        conn.commit()
+        flash('Review updated successfully.', 'success')
+    except Exception as e:
+        flash(f'Error updating review: {str(e)}', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
+        
+    return redirect(url_for('admin_dashboard')) 
+
+# 3. PRODUCT ACTIONS
 @app.route('/add_product', methods=['POST'])
 def add_product():
-    if 'user_id' not in session: 
-        return redirect(url_for('login'))
+    if 'user_id' not in session: return redirect(url_for('login'))
 
     if request.method == 'POST':
         name = request.form['name']
@@ -598,8 +666,8 @@ def add_product():
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            query = "INSERT INTO products (name, price, image_url) VALUES (%s, %s, %s)"
-            cursor.execute(query, (name, price, image_url))
+            cursor.execute("INSERT INTO products (name, price, image_url) VALUES (%s, %s, %s)", 
+                           (name, price, image_url))
             conn.commit()
             flash('Product added successfully!', 'success')
         except Exception as e:
@@ -607,7 +675,6 @@ def add_product():
         finally:
             cursor.close()
             conn.close()
-            
         return redirect(url_for('admin_dashboard'))
 
 @app.route('/delete_product/<int:id>')
@@ -625,19 +692,15 @@ def delete_product(id):
     finally:
         cursor.close()
         conn.close()
-        
     return redirect(url_for('admin_dashboard'))
 
-# -----------------------------
-# ORDER ACTIONS
-# -----------------------------
 
+# 4. ORDER ACTIONS
 @app.route('/update_order_status/<int:id>', methods=['POST'])
 def update_order_status(id):
     if 'user_id' not in session: return redirect(url_for('login'))
 
     new_status = request.form.get('status')
-    
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -647,13 +710,10 @@ def update_order_status(id):
     finally:
         cursor.close()
         conn.close()
-
     return redirect(url_for('admin_dashboard'))
 
-# -----------------------------
-# USER ACTIONS
-# -----------------------------
 
+# 5. USER ACTIONS
 @app.route('/delete_user/<int:id>')
 def delete_user(id):
     if 'user_id' not in session: return redirect(url_for('login'))
@@ -661,7 +721,6 @@ def delete_user(id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        # Check role before deleting
         cursor.execute("SELECT role FROM users WHERE id = %s", (id,))
         user_to_delete = cursor.fetchone()
         
@@ -674,22 +733,18 @@ def delete_user(id):
     finally:
         cursor.close()
         conn.close()
-
     return redirect(url_for('admin_dashboard'))
 
-# -----------------------------
-# AUTHENTICATION
-# -----------------------------
 
+# 6. INVOICE GENERATION
 @app.route('/download_invoice/<int:order_id>')
 def download_invoice(order_id):
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    if 'user_id' not in session: return redirect(url_for('login'))
         
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     
-    # Get Order Info
+    # Check Order Ownership
     cursor.execute("SELECT * FROM orders WHERE id = %s AND user_id = %s", (order_id, session['user_id']))
     order = cursor.fetchone()
     
@@ -699,10 +754,8 @@ def download_invoice(order_id):
         flash("Order not found.", "danger")
         return redirect(url_for('my_account'))
         
-    # Get Order Items
     cursor.execute("SELECT * FROM order_items WHERE order_id = %s", (order_id,))
     items = cursor.fetchall()
-    
     cursor.close()
     conn.close()
 
@@ -710,7 +763,7 @@ def download_invoice(order_id):
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     
-    # Header
+    # PDF Header
     p.setFont("Helvetica-Bold", 16)
     p.drawString(50, 750, "Tesco Food City - Invoice")
     
@@ -722,7 +775,7 @@ def download_invoice(order_id):
     
     p.line(50, 670, 550, 670)
     
-    # Items
+    # PDF Items
     y = 650
     p.setFont("Helvetica-Bold", 12)
     p.drawString(50, y, "Item")
@@ -749,10 +802,6 @@ def download_invoice(order_id):
     
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name=f"invoice_{order_id}.pdf", mimetype='application/pdf')
-
-
-
-
 # -----------------------------
 # Manual Login
 # -----------------------------
