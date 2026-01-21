@@ -1,116 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Checkout | Tesco Food City</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Optional: Ensures footer sticks to bottom if page content is short */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        footer {
-            margin-top: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Checkout | Tesco Food City</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    footer { margin-top:auto; background-color:#176c06; color:white; }
+    .btn-green { background-color:#176c06; color:white; border:none; }
+    .btn-green:hover { background-color:#0f4c03; color:white; }
+    .payment-method-icon { width:24px; margin-right:8px; }
+    .payment-details { display:none; margin-top:15px; }
+</style>
 </head>
 <body class="bg-light">
 
-    <div class="container py-5">
-        <h2 class="mb-4 text-center fw-bold">Checkout</h2>
-        
-        <div class="row g-5">
-            <div class="col-md-5 col-lg-4 order-md-last">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">Your Cart</span>
-                    <span class="badge bg-primary rounded-pill">{{ cart|length }}</span>
-                </h4>
-                <ul class="list-group mb-3 shadow-sm">
-                    {% for item in cart %}
-                    <li class="list-group-item d-flex justify-content-between lh-sm">
-                        <div><h6 class="my-0">{{ item.name }}</h6></div>
-                        <span class="text-muted">Rs. {{ item.price }}</span>
-                    </li>
-                    {% endfor %}
-                    <li class="list-group-item d-flex justify-content-between bg-white fw-bold">
-                        <span>Total (Rs)</span>
-                        <strong>Rs. {{ total }}</strong>
-                    </li>
-                </ul>
-            </div>
+<div class="container py-5">
+    <h2 class="mb-4 text-center fw-bold">Checkout</h2>
 
-            <div class="col-md-7 col-lg-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h4 class="mb-3">Billing Details</h4>
-                        <form action="{{ url_for('checkout') }}" method="POST">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" name="customer_name" value="{{ user.username }}" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="user_email" value="{{ user.email }}" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="text" class="form-control" name="phone" placeholder="07xxxxxxxx" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Delivery Address</label>
-                                    <input type="text" class="form-control" name="address" placeholder="123 Main St, City" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Payment Method</label>
-                                    <select class="form-select" name="payment_method">
-                                        <option value="Cash on Delivery">Cash on Delivery</option>
-                                        <option value="Credit Card">Credit Card</option>
-                                    </select>
+    <div class="row g-5">
+        <div class="col-md-5 col-lg-4 order-md-last">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Your Cart</span>
+                <span class="badge bg-primary rounded-pill">{{ cart|length }}</span>
+            </h4>
+            <ul class="list-group mb-3 shadow-sm">
+                {% for item in cart %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div><h6 class="my-0">{{ item.name }}</h6></div>
+                    <span class="text-muted">Rs. {{ item.price }}</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between bg-white fw-bold">
+                    <span>Total (Rs)</span>
+                    <strong>Rs. {{ total }}</strong>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-7 col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Billing Details</h4>
+                    <form action="{{ url_for('checkout') }}" method="POST">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="customer_name" value="{{ user.username }}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="user_email" value="{{ user.email }}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" name="phone" placeholder="07xxxxxxxx" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Delivery Address</label>
+                                <input type="text" class="form-control" name="address" placeholder="123 Main St, City" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" name="payment_method" id="payment_method" required>
+                                    <option value="" disabled selected>Select Payment Method</option>
+                                    <option value="Cash on Delivery">💵 Cash on Delivery</option>
+                                    <option value="Credit Card">💳 Credit Card</option>
+                                    <option value="PayPal">🅿️ PayPal</option>
+                                    <option value="Stripe">💳 Stripe</option>
+                                </select>
+                            </div>
+
+                            <!-- Payment Details -->
+                            <div class="col-12 payment-details" id="credit-card-details">
+                                <label class="form-label">Credit Card Number</label>
+                                <input type="text" class="form-control" name="credit_card_number" placeholder="1234 5678 9012 3456">
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <label>Expiry Date</label>
+                                        <input type="text" class="form-control" name="cc_expiry" placeholder="MM/YY">
+                                    </div>
+                                    <div class="col-6">
+                                        <label>CVV</label>
+                                        <input type="text" class="form-control" name="cc_cvv" placeholder="123">
+                                    </div>
                                 </div>
                             </div>
-                            <hr class="my-4">
-                            <button class="w-100 btn btn-primary btn-lg" type="submit">Confirm Order</button>
-                        </form>
-                    </div>
+
+                            <div class="col-12 payment-details" id="paypal-details">
+                                <label class="form-label">PayPal Email</label>
+                                <input type="email" class="form-control" name="paypal_email" placeholder="example@paypal.com">
+                            </div>
+
+                            <div class="col-12 payment-details" id="stripe-details">
+                                <label class="form-label">Stripe Card Number</label>
+                                <input type="text" class="form-control" name="stripe_card_number" placeholder="4242 4242 4242 4242">
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <label>Expiry Date</label>
+                                        <input type="text" class="form-control" name="stripe_expiry" placeholder="MM/YY">
+                                    </div>
+                                    <div class="col-6">
+                                        <label>CVC</label>
+                                        <input type="text" class="form-control" name="stripe_cvc" placeholder="123">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button class="w-100 btn btn-green btn-lg" type="submit">Confirm Order</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <footer class="bg-dark text-white py-5 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <h5 class="text-uppercase fw-bold">Tesco Food City</h5>
-                    <p class="small text-white-50">Crafting exceptional shopping experiences.</p>
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <h5 class="text-uppercase fw-bold">Contact</h5>
-                    <ul class="list-unstyled small text-white-50">
-                        <li class="mb-1">📍 Panagoda Homagama</li>
-                        <li class="mb-1">📞 0763659784</li>
-                        <li class="mb-1">📧 TescoFoodCity@gmail.com</li>
-                    </ul>
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <h5 class="text-uppercase fw-bold">Quick Links</h5>
-                    <ul class="list-unstyled small">
-                        <li class="mb-1"><a href="#" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
-                        <li class="mb-1"><a href="#" class="text-white-50 text-decoration-none">Shipping Info</a></li>
-                    </ul>
-                </div>
+<footer class="py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="text-uppercase fw-bold">Tesco Food City</h5>
+                <p class="small text-white-50">Crafting exceptional shopping experiences.</p>
             </div>
-            
-            <div class="border-top border-secondary pt-3 mt-3 text-center small text-white-50">
-                &copy; 2024 Tesco Food City. All rights reserved.
+
+            <div class="col-md-4 mb-3">
+                <h5 class="text-uppercase fw-bold">Contact</h5>
+                <ul class="list-unstyled small text-white-50">
+                    <li class="mb-1">📍 Panagoda Homagama</li>
+                    <li class="mb-1">📞 0763659784</li>
+                    <li class="mb-1">📧 TescoFoodCity@gmail.com</li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <h5 class="text-uppercase fw-bold">Quick Links</h5>
+                <ul class="list-unstyled small">
+                    <li class="mb-1"><a href="#" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
+                    <li class="mb-1"><a href="#" class="text-white-50 text-decoration-none">Shipping Info</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
+        <div class="border-top border-light pt-3 mt-3 text-center small text-white-50">
+            &copy; 2024 Tesco Food City. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<script>
+$(document).ready(function(){
+    $("#payment_method").change(function(){
+        var method = $(this).val();
+        $(".payment-details").hide(); // hide all
+        if(method == "Credit Card") {
+            $("#credit-card-details").show();
+        } else if(method == "PayPal") {
+            $("#paypal-details").show();
+        } else if(method == "Stripe") {
+            $("#stripe-details").show();
+        }
+        // Cash on Delivery has no extra fields
+    });
+});
+</script>
 
 </body>
 </html>
