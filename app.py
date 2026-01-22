@@ -449,57 +449,139 @@ def add_review():
 def cart():
     return render_template('cart.html')
     
+# --- CONFIGURATION ---
+SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY'  # Replace this
+SENDER_EMAIL = 'your_verified_sender@example.com'  # Replace this
+
+# ---------------------------------------------------------
+# 1. HELPER FUNCTION: Send Email
+# ---------------------------------------------------------
+def send_verification_email(to_email, code):
+    message = Mail(
+        from_email=SENDER_EMAIL,
+        to_emails=to_email,
+        subject='Your Verification Code',
+        html_content=f'<h3>Welcome!TescofoodCity</h3><p>Your verification code is: <strong>{code}</strong></p>'
+    )
+    try:
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(f"Email sent! Status Code: {response.status_code}")
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
+# ---------------------------------------------------------
+# 2. ROUTE: Register (Triggering the Verification)
+# ---------------------------------------------------------
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
-        password = generate_password_hash(request.form['password'])
-        role = request.form['role']
+        password = generate_password_hash(request.form['password']) # Ensure you import this
+        role = request.form.get('role', 'customer')
+
+        conn = get_db_connection()
+        cur = conn.cursor(dictionary=True)
 
         try:
-            cursor.execute(
-                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
-                (username, email, password, role)
+            # A. Check if user exists
+            cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+            if cur.fetchone():
+                flash("Email already registered.", "danger")
+                return redirect(url_for('register'))
+
+            # B. Insert User (Default is_verified = 0 for customers)
+            # If Admin, auto-verify (1). If Customer, require verification (0).
+            is_verified = 1 if role == 'admin' else 0
+            
+            cur.execute(
+                "INSERT INTO users (username, email, password, role, is_verified) VALUES (%s, %s, %s, %s, %s)",
+                (username, email, password, role, is_verified)
             )
-            db.commit()
+            # Get the ID of the user we just created
+            user_id = cur.lastrowid
+            conn.commit()
+
+            # C. IF CUSTOMER: Generate Code & Send Email
+            if role == 'customer':
+                # Generate 6-digit code
+                code = str(random.randint(100000, 999999))
+                
+                # Save code to Database
+                cur.execute("INSERT INTO verification_codes (user_id, code) VALUES (%s, %s)", (user_id, code))
+                conn.commit()
+                
+                # Send the Email
+                send_verification_email(email, code)
+                
+                # Store email in session so the next page knows who we are verifying
+                session['email_to_verify'] = email
+                
+                flash("Registration successful! Please check your email for the code.", "info")
+                return redirect(url_for('verify_code'))
+
+            # If Admin, skip verification
             flash("Registration successful! Please login.", "success")
             return redirect(url_for('login'))
-        except mysql.connector.IntegrityError:
-            flash("Username or Email already exists.", "danger")
+
+        except Exception as e:
+            print(e)
+            flash("An error occurred during registration.", "danger")
+        finally:
+            cur.close()
+            conn.close()
 
     return render_template("register.html")
 
-
-
-
-@app.route("/verify", methods=["GET", "POST"])
-def verify():
-    if 'reg_data' not in session:
-        flash("Unauthorized access.", "danger")
+# ---------------------------------------------------------
+# 3. ROUTE: Verify Code (Checking the Input)
+# ---------------------------------------------------------
+@app.route('/verify', methods=['GET', 'POST'])
+def verify_code():
+    # If someone tries to access this page without registering/logging in
+    if 'email_to_verify' not in session:
+        flash("Session expired or invalid access.", "danger")
         return redirect(url_for('register'))
 
     if request.method == 'POST':
-        user_otp = request.form.get('otp')
-        stored_data = session['reg_data']
+        entered_code = request.form['code']
+        email = session['email_to_verify']
 
-        if user_otp == stored_data['otp']:
-            # Success: Insert Customer into DB
-            cursor.execute(
-                "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
-                (stored_data['username'], stored_data['email'], 
-                 stored_data['password'], stored_data['role'])
-            )
-            db.commit()
-            session.pop('reg_data', None) # Clear session
-            flash("Email verified! Welcome to Tesco Food City.", "success")
-            return redirect(url_for('login'))
+        conn = get_db_connection()
+        cur = conn.cursor(dictionary=True)
+
+        # A. Find the User ID based on the email in session
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        user = cur.fetchone()
+
+        if user:
+            user_id = user['id']
+            
+            # B. Check if the code matches the database record
+            cur.execute("SELECT * FROM verification_codes WHERE user_id = %s AND code = %s", (user_id, entered_code))
+            record = cur.fetchone()
+
+            if record:
+                # C. SUCCESS: Mark user as verified
+                cur.execute("UPDATE users SET is_verified = 1 WHERE id = %s", (user_id,))
+                
+                # Cleanup: Remove the used code
+                cur.execute("DELETE FROM verification_codes WHERE user_id = %s", (user_id,))
+                conn.commit()
+
+                flash("Email verified successfully! You can now login.", "success")
+                session.pop('email_to_verify', None) # Clear the temp session
+                return redirect(url_for('login'))
+            else:
+                flash("Invalid code. Please try again.", "danger")
         else:
-            flash("Incorrect code. Please check your email.", "danger")
+            flash("User not found.", "danger")
+        
+        cur.close()
+        conn.close()
 
     return render_template("verify.html")
-
-
 
 
 @app.route('/category/daily-deals')
@@ -901,6 +983,7 @@ def customer_dashboard():
 
 
 
+
 # --- 1. Dashboard Page ---
 @app.route('/delivery_dashboard')
 def delivery_dashboard():
@@ -1137,10 +1220,6 @@ def report_issue():
 
 
 
-
-# -----------------------------
-# My Account Page
-# -----------------------------
 @app.route('/my_account')
 def my_account():
     if 'user_id' not in session:
@@ -1153,17 +1232,17 @@ def my_account():
     orders = []
     
     try:
-        # 1. Fetch User's Orders
-        cursor.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY date_ordered DESC", (session['user_id'],))
+        # FIX 1: Changed 'date_ordered' to 'created_at' (or use 'id DESC' if you don't have a date column)
+        cursor.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY id DESC", (session['user_id'],))
         orders = cursor.fetchall()
         
-        # 2. Fetch Items for each Order (to display "Milk, Rice" etc.)
         for order in orders:
-            cursor.execute("SELECT product_name, quantity FROM order_items WHERE order_id = %s", (order['id'],))
+            # FIX 2: Changed 'product_name' to 'item_name' to match your database table
+            cursor.execute("SELECT item_name, quantity FROM order_items WHERE order_id = %s", (order['id'],))
             items = cursor.fetchall()
             
-            # Create a string like "Fresh Milk (x2), Rice (x1)"
-            item_list = [f"{i['product_name']} (x{i['quantity']})" for i in items]
+            # FIX 3: Update the loop to use the correct key 'item_name'
+            item_list = [f"{i['item_name']} (x{i['quantity']})" for i in items]
             order['items_str'] = ", ".join(item_list)
             
     except Exception as e:
@@ -1173,9 +1252,6 @@ def my_account():
         conn.close()
 
     return render_template("account.html", username=session.get('username'), orders=orders)
-
-
-
 
 # ------------------------------------------------
 
