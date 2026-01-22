@@ -35,47 +35,6 @@ pip install flask mysql-connector-python werkzeug
 pip install flask-login
 pip install reportlab
 if you using python python -m pip install reportlab
-
--- 2. Users Table
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'customer',
-    is_verified BOOLEAN DEFAULT FALSE
-);
-
--- 4. Orders Table
-CREATE TABLE IF NOT EXISTS orders (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    customer_name VARCHAR(100),
-    address VARCHAR(255),
-    phone VARCHAR(20),
-    payment_method VARCHAR(50),
-    total_price DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) DEFAULT 'Pending',
-    date_ordered TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+python -m pip install requests
 
 
--- 5. Order Items Table
-CREATE TABLE IF NOT EXISTS order_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    item_name VARCHAR(255) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    quantity INT NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-);
-
--- 6. Verification Codes Table (For email verification)
-CREATE TABLE IF NOT EXISTS verification_codes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    code VARCHAR(10) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
