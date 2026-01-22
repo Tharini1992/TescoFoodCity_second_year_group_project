@@ -449,49 +449,6 @@ def add_review():
 def cart():
     return render_template('cart.html')
     
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = generate_password_hash(request.form['password'])
-        role = request.form['role']
-
-        # ONLY CUSTOMERS need to verify
-        if role == 'customer':
-            otp_code = str(random.randint(100000, 999999))
-            
-            # Store data in session
-            session['reg_data'] = {
-                'username': username,
-                'email': email,
-                'password': password,
-                'role': role,
-                'otp': otp_code
-            }
-            
-            print(f"CUSTOMER VERIFICATION CODE: {otp_code}") # For testing
-            flash("Verification code sent to your email.", "info")
-            return redirect(url_for('verify'))
-        
-        else:
-            # ADMINS and DELIVERY register immediately
-            try:
-                cursor.execute(
-                    "INSERT INTO users (username, email, password, role) VALUES (%s,%s,%s,%s)",
-                    (username, email, password, role)
-                )
-                db.commit()
-                flash(f"{role.capitalize()} registered successfully! Please login.", "success")
-                return redirect(url_for('login'))
-            except mysql.connector.IntegrityError:
-                flash("Username or Email already exists.", "danger")
-
-    return render_template("register.html")
-
-
-correct regiter # -----------------------------
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
