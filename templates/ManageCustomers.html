@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Customers</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; }
+    .sidebar { height: 100vh; background: #2e7d32; color: #fff; padding-top: 20px; position: fixed; width: 230px; }
+    .sidebar a { color: #fff; text-decoration: none; display: block; padding: 12px 20px; font-weight: 500; }
+    .sidebar a:hover { background: #256928; border-radius: 5px; }
+    .content { margin-left: 230px; padding: 20px; }
+    .navbar { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .card { border-radius: 12px; }
+  </style>
+</head>
+<body>
+
+ <aside class="sidebar">
+  <h4 class="text-center mb-4">Admin Panel</h4>
+  <a href="manage-products.html"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+  <a href="manage-categories.html"><i class="fa-solid fa-list me-2"></i> Manage Categories</a>
+  <a href="manage-orders.html"><i class="fa-solid fa-truck me-2"></i> Manage Orders</a>
+  <a href="reports.html"><i class="fa-solid fa-chart-line me-2"></i> Analyze Reports</a>
+ <a href="ManageCustomers.html"><i class="fa-solid fa-users me-2"></i> Manage Customers</a>
+  <a href="manage-feedback.html"><i class="fa-solid fa-comment-dots me-2"></i> Manage Feedback</a>
+  <a href="update-delivery.html"><i class="fa-solid fa-shipping-fast me-2"></i> Update Delivery</a>
+  <a href="manage-promotions.html" class="bg-dark"><i class="fa-solid fa-tags me-2"></i> Manage Promotions</a>
+</aside>
+
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 mb-4">
+      <div class="container-fluid">
+        <h5 class="fw-bold">Manage Customers</h5>
+        <div class="ms-auto">
+          <i class="fa-solid fa-user-circle fa-2x text-success"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- CUSTOMERS TABLE -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-success text-white">
+        <i class="fa-solid fa-users"></i> Customer Accounts
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customerTable">
+              <tr>
+                <td>1</td>
+                <td>Alice Johnson</td>
+                <td>alice@example.com</td>
+                <td>+1234567890</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                  <button class="btn btn-sm btn-warning" onclick="editCustomer(this)">Edit</button>
+                  <button class="btn btn-sm btn-secondary" onclick="blockCustomer(this)">Block</button>
+                  <button class="btn btn-sm btn-danger" onclick="removeCustomer(this)">Remove</button>
+                  <button class="btn btn-sm btn-info" onclick="resetPassword(this)">Reset Password</button>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Bob Smith</td>
+                <td>bob@example.com</td>
+                <td>+9876543210</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                  <button class="btn btn-sm btn-warning" onclick="editCustomer(this)">Edit</button>
+                  <button class="btn btn-sm btn-secondary" onclick="blockCustomer(this)">Block</button>
+                  <button class="btn btn-sm btn-danger" onclick="removeCustomer(this)">Remove</button>
+                  <button class="btn btn-sm btn-info" onclick="resetPassword(this)">Reset Password</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    function editCustomer(button) {
+      let row = button.closest("tr");
+      let name = row.cells[1].innerText;
+      let newName = prompt("Edit customer name:", name);
+      if (newName) row.cells[1].innerText = newName;
+    }
+
+    function blockCustomer(button) {
+      let row = button.closest("tr");
+      row.cells[4].innerHTML = '<span class="badge bg-danger">Blocked</span>';
+      alert("Customer " + row.cells[1].innerText + " has been blocked.");
+    }
+
+    function removeCustomer(button) {
+      if (confirm("Are you sure you want to remove this customer?")) {
+        button.closest("tr").remove();
+      }
+    }
+
+    function resetPassword(button) {
+      let row = button.closest("tr");
+      alert("Password reset link sent to " + row.cells[2].innerText);
+    }
+  </script>
+
+</body>
+</html>

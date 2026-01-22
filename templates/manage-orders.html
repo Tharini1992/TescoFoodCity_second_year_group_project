@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; }
+    .sidebar { height: 100vh; background: #2e7d32; color: #fff; padding-top: 20px; position: fixed; width: 230px; }
+    .sidebar a { color: #fff; text-decoration: none; display: block; padding: 12px 20px; font-weight: 500; }
+    .sidebar a.active, .sidebar a:hover { background: #256928; border-radius: 5px; }
+    .content { margin-left: 230px; padding: 20px; }
+    .navbar { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .card { border-radius: 12px; }
+    .badge-status { padding:0.4em 0.75em; font-size:0.85em; border-radius: 0.4rem; }
+    .empty-state { text-align: center; padding: 40px; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h4 class="text-center mb-4">Admin Panel</h4>
+    <a href="manage-products.html"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+    <a href="manage-categories.html"><i class="fa-solid fa-list me-2"></i> Manage Categories</a>
+    <a href="manage-orders.html" class="active"><i class="fa-solid fa-truck me-2"></i> Manage Orders</a>
+    <a href="analyze-reports.html"><i class="fa-solid fa-chart-line me-2"></i> Analyze Reports</a>
+    <a href="manage-customers.html"><i class="fa-solid fa-users me-2"></i> Manage Customers</a>
+    <a href="manage-feedback.html"><i class="fa-solid fa-comment-dots me-2"></i> Manage Feedback</a>
+    <a href="update-delivery.html"><i class="fa-solid fa-shipping-fast me-2"></i> Update Delivery</a>
+    <a href="manage-promotions.html"><i class="fa-solid fa-tags me-2"></i> Manage Promotions</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light px-4">
+      <div class="container-fluid">
+        <h5 class="fw-bold">Manage Orders</h5>
+        <div class="ms-auto">
+          <i class="fa-solid fa-user-circle fa-2x text-success"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <small class="text-muted">View, update, or cancel customer orders.</small>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by Order ID or Customer" oninput="renderOrders()">
+      </div>
+      <div class="col-md-6 text-end text-muted" id="orderCount">0 orders</div>
+    </div>
+
+    <!-- Orders Table -->
+    <div id="ordersTableWrapper" class="card p-3"></div>
+    <div id="emptyState" class="empty-state d-none">
+      <i class="fa-solid fa-truck-fast fa-2x mb-2"></i>
+      <div>No orders found.</div>
+    </div>
+  </div>
+
+  <!-- Update Status Modal -->
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Update Order Status</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="statusOrderId">
+          <div class="mb-3">
+            <label for="orderStatusSelect" class="form-label">Select Status</label>
+            <select id="orderStatusSelect" class="form-select">
+              <option value="Pending">Pending</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" onclick="updateStatus()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirm Cancel</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to cancel order <strong id="delOrderId"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn">Cancel Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const STORAGE_KEY = 'admin_orders_v1';
+    let orders = [];
+    let orderToDeleteId = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadOrders();
+      renderOrders();
+    });
+
+    function loadOrders() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      orders = raw ? JSON.parse(raw) : [];
+    }
+
+    function saveOrders() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const wrapper = document.getElementById('ordersTableWrapper');
+      const emptyState = document.getElementById('emptyState');
+      const count = document.getElementById('orderCount');
+      const search = (document.getElementById('searchInput').value || '').toLowerCase();
+
+      let list = orders.filter(o => o.id.toLowerCase().includes(search) || o.customer.toLowerCase().includes(search));
+      count.innerText = `${list.length} orders`;
+
+      if (!list.length) {
+        wrapper.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        return;
+      }
+      emptyState.classList.add('d-none');
+
+      let html = `<div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total ($)</th>
+              <th>Status</th>
+              <th style="width:200px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+      list.forEach(o => {
+        let badgeClass = o.status === 'Pending' ? 'bg-warning text-dark' :
+                         o.status === 'Shipped' ? 'bg-info text-dark' :
+                         o.status === 'Delivered' ? 'bg-success' :
+                         'bg-danger';
+
+        html += `<tr>
+          <td>${o.id}</td>
+          <td>${o.customer}</td>
+          <td>${o.items}</td>
+          <td>${o.total.toFixed(2)}</td>
+          <td><span class="badge-status ${badgeClass}">${o.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-primary me-1" onclick="openStatusModal('${o.id}')"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${o.id}')"><i class="fa-solid fa-trash"></i> Cancel</button>
+          </td>
+        </tr>`;
+      });
+
+      html += `</tbody></table></div>`;
+      wrapper.innerHTML = html;
+    }
+
+    function openStatusModal(id) {
+      const order = orders.find(o => o.id === id);
+      if (!order) return alert('Order not found');
+      document.getElementById('statusOrderId').value = id;
+      document.getElementById('orderStatusSelect').value = order.status;
+      new bootstrap.Modal(document.getElementById('statusModal')).show();
+    }
+
+    function updateStatus() {
+      const id = document.getElementById('statusOrderId').value;
+      const status = document.getElementById('orderStatusSelect').value;
+      const idx = orders.findIndex(o => o.id === id);
+      if (idx !== -1) {
+        orders[idx].status = status;
+        saveOrders();
+        bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+      }
+    }
+
+    function confirmDelete(id) {
+      const order = orders.find(o => o.id === id);
+      if (!order) return;
+      orderToDeleteId = id;
+      document.getElementById('delOrderId').innerText = id;
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+      document.getElementById('confirmDeleteBtn').onclick = () => {
+        deleteOrder(orderToDeleteId);
+        bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+      };
+    }
+
+    function deleteOrder(id) {
+      orders = orders.filter(o => o.id !== id);
+      saveOrders();
+    }
+
+    function generateId() {
+      return 'ORD-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+    }
+
+    // Demo orders if empty
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      orders = [
+        { id: generateId(), customer: "Alice Johnson", items: "Apple Juice x2", total: 25.50, status: "Pending" },
+        { id: generateId(), customer: "Bob Smith", items: "Bananas x5", total: 10.00, status: "Shipped" },
+        { id: generateId(), customer: "Charlie Lee", items: "Organic Milk x1", total: 4.25, status: "Delivered" }
+      ];
+      saveOrders();
+    }
+  </script>
+
+</body>
+</html>

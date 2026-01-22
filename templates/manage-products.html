@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; }
+    .sidebar { width: 220px; background: #2e7d32; color: #fff; min-height: 100vh; position: fixed; padding: 24px; }
+    .sidebar a { color: #fff; display:block; margin-bottom:10px; text-decoration:none; }
+    .sidebar a.active { background:#256928; padding:8px; border-radius:5px; }
+    .main { margin-left: 240px; padding: 28px; }
+    .empty-state { text-align: center; padding: 40px; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h4 class="text-center mb-4">Admin Panel</h4>
+    <a href="manage-products.html"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+    <a href="manage-categories.html"><i class="fa-solid fa-list me-2"></i> Manage Categories</a>
+    <a href="manage-orders.html" class="active"><i class="fa-solid fa-truck me-2"></i> Manage Orders</a>
+    <a href="AnalyzeReports.html"><i class="fa-solid fa-chart-line me-2"></i> Analyze Reports</a>
+    <a href="manage-customers.html"><i class="fa-solid fa-users me-2"></i> Manage Customers</a>
+    <a href="manage-feedback.html"><i class="fa-solid fa-comment-dots me-2"></i> Manage Feedback</a>
+    <a href="update-delivery.html"><i class="fa-solid fa-shipping-fast me-2"></i> Update Delivery</a>
+    <a href="manage-promotions.html"><i class="fa-solid fa-tags me-2"></i> Manage Promotions</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h2>Manage Orders</h2>
+        <small class="text-muted">View, update, or delete orders.</small>
+      </div>
+      <button class="btn btn-success" onclick="openAddModal()">
+        <i class="fa-solid fa-plus"></i> Add Order
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search orders by customer or ID" oninput="renderOrders()">
+      </div>
+      <div class="col-md-6 text-end text-muted" id="orderCount">0 orders</div>
+    </div>
+
+    <!-- Orders Table -->
+    <div id="ordersTableWrapper" class="card p-3"></div>
+    <div id="emptyState" class="empty-state d-none">
+      <i class="fa-solid fa-truck fa-2x mb-2"></i>
+      <div>No orders found.</div>
+      <button class="btn btn-outline-success mt-2" onclick="openAddModal()">Add Order</button>
+    </div>
+  </main>
+
+  <!-- Add/Edit Order Modal -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="orderModalTitle">Add Order</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="orderForm" onsubmit="event.preventDefault(); saveOrder();">
+            <input type="hidden" id="orderId">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>Customer Name *</label>
+                <input id="orderCustomer" class="form-control" required maxlength="100" placeholder="e.g., John Doe">
+              </div>
+              <div class="col-md-6">
+                <label>Order Date *</label>
+                <input id="orderDate" type="date" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label>Total Amount ($) *</label>
+                <input id="orderAmount" type="number" min="0" step="0.01" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label>Status *</label>
+                <select id="orderStatus" class="form-select" required>
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label>Notes</label>
+                <textarea id="orderNotes" class="form-control" rows="3" maxlength="300" placeholder="Optional notes"></textarea>
+              </div>
+            </div>
+            <div class="mt-4 text-end">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal" onclick="resetModal()">Cancel</button>
+              <button type="submit" class="btn btn-success" id="saveOrderBtn">Save Order</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete order <strong id="delOrderName"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const STORAGE_KEY = 'admin_orders_v1';
+    let orders = [];
+    let orderToDeleteId = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadOrders();
+      renderOrders();
+    });
+
+    function loadOrders() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      orders = raw ? JSON.parse(raw) : [];
+    }
+
+    function saveOrders() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const wrapper = document.getElementById('ordersTableWrapper');
+      const emptyState = document.getElementById('emptyState');
+      const count = document.getElementById('orderCount');
+      const search = (document.getElementById('searchInput').value || '').toLowerCase();
+
+      let list = orders.filter(o =>
+        o.customer.toLowerCase().includes(search) || o.id.toLowerCase().includes(search)
+      );
+
+      count.innerText = `${list.length} orders`;
+
+      if (!list.length) {
+        wrapper.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        return;
+      }
+      emptyState.classList.add('d-none');
+
+      let html = `<div class="table-responsive"><table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Order Date</th>
+            <th>Total ($)</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      list.forEach(o => {
+        html += `<tr>
+          <td>${o.id}</td>
+          <td>${o.customer}</td>
+          <td>${o.date}</td>
+          <td>${Number(o.amount).toFixed(2)}</td>
+          <td>${o.status}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-1" onclick="openEditModal('${o.id}')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${o.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+          </td>
+        </tr>`;
+      });
+
+      html += `</tbody></table></div>`;
+      wrapper.innerHTML = html;
+    }
+
+    function openAddModal() {
+      resetModal();
+      document.getElementById('orderModalTitle').innerText = 'Add Order';
+      document.getElementById('saveOrderBtn').innerText = 'Add Order';
+      new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    function openEditModal(id) {
+      const o = orders.find(x => x.id === id);
+      if (!o) return alert('Order not found');
+      document.getElementById('orderModalTitle').innerText = 'Edit Order';
+      document.getElementById('saveOrderBtn').innerText = 'Save Changes';
+      document.getElementById('orderId').value = o.id;
+      document.getElementById('orderCustomer').value = o.customer;
+      document.getElementById('orderDate').value = o.date;
+      document.getElementById('orderAmount').value = o.amount;
+      document.getElementById('orderStatus').value = o.status;
+      document.getElementById('orderNotes').value = o.notes || '';
+      new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    function resetModal() {
+      document.getElementById('orderForm').reset();
+      document.getElementById('orderId').value = '';
+    }
+
+    function saveOrder() {
+      const id = document.getElementById('orderId').value;
+      const customer = document.getElementById('orderCustomer').value.trim();
+      const date = document.getElementById('orderDate').value;
+      const amount = parseFloat(document.getElementById('orderAmount').value || 0);
+      const status = document.getElementById('orderStatus').value;
+      const notes = document.getElementById('orderNotes').value.trim();
+
+      if (!customer) return alert('Customer name is required');
+
+      if (!id) {
+        orders.push({ id: generateId(), customer, date, amount, status, notes });
+      } else {
+        const idx = orders.findIndex(o => o.id === id);
+        orders[idx] = { ...orders[idx], customer, date, amount, status, notes };
+      }
+
+      saveOrders();
+      bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+      resetModal();
+    }
+
+    function confirmDelete(id) {
+      const o = orders.find(x => x.id === id);
+      if (!o) return;
+      orderToDeleteId = id;
+      document.getElementById('delOrderName').innerText = o.customer + ' (' + o.id + ')';
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+      document.getElementById('confirmDeleteBtn').onclick = () => {
+        deleteOrder(orderToDeleteId);
+        bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+      };
+    }
+
+    function deleteOrder(id) {
+      orders = orders.filter(o => o.id !== id);
+      saveOrders();
+    }
+
+    function generateId() {
+      return 'o_' + Math.random().toString(36).slice(2, 9);
+    }
+  </script>
+</body>
+</html>

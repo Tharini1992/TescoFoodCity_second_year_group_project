@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Delivery Partner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navbar Brand Logic */
+        .navbar-brand img { height: 40px; margin-right: 10px; }
+
+        /* Profile Header Card */
+        .profile-header-card {
+            background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(25, 135, 84, 0.2);
+        }
+        
+        .avatar-circle {
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white;
+            margin-right: 1.5rem;
+        }
+
+        /* Forms Styling */
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .form-label { font-weight: 600; color: #495057; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .form-control:focus { border-color: #198754; box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); }
+        
+        /* Footer */
+        footer { background: #198754; color: white; margin-top: auto; padding: 1.5rem 0; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-white shadow-sm px-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="/delivery_dashboard">
+                <i class="fa-solid fa-arrow-left me-2"></i> Dashboard
+            </a>
+            <span class="text-muted small">Account Management</span>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        
+        {% if msg %}
+        <div class="alert alert-{{ msg_type }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+            {% if msg_type == 'success' %}
+                <i class="fa-solid fa-circle-check me-2"></i>
+            {% else %}
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+            {% endif %}
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        <div class="profile-header-card d-flex align-items-center">
+            <div class="avatar-circle">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <h2 class="h4 mb-1 fw-bold">{{ account.username }}</h2>
+                <div class="d-flex gap-3 text-white-50 small">
+                    <span><i class="fa-solid fa-building me-1"></i> {{ account.company_name }}</span>
+                    <span><i class="fa-solid fa-id-badge me-1"></i> ID: #{{ account.id }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card p-3">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active text-start mb-2" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab">
+                            <i class="fa-solid fa-user-pen me-2"></i> Edit Profile
+                        </button>
+                        <button class="nav-link text-start" id="v-pills-security-tab" data-bs-toggle="pill" data-bs-target="#v-pills-security" type="button" role="tab">
+                            <i class="fa-solid fa-lock me-2"></i> Security
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    
+                    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold text-success">Personal & Vehicle Details</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form method="POST" action="{{ url_for('my_account') }}">
+                                    <input type="hidden" name="action" value="update_profile">
+                                    
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" name="username" class="form-control" value="{{ account.username }}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" name="email" class="form-control" value="{{ account.email }}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="text" name="phone" class="form-control" value="{{ account.phone_number }}" placeholder="071-xxxxxxx">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-2">Vehicle Information</h6>
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Vehicle Type</label>
+                                            <select name="vehicle_type" class="form-select">
+                                                <option value="Motorbike" {% if account.vehicle_type == 'Motorbike' %}selected{% endif %}>Motorbike</option>
+                                                <option value="Scooter" {% if account.vehicle_type == 'Scooter' %}selected{% endif %}>Scooter</option>
+                                                <option value="Three-Wheeler" {% if account.vehicle_type == 'Three-Wheeler' %}selected{% endif %}>Three-Wheeler</option>
+                                                <option value="Van" {% if account.vehicle_type == 'Van' %}selected{% endif %}>Van</option>
+                                                <option value="Bicycle" {% if account.vehicle_type == 'Bicycle' %}selected{% endif %}>Bicycle</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Vehicle Number</label>
+                                            <input type="text" name="vehicle_number" class="form-control" value="{{ account.vehicle_number }}" placeholder="WP ABC-1234">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end mt-4">
+                                        <button type="submit" class="btn btn-success px-4">
+                                            <i class="fa-solid fa-save me-2"></i> Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-security" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold text-danger">Change Password</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form method="POST" action="{{ url_for('my_account') }}">
+                                    <input type="hidden" name="action" value="change_password">
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" name="current_password" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" name="new_password" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Confirm New Password</label>
+                                            <input type="password" name="confirm_password" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-light border small text-muted">
+                                        <i class="fa-solid fa-info-circle me-1"></i> Make sure your new password is strong and secure.
+                                    </div>
+
+                                    <div class="text-end mt-3">
+                                        <button type="submit" class="btn btn-danger px-4">
+                                            <i class="fa-solid fa-key me-2"></i> Update Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <small>&copy; 2026 Tesco Food City. Delivery Partner Portal.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-close alert messages after 3 seconds
+        setTimeout(function() {
+            let alertElement = document.querySelector('.alert');
+            if(alertElement) {
+                let alert = new bootstrap.Alert(alertElement);
+                alert.close();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

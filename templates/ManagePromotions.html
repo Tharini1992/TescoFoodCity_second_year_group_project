@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Promotions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; }
+    .sidebar { height: 100vh; background: #2e7d32; color: #fff; padding-top: 20px; position: fixed; width: 230px; }
+    .sidebar a { color: #fff; text-decoration: none; display: block; padding: 12px 20px; font-weight: 500; }
+    .sidebar a:hover { background: #256928; border-radius: 5px; }
+    .content { margin-left: 230px; padding: 20px; }
+    .navbar { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .card { border-radius: 12px; }
+    .badge-active { background: #28a745; }
+    .badge-expired { background: #dc3545; }
+    .badge-upcoming { background: #ffc107; color: #000; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h4 class="text-center mb-4">Admin Panel</h4>
+    <a href="#"><i class="fa-solid fa-box"></i> Manage Products</a>
+    <a href="#"><i class="fa-solid fa-list"></i> Manage Categories</a>
+    <a href="#"><i class="fa-solid fa-truck"></i> Manage Orders</a>
+    <a href="#"><i class="fa-solid fa-chart-line"></i> Analyze Reports</a>
+    <a href="#"><i class="fa-solid fa-users"></i> Manage Customers</a>
+    <a href="#"><i class="fa-solid fa-comment-dots"></i> Manage Feedback</a>
+    <a href="#"><i class="fa-solid fa-shipping-fast"></i> Update Delivery</a>
+    <a href="#" class="bg-dark"><i class="fa-solid fa-tags"></i> Manage Promotions</a>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 mb-4">
+      <div class="container-fluid">
+        <h5 class="fw-bold">Manage Promotions</h5>
+        <div class="ms-auto">
+          <i class="fa-solid fa-user-circle fa-2x text-success"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- PROMOTIONS TABLE -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-success text-white">
+        <i class="fa-solid fa-tags"></i> Promotions List
+        <button class="btn btn-light btn-sm float-end" data-bs-toggle="modal" data-bs-target="#promoModal">
+          <i class="fa-solid fa-plus"></i> New Promotion
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped align-middle" id="promoTable">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Duration</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Holiday Sale</td>
+                <td>HOLIDAY15</td>
+                <td>15%</td>
+                <td>01 Dec - 07 Dec</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Flash Sale</td>
+                <td>FLASH20</td>
+                <td>20%</td>
+                <td>10 Oct - 12 Oct</td>
+                <td>Expired</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-primary btn-sm mt-2" onclick="exportPDF()">Export to PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD PROMOTION MODAL -->
+  <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Add New Promotion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="promoTitle" class="form-control mb-2" placeholder="Promotion Title">
+          <input type="text" id="promoCode" class="form-control mb-2" placeholder="Discount Code">
+          <input type="number" id="promoDiscount" class="form-control mb-2" placeholder="Discount (%)">
+          <input type="date" id="promoStart" class="form-control mb-2">
+          <input type="date" id="promoEnd" class="form-control mb-2">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-success" onclick="savePromotion()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let promoId = 3;
+
+    function savePromotion() {
+      let title = document.getElementById("promoTitle").value;
+      let code = document.getElementById("promoCode").value;
+      let discount = document.getElementById("promoDiscount").value;
+      let start = document.getElementById("promoStart").value;
+      let end = document.getElementById("promoEnd").value;
+
+      if (!title || !code || !discount || !start || !end) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      let table = document.getElementById("promoTable").getElementsByTagName("tbody")[0];
+      let row = table.insertRow();
+      row.innerHTML = `
+        <td>${promoId++}</td>
+        <td>${title}</td>
+        <td>${code}</td>
+        <td>${discount}%</td>
+        <td>${start} - ${end}</td>
+        <td>Upcoming</td>
+      `;
+
+      bootstrap.Modal.getInstance(document.getElementById("promoModal")).hide();
+    }
+
+    // 📌 Export Table to PDF
+    function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.text("Promotions Report", 14, 15);
+      doc.autoTable({
+        startY: 20,
+        head: [['ID', 'Title', 'Code', 'Discount', 'Duration', 'Status']],
+        body: Array.from(document.querySelectorAll("#promoTable tbody tr")).map(row =>
+          Array.from(row.cells).map(cell => cell.innerText)
+        ),
+      });
+
+      doc.save("Promotions_Report.pdf");
+    }
+  </script>
+</body>
+</html>

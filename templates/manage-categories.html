@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Categories</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; }
+    .sidebar { height: 100vh; background: #2e7d32; color: #fff; padding-top: 20px; position: fixed; width: 230px; }
+    .sidebar a { color: #fff; text-decoration: none; display: block; padding: 12px 20px; font-weight: 500; }
+    .sidebar a.active, .sidebar a:hover { background: #256928; border-radius: 5px; }
+    .content { margin-left: 230px; padding: 20px; }
+    .navbar { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .card { border-radius: 12px; }
+    .empty-state { text-align: center; padding: 40px; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h4 class="text-center mb-4">Admin Panel</h4>
+    <a href="manage-products.html"><i class="fa-solid fa-box me-2"></i> Manage Products</a>
+    <a href="manage-categories.html" class="active"><i class="fa-solid fa-list me-2"></i> Manage Categories</a>
+    <a href="manage-orders.html"><i class="fa-solid fa-truck me-2"></i> Manage Orders</a>
+    <a href="analyze-reports.html"><i class="fa-solid fa-chart-line me-2"></i> Analyze Reports</a>
+    <a href="manage-customers.html"><i class="fa-solid fa-users me-2"></i> Manage Customers</a>
+    <a href="manage-feedback.html"><i class="fa-solid fa-comment-dots me-2"></i> Manage Feedback</a>
+    <a href="update-delivery.html"><i class="fa-solid fa-shipping-fast me-2"></i> Update Delivery</a>
+    <a href="manage-promotions.html"><i class="fa-solid fa-tags me-2"></i> Manage Promotions</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light px-4">
+      <div class="container-fluid">
+        <h5 class="fw-bold">Manage Categories</h5>
+        <div class="ms-auto">
+          <i class="fa-solid fa-user-circle fa-2x text-success"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header + Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <small class="text-muted">Add, edit, or delete product categories.</small>
+      </div>
+      <button class="btn btn-success" onclick="openAddModal()">
+        <i class="fa-solid fa-plus"></i> Add Category
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search categories..." oninput="renderCategories()">
+      </div>
+      <div class="col-md-6 text-end text-muted" id="categoryCount">0 categories</div>
+    </div>
+
+    <!-- Categories Table -->
+    <div id="categoriesTableWrapper" class="card p-3"></div>
+    <div id="emptyState" class="empty-state d-none">
+      <i class="fa-solid fa-tags fa-2x mb-2"></i>
+      <div>No categories found.</div>
+      <button class="btn btn-outline-success mt-2" onclick="openAddModal()">Add Category</button>
+    </div>
+  </div>
+
+  <!-- Add/Edit Category Modal -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="categoryModalTitle">Add Category</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="categoryForm" onsubmit="event.preventDefault(); saveCategory();">
+            <input type="hidden" id="categoryId">
+            <div class="mb-3">
+              <label>Category Name *</label>
+              <input id="categoryName" class="form-control" required maxlength="50" placeholder="e.g., Beverages">
+            </div>
+            <div class="mt-4 text-end">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal" onclick="resetModal()">Cancel</button>
+              <button type="submit" class="btn btn-success" id="saveCategoryBtn">Save Category</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong id="delCategoryName"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const STORAGE_KEY = 'admin_categories_v1';
+    let categories = [];
+    let categoryToDeleteId = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCategories();
+      renderCategories();
+    });
+
+    function loadCategories() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      categories = raw ? JSON.parse(raw) : [];
+    }
+
+    function saveCategories() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+      renderCategories();
+    }
+
+    function renderCategories() {
+      const wrapper = document.getElementById('categoriesTableWrapper');
+      const emptyState = document.getElementById('emptyState');
+      const count = document.getElementById('categoryCount');
+      const search = (document.getElementById('searchInput').value || '').toLowerCase();
+
+      let list = categories.filter(c => c.name.toLowerCase().includes(search));
+      count.innerText = `${list.length} categories`;
+
+      if (!list.length) {
+        wrapper.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        return;
+      }
+      emptyState.classList.add('d-none');
+
+      let html = `<div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th style="width:180px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>`;
+      list.forEach(c => {
+        html += `<tr>
+          <td>${c.name}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-1" onclick="openEditModal('${c.id}')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${c.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`;
+      wrapper.innerHTML = html;
+    }
+
+    function openAddModal() {
+      resetModal();
+      document.getElementById('categoryModalTitle').innerText = 'Add Category';
+      document.getElementById('saveCategoryBtn').innerText = 'Add Category';
+      new bootstrap.Modal(document.getElementById('categoryModal')).show();
+    }
+
+    function openEditModal(id) {
+      const c = categories.find(x => x.id === id);
+      if (!c) return alert('Category not found');
+      document.getElementById('categoryModalTitle').innerText = 'Edit Category';
+      document.getElementById('saveCategoryBtn').innerText = 'Save Changes';
+      document.getElementById('categoryId').value = c.id;
+      document.getElementById('categoryName').value = c.name;
+      new bootstrap.Modal(document.getElementById('categoryModal')).show();
+    }
+
+    function resetModal() {
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryId').value = '';
+    }
+
+    function saveCategory() {
+      const id = document.getElementById('categoryId').value;
+      const name = document.getElementById('categoryName').value.trim();
+      if (!name) return alert('Category name is required');
+
+      if (!id) {
+        categories.push({ id: generateId(), name });
+      } else {
+        const idx = categories.findIndex(c => c.id === id);
+        categories[idx] = { ...categories[idx], name };
+      }
+
+      saveCategories();
+      bootstrap.Modal.getInstance(document.getElementById('categoryModal')).hide();
+      resetModal();
+    }
+
+    function confirmDelete(id) {
+      const c = categories.find(x => x.id === id);
+      if (!c) return;
+      categoryToDeleteId = id;
+      document.getElementById('delCategoryName').innerText = c.name;
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+      document.getElementById('confirmDeleteBtn').onclick = () => {
+        deleteCategory(categoryToDeleteId);
+        bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+      };
+    }
+
+    function deleteCategory(id) {
+      categories = categories.filter(c => c.id !== id);
+      saveCategories();
+    }
+
+    function generateId() {
+      return 'c_' + Math.random().toString(36).slice(2, 9);
+    }
+  </script>
+
+</body>
+</html>
